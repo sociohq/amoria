@@ -1,0 +1,21 @@
+export function StarRating({ rating, reviewCount }: { rating: number; reviewCount: number }) {
+  if (reviewCount === 0) return null;
+
+  return (
+    <div className="flex items-center gap-2">
+      <div className="flex text-gold" aria-hidden>
+        {Array.from({ length: 5 }, (_, i) => {
+          const filled = i + 1 <= Math.round(rating);
+          return (
+            <svg key={i} width="14" height="14" viewBox="0 0 20 20" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1">
+              <path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z" />
+            </svg>
+          );
+        })}
+      </div>
+      <span className="text-sm text-ink-soft">
+        {rating.toFixed(1)} ({reviewCount} Reviews)
+      </span>
+    </div>
+  );
+}

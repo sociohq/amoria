@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+:root {
+  --color-cream: #f4efe6;
+  --color-cream-dark: #e9e1d2;
+  --color-ink: #1c1a17;
+  --color-ink-soft: #4a453e;
+  --color-gold: #b08d57;
+  --color-gold-light: #d4b483;
+  --color-emerald: #0e3b2e;
+  --color-emerald-light: #1c5c46;
+  --color-crimson: #a3271e;
+  --color-border: #ddd3c1;
+}
+
+@theme inline {
+  --color-cream: var(--color-cream);
+  --color-cream-dark: var(--color-cream-dark);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-gold: var(--color-gold);
+  --color-gold-light: var(--color-gold-light);
+  --color-emerald: var(--color-emerald);
+  --color-emerald-light: var(--color-emerald-light);
+  --color-crimson: var(--color-crimson);
+  --color-border: var(--color-border);
+  --font-serif: var(--font-playfair);
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+}
+
+/* Small-caps letter-spaced section labels, matching the reference product
+   page's "SCENT PYRAMID" / "PERFUMER'S NOTE" accordion headers. */
+.label-caps {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
