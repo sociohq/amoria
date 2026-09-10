@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { listCategories } from "@/lib/products";
-import { createCategory, deleteCategory } from "@/lib/admin";
+import { createCategory, deleteCategory, uploadCategoryImage } from "@/lib/admin";
 import { Category } from "@/lib/types";
 import { ApiError } from "@/lib/api";
 
@@ -11,6 +12,7 @@ export default function AdminCategoriesPage() {
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [uploadingId, setUploadingId] = useState<string | null>(null);
 
   function refresh() {
     listCategories().then(setCategories).catch(() => setError("Could not load categories"));
@@ -43,9 +45,27 @@ export default function AdminCategoriesPage() {
     }
   }
 
+  async function handleImageChange(id: string, file: File | undefined) {
+    if (!file) return;
+    setError(null);
+    setUploadingId(id);
+    try {
+      await uploadCategoryImage(id, file);
+      refresh();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Could not upload image");
+    } finally {
+      setUploadingId(null);
+    }
+  }
+
   return (
     <div>
       <h1 className="mb-6 font-serif text-2xl text-ink">Categories</h1>
+      <p className="mb-6 max-w-2xl text-sm text-ink-soft">
+        A category with an image appears as a card in the homepage &quot;Browse Our Category&quot; showcase. Categories
+        without an image are still usable everywhere else (filtering, nav) — they just won&apos;t appear there.
+      </p>
 
       <form onSubmit={handleCreate} className="mb-8 flex max-w-md gap-2">
         <input
@@ -61,9 +81,10 @@ export default function AdminCategoriesPage() {
       </form>
       {error && <p className="mb-4 text-sm text-crimson">{error}</p>}
 
-      <table className="w-full max-w-2xl border-collapse text-sm">
+      <table className="w-full max-w-3xl border-collapse text-sm">
         <thead>
           <tr className="border-b border-border text-left text-ink-soft">
+            <th className="py-2">Image</th>
             <th className="py-2">Name</th>
             <th className="py-2">Slug</th>
             <th className="py-2" />
@@ -72,6 +93,24 @@ export default function AdminCategoriesPage() {
         <tbody>
           {categories.map((c) => (
             <tr key={c.id} className="border-b border-border">
+              <td className="py-2">
+                <label className="group relative block h-14 w-14 cursor-pointer overflow-hidden bg-cream-dark">
+                  {c.image ? (
+                    <Image src={c.image} alt={c.name} fill sizes="56px" className="object-cover" />
+                  ) : (
+                    <span className="flex h-full items-center justify-center text-[10px] text-ink-soft">None</span>
+                  )}
+                  <span className="absolute inset-0 hidden items-center justify-center bg-black/40 text-[10px] text-cream group-hover:flex">
+                    {uploadingId === c.id ? "…" : "Change"}
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    className="hidden"
+                    onChange={(e) => handleImageChange(c.id, e.target.files?.[0])}
+                  />
+                </label>
+              </td>
               <td className="py-2 text-ink">{c.name}</td>
               <td className="py-2 text-ink-soft">{c.slug}</td>
               <td className="py-2 text-right">

@@ -5,13 +5,19 @@ import { Category, Product, ProductType, Coupon, Settings, DashboardSummary, Adm
 export const getDashboard = () => apiFetch<DashboardSummary>("/api/admin/dashboard");
 
 // ---------- Categories ----------
-export const createCategory = (data: { name: string; slug?: string }) =>
+export const createCategory = (data: { name: string; slug?: string; image?: string }) =>
   apiFetch<{ category: Category }>("/api/categories", { method: "POST", body: JSON.stringify(data) });
 
-export const updateCategory = (id: string, data: { name?: string; slug?: string }) =>
+export const updateCategory = (id: string, data: { name?: string; slug?: string; image?: string }) =>
   apiFetch<{ category: Category }>(`/api/categories/${id}`, { method: "PATCH", body: JSON.stringify(data) });
 
 export const deleteCategory = (id: string) => apiFetch<void>(`/api/categories/${id}`, { method: "DELETE" });
+
+export const uploadCategoryImage = (id: string, file: File) => {
+  const formData = new FormData();
+  formData.append("image", file);
+  return apiUpload<{ category: Category }>(`/api/categories/${id}/image`, formData);
+};
 
 // ---------- Products ----------
 export interface ProductInput {

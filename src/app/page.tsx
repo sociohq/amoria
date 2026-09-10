@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { listProducts, listCategories } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { Hero } from "@/components/Hero";
+import { CategoryShowcase } from "@/components/CategoryShowcase";
 
 export default async function HomePage() {
   const [{ products: featured }, categories] = await Promise.all([
@@ -13,22 +13,7 @@ export default async function HomePage() {
     <div>
       <Hero />
 
-      <section className="px-6 py-16">
-        <div className="grid gap-6 sm:grid-cols-3">
-          {categories.map((c) => (
-            <Link
-              key={c.id}
-              href={`/shop?category=${c.slug}`}
-              className="group flex aspect-[4/3] flex-col items-center justify-center gap-3 bg-cream-dark transition-colors hover:bg-emerald"
-            >
-              <span className="font-serif text-2xl text-ink transition-colors group-hover:text-cream">{c.name}</span>
-              <span className="label-caps text-ink-soft transition-colors group-hover:text-gold-light">
-                Shop now
-              </span>
-            </Link>
-          ))}
-        </div>
-      </section>
+      <CategoryShowcase categories={categories} />
 
       {featured.length > 0 && (
         <section className="px-6 pb-20">
