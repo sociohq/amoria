@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Inter } from "next/font/google";
+import { Cormorant, Jost } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 import { CartProvider } from "@/lib/cart-context";
@@ -7,15 +7,15 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { listCategories } from "@/lib/products";
 
-const playfair = Playfair_Display({
+const cormorant = Cormorant({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  variable: "--font-cormorant",
   weight: ["400", "500", "600", "700"],
 });
 
-const inter = Inter({
+const jost = Jost({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-jost",
 });
 
 export const metadata: Metadata = {
@@ -30,7 +30,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en">
-      <body className={`${playfair.variable} ${inter.variable} font-sans antialiased`}>
+      <body className={`${cormorant.variable} ${jost.variable} font-sans antialiased`}>
         <AuthProvider>
           <CartProvider>
             <Header categories={categories} />
