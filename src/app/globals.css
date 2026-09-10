@@ -29,6 +29,10 @@
 }
 
 body {
+  /* This is a deliberately single, always-light palette (no dark mode) —
+     without this, browsers apply dark UA styling to native controls
+     (date pickers, selects) under a dark OS preference, clashing with it. */
+  color-scheme: light;
   background: var(--color-cream);
   color: var(--color-ink);
 }
