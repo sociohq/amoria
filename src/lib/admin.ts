@@ -1,5 +1,5 @@
 import { apiFetch, apiUpload } from "./api";
-import { Category, Product, Coupon, Settings, DashboardSummary, AdminOrder } from "./types";
+import { Category, Product, ProductType, Coupon, Settings, DashboardSummary, AdminOrder } from "./types";
 
 // ---------- Dashboard ----------
 export const getDashboard = () => apiFetch<DashboardSummary>("/api/admin/dashboard");
@@ -15,16 +15,24 @@ export const deleteCategory = (id: string) => apiFetch<void>(`/api/categories/${
 
 // ---------- Products ----------
 export interface ProductInput {
+  productType: ProductType;
   name: string;
   slug?: string;
   shortDescription: string;
   description: string;
-  concentrationType: string;
+  concentrationType?: string;
   scentAccords: string[];
   topNotes: string[];
   heartNotes: string[];
   baseNotes: string[];
   perfumerNote?: string;
+  fragranceFamily?: string;
+  season?: string;
+  scentSillage?: string;
+  scentLongevity?: string;
+  designHouse?: string;
+  yearIntroduced?: number;
+  attributes?: Record<string, unknown>;
   price: number;
   compareAtPrice?: number;
   status: "ACTIVE" | "DRAFT";

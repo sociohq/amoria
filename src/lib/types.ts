@@ -1,4 +1,5 @@
 export type ConcentrationType = "EAU_DE_TOILETTE" | "EAU_DE_PARFUM" | "EXTRAIT_DE_PARFUM" | "PARFUM";
+export type ProductType = "PERFUME" | "HOME_FRAGRANCE" | "ACCESSORY" | "HAIR_CARE";
 
 export interface Category {
   id: string;
@@ -23,16 +24,24 @@ export interface ProductVariant {
 
 export interface Product {
   id: string;
+  productType: ProductType;
   name: string;
   slug: string;
   shortDescription: string;
   description: string;
-  concentrationType: ConcentrationType;
+  concentrationType: ConcentrationType | null;
   scentAccords: string[];
   topNotes: string[];
   heartNotes: string[];
   baseNotes: string[];
   perfumerNote: string | null;
+  fragranceFamily: string | null;
+  season: string | null;
+  scentSillage: string | null;
+  scentLongevity: string | null;
+  designHouse: string | null;
+  yearIntroduced: number | null;
+  attributes: Record<string, unknown> | null;
   price: number; // AED
   compareAtPrice: number | null; // AED
   avgRating: number;

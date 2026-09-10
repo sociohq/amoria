@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { getProductBySlug } from "@/lib/products";
 import { updateProduct, deleteProduct } from "@/lib/admin";
 import { Product } from "@/lib/types";
-import { ProductForm, ProductFormValue } from "@/components/admin/ProductForm";
+import { ProductForm, ProductFormSubmitValue } from "@/components/admin/ProductForm";
 import { ImageManager } from "@/components/admin/ImageManager";
 import { VariantManager } from "@/components/admin/VariantManager";
 
@@ -20,7 +20,7 @@ export default function EditProductPage({ params }: { params: Promise<{ slug: st
 
   useEffect(refresh, [refresh]);
 
-  async function handleSubmit(value: ProductFormValue) {
+  async function handleSubmit(value: ProductFormSubmitValue) {
     if (!product) return;
     if (value.categoryIds.length === 0) {
       throw new Error("Assign at least one category");

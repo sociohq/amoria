@@ -22,6 +22,15 @@ export function ProductDetail({ product }: { product: Product }) {
   const off = percentOff(variant?.price ?? product.price, product.compareAtPrice);
   const images = product.images.length > 0 ? product.images : [{ id: "placeholder", url: "", altText: null, position: 0 }];
   const category = product.categories[0]?.name;
+  const isScentCapable = product.productType === "PERFUME" || product.productType === "HAIR_CARE";
+  const fragranceDetails = [
+    product.fragranceFamily && { label: "Fragrance Family", value: product.fragranceFamily },
+    product.season && { label: "Season", value: product.season },
+    product.scentSillage && { label: "Sillage", value: product.scentSillage },
+    product.scentLongevity && { label: "Longevity", value: product.scentLongevity },
+    product.designHouse && { label: "Design House", value: product.designHouse },
+    product.yearIntroduced && { label: "Year Introduced", value: String(product.yearIntroduced) },
+  ].filter((d): d is { label: string; value: string } => Boolean(d));
 
   async function handleAddToCart() {
     if (!variant) return;
@@ -88,7 +97,7 @@ export function ProductDetail({ product }: { product: Product }) {
       <div>
         {category && <p className="label-caps text-ink-soft">The Shop · {category}</p>}
         <h1 className="mt-2 font-serif text-3xl leading-snug text-ink">
-          {product.name} {formatConcentration(product.concentrationType)}
+          {product.name} {product.concentrationType && formatConcentration(product.concentrationType)}
         </h1>
         {product.scentAccords.length > 0 && (
           <p className="mt-2 text-sm text-crimson">{product.scentAccords.join(" · ")}</p>
@@ -181,15 +190,29 @@ export function ProductDetail({ product }: { product: Product }) {
               <p>{product.perfumerNote}</p>
             </Accordion>
           )}
+          {fragranceDetails.length > 0 && (
+            <Accordion title="Fragrance Details">
+              <dl className="grid grid-cols-2 gap-y-2">
+                {fragranceDetails.map((d) => (
+                  <div key={d.label} className="contents">
+                    <dt className="text-ink">{d.label}</dt>
+                    <dd>{d.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </Accordion>
+          )}
           <Accordion title="Sizes and Refills">
             <p>Available in {product.variants.map((v) => v.size).join(", ")}. Refills coming soon.</p>
           </Accordion>
-          <Accordion title="How, When & Where to Apply Fragrances">
-            <p>
-              Apply to pulse points — wrists, neck, and behind the ears — right after showering, when skin is
-              warm and slightly damp for the longest-lasting effect.
-            </p>
-          </Accordion>
+          {isScentCapable && (
+            <Accordion title="How, When & Where to Apply Fragrances">
+              <p>
+                Apply to pulse points — wrists, neck, and behind the ears — right after showering, when skin is
+                warm and slightly damp for the longest-lasting effect.
+              </p>
+            </Accordion>
+          )}
           <Accordion title="Shipping, Returns and Questions">
             <p>Free shipping on orders above AED 99. Unopened items can be returned within 14 days of delivery.</p>
           </Accordion>

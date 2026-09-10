@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ProductForm, ProductFormValue } from "@/components/admin/ProductForm";
+import { ProductForm, ProductFormSubmitValue } from "@/components/admin/ProductForm";
 import { createProduct } from "@/lib/admin";
 
 export default function NewProductPage() {
   const router = useRouter();
 
-  async function handleSubmit(value: ProductFormValue) {
+  async function handleSubmit(value: ProductFormSubmitValue) {
     if (value.variants.length === 0 || value.variants.some((v) => !v.size || !v.sku)) {
       throw new Error("Add at least one complete size variant (size, price, stock, SKU)");
     }
