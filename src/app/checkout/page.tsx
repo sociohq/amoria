@@ -75,7 +75,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="mx-auto grid max-w-4xl gap-12 px-6 py-12 md:grid-cols-2">
+    <div className="grid max-w-4xl gap-12 px-6 py-12 md:grid-cols-2">
       <form onSubmit={handleSubmit} className="space-y-4">
         <h1 className="font-serif text-2xl text-ink">Shipping Details</h1>
         <input

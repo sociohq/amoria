@@ -32,7 +32,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-12">
+    <div className="px-6 py-12">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <h1 className="font-serif text-3xl capitalize text-ink">{category ?? "All Fragrances"}</h1>
         <div className="flex gap-4">

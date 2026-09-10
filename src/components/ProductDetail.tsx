@@ -57,7 +57,7 @@ export function ProductDetail({ product }: { product: Product }) {
   }
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-12 px-6 py-12 lg:grid-cols-2">
+    <div className="grid gap-12 px-6 py-12 lg:grid-cols-2">
       {/* Gallery */}
       <div>
         <div className="relative aspect-square overflow-hidden bg-cream-dark">
