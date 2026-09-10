@@ -1,11 +1,13 @@
+import Image from "next/image";
+
 export function Footer() {
   return (
     <footer className="border-t border-border bg-cream-dark">
       <div className="mx-auto max-w-6xl px-6 py-12 text-sm text-ink-soft">
         <div className="grid gap-8 sm:grid-cols-3">
           <div>
-            <p className="font-serif text-xl tracking-[0.15em] text-ink">AMORIA</p>
-            <p className="mt-2 max-w-xs">Fragrances for men, women, and unisex — crafted for the moments that matter.</p>
+            <Image src="/logo.png" alt="Amoria" width={160} height={44} className="h-10 w-auto" />
+            <p className="mt-3 max-w-xs">Fragrances for men, women, and unisex — crafted for the moments that matter.</p>
           </div>
           <div>
             <p className="label-caps mb-3 text-ink">Shop</p>

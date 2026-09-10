@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useCart } from "@/lib/cart-context";
@@ -14,8 +15,8 @@ export function Header({ categories }: { categories: Category[] }) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-cream/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="font-serif text-2xl tracking-[0.15em] text-ink">
-          AMORIA
+        <Link href="/" className="shrink-0">
+          <Image src="/logo.png" alt="Amoria" width={144} height={40} className="h-9 w-auto" priority />
         </Link>
 
         <nav className="hidden gap-8 md:flex">
