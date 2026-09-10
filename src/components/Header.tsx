@@ -141,6 +141,30 @@ export function Header({ categories }: { categories: Category[] }) {
             </div>
           )}
         </div>
+        <Link
+          href="/shop?category=gift-sets"
+          className={`text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
+        >
+          Gift Sets
+        </Link>
+        <Link
+          href="/custom-perfume"
+          className={`text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
+        >
+          Custom Perfume
+        </Link>
+        <Link
+          href="/gift-cards"
+          className={`text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
+        >
+          Gift Cards
+        </Link>
+        <Link
+          href="/our-story"
+          className={`text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
+        >
+          Our Story
+        </Link>
       </nav>
 
       {menuOpen && (
@@ -161,6 +185,18 @@ export function Header({ categories }: { categories: Category[] }) {
               {c.name}
             </Link>
           ))}
+          <Link href="/shop?category=gift-sets" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
+            Gift Sets
+          </Link>
+          <Link href="/custom-perfume" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
+            Custom Perfume
+          </Link>
+          <Link href="/gift-cards" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
+            Gift Cards
+          </Link>
+          <Link href="/our-story" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
+            Our Story
+          </Link>
           {!user && (
             <Link href="/login" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
               Sign in
