@@ -64,6 +64,35 @@ export interface User {
   role: "CUSTOMER" | "ADMIN";
 }
 
+export interface Coupon {
+  id: string;
+  code: string;
+  type: "PERCENTAGE" | "FIXED";
+  value: number; // percentage (0-100) or AED
+  minOrderValue: number | null; // AED
+  maxUsage: number | null;
+  usagePerUser: number | null;
+  usedCount: number;
+  active: boolean;
+  expiresAt: string | null;
+}
+
+export interface Settings {
+  orderCutoffHour: number;
+  minLeadDays: number;
+  maxLeadDays: number;
+  freeShippingThreshold: number; // AED
+  standardShippingFee: number; // AED
+}
+
+export interface DashboardSummary {
+  totalOrders: number;
+  totalRevenue: number;
+  pendingOrders: number;
+  activeProducts: number;
+  lowStockVariants: number;
+}
+
 export interface Order {
   id: string;
   status: "PENDING" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED" | "REFUNDED";
@@ -80,4 +109,8 @@ export interface Order {
     unitPrice: number;
     quantity: number;
   }>;
+}
+
+export interface AdminOrder extends Order {
+  user: { id: string; email: string; name: string };
 }
