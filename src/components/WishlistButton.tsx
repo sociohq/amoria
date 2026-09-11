@@ -21,14 +21,18 @@ export function WishlistButton({ productId, className = "" }: { productId: strin
       className={className}
     >
       <svg
-        width="18"
-        height="18"
+        width="16"
+        height="16"
         viewBox="0 0 24 24"
         fill={saved ? "currentColor" : "none"}
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.6"
       >
-        <path d="M12 21s-7-4.35-9.5-8.5C.5 8.5 2.5 5 6 5c2 0 3.5 1 4.5 2.5C11.5 6 13 5 15 5c3.5 0 5.5 3.5 3.5 7.5C19 16.65 12 21 12 21z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 4.876 9.623 3.75 7.688 3.75 5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+        />
       </svg>
     </button>
   );
