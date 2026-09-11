@@ -6,6 +6,9 @@ export interface Category {
   name: string;
   slug: string;
   image: string | null;
+  menuGroup: string | null;
+  position: number;
+  featuredInMenu: boolean;
 }
 
 export interface ProductImage {

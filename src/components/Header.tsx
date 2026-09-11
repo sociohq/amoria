@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useCart } from "@/lib/cart-context";
 import { Category } from "@/lib/types";
+import { MegaMenu } from "./MegaMenu";
 
 const SOLID_THRESHOLD_PX = 60;
 
@@ -132,21 +133,7 @@ export function Header({ categories }: { categories: Category[] }) {
               <path d="M6 9l6 6 6-6" />
             </svg>
           </Link>
-          {categories.length > 0 && (
-            <div className="invisible absolute left-1/2 top-full flex -translate-x-1/2 justify-center pt-3 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100">
-              <div className="flex flex-col gap-1 border border-border bg-white px-5 py-3 shadow-sm">
-                {categories.map((c) => (
-                  <Link
-                    key={c.id}
-                    href={`/shop?category=${c.slug}`}
-                    className="whitespace-nowrap py-1 text-sm text-ink-soft hover:text-emerald"
-                  >
-                    {c.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
+          <MegaMenu categories={categories} />
         </div>
         <Link
           href="/shop?category=gift-sets"
