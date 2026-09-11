@@ -99,53 +99,63 @@ export function NewsletterPopup() {
             <Image src={settings.newsletterPopupImage} alt="" fill sizes="50vw" className="object-cover" />
           </div>
 
-          <div className="relative flex flex-col justify-center bg-ink px-8 py-12 sm:px-10">
-            <button
-              onClick={dismiss}
-              aria-label="Close"
-              className="absolute right-5 top-5 text-cream/70 transition-colors hover:text-cream"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
-                <path d="M6 6l12 12M18 6 6 18" strokeLinecap="round" />
-              </svg>
-            </button>
+          <div className="relative flex flex-col justify-center overflow-hidden bg-ink px-8 py-12 sm:px-10">
+            {/* A soft beige glow flowing in from the right edge — purely
+                decorative, sits behind all the actual content below. */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-y-0 right-0 w-3/4"
+              style={{ background: "radial-gradient(ellipse 80% 100% at 100% 50%, rgba(212,180,131,0.4), transparent 70%)" }}
+            />
 
-            <p className="label-caps text-gold-light">{settings.newsletterPopupEyebrow}</p>
-            <h2 className="mt-3 font-serif text-3xl leading-tight text-cream sm:text-4xl">
-              {settings.newsletterPopupHeadline}
-            </h2>
-            <p className="mt-4 text-sm text-cream/75">{settings.newsletterPopupSubtext}</p>
+            <div className="relative">
+              <button
+                onClick={dismiss}
+                aria-label="Close"
+                className="absolute right-0 top-0 text-cream/70 transition-colors hover:text-cream"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
+                  <path d="M6 6l12 12M18 6 6 18" strokeLinecap="round" />
+                </svg>
+              </button>
 
-            {status === "done" ? (
-              <p className="mt-6 text-sm text-cream">Thank you for signing up — welcome to Amoria.</p>
-            ) : (
-              <form onSubmit={handleSubmit} className="mt-6">
-                <input
-                  type="email"
-                  required
-                  placeholder="Enter your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border border-transparent bg-cream px-4 py-3 text-sm text-ink outline-none placeholder:text-ink-soft focus:border-gold"
-                />
-                <button
-                  type="submit"
-                  disabled={status === "submitting"}
-                  className="mt-3 w-full bg-gold px-8 py-3 label-caps text-ink transition-opacity hover:opacity-90 disabled:opacity-50"
-                >
-                  {status === "submitting" ? "Joining…" : settings.newsletterPopupButtonText}
-                </button>
-                {error && <p className="mt-2 text-xs text-crimson">{error}</p>}
-                <p className="mt-4 text-xs leading-relaxed text-cream/55">
-                  Consent is not a condition of purchase. You can unsubscribe at any time. By signing up you agree to
-                  Amoria&apos;s{" "}
-                  <Link href="/privacy" className="text-gold-light underline">
-                    Privacy Policy
-                  </Link>
-                  .
-                </p>
-              </form>
-            )}
+              <p className="label-caps text-gold-light">{settings.newsletterPopupEyebrow}</p>
+              <h2 className="mt-3 font-serif text-3xl leading-tight text-cream sm:text-4xl">
+                {settings.newsletterPopupHeadline}
+              </h2>
+              <p className="mt-4 text-sm text-cream/75">{settings.newsletterPopupSubtext}</p>
+
+              {status === "done" ? (
+                <p className="mt-6 text-sm text-cream">Thank you for signing up — welcome to Amoria.</p>
+              ) : (
+                <form onSubmit={handleSubmit} className="mt-6">
+                  <input
+                    type="email"
+                    required
+                    placeholder="Enter your email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full border border-transparent bg-cream px-4 py-3 text-sm text-ink outline-none placeholder:text-ink-soft focus:border-gold"
+                  />
+                  <button
+                    type="submit"
+                    disabled={status === "submitting"}
+                    className="mt-3 w-full bg-gold px-8 py-3 label-caps text-ink transition-opacity hover:opacity-90 disabled:opacity-50"
+                  >
+                    {status === "submitting" ? "Joining…" : settings.newsletterPopupButtonText}
+                  </button>
+                  {error && <p className="mt-2 text-xs text-crimson">{error}</p>}
+                  <p className="mt-4 text-xs leading-relaxed text-cream/55">
+                    Consent is not a condition of purchase. You can unsubscribe at any time. By signing up you agree
+                    to Amoria&apos;s{" "}
+                    <Link href="/privacy" className="text-gold-light underline">
+                      Privacy Policy
+                    </Link>
+                    .
+                  </p>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </div>
