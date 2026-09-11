@@ -26,18 +26,12 @@ export function ProductCard({ product }: { product: Product }) {
             <span className="font-serif text-sm tracking-widest">AMORIA</span>
           </div>
         )}
-        {off && (
-          <span className="absolute left-3 top-3 bg-crimson px-2 py-1 text-xs font-medium text-cream">
-            {off}% OFF
-          </span>
-        )}
-        {/* Wishlist toggle, plus gender + fragrance-family tags sourced
-            from the product's real categories/fragranceFamily fields. */}
-        <div className="absolute right-3 top-3 flex flex-col items-end gap-1.5">
-          <WishlistButton
-            productId={product.id}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-white/90 text-ink-soft transition-colors hover:text-crimson"
-          />
+        {/* Product info (sale, gender, fragrance family) stays as its own
+            group at top-left — separate from the wishlist control on the
+            opposite corner, so an action and metadata don't compete in
+            the same stack. */}
+        <div className="absolute left-3 top-3 flex flex-col items-start gap-1.5">
+          {off && <span className="bg-crimson px-2 py-1 text-xs font-medium text-cream">{off}% OFF</span>}
           {gender && (
             <span className="rounded-full border border-border bg-white/90 px-3 py-1 text-xs text-ink-soft">{gender}</span>
           )}
@@ -47,6 +41,11 @@ export function ProductCard({ product }: { product: Product }) {
             </span>
           )}
         </div>
+
+        <WishlistButton
+          productId={product.id}
+          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-white/90 text-ink-soft transition-colors hover:text-crimson"
+        />
       </div>
       <div className="mt-3 space-y-1">
         <p className="font-serif text-xl text-ink">{product.name}</p>
