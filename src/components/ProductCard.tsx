@@ -2,10 +2,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { Product } from "@/lib/types";
 import { formatAed, percentOff } from "@/lib/money";
+import { fragranceFamilyIcon, genderTag } from "@/lib/fragrance";
 
 export function ProductCard({ product }: { product: Product }) {
   const image = product.images[0];
   const off = percentOff(product.price, product.compareAtPrice);
+  const gender = genderTag(product.categories);
 
   return (
     <Link href={`/product/${product.slug}`} className="group block">
@@ -28,9 +30,25 @@ export function ProductCard({ product }: { product: Product }) {
             {off}% OFF
           </span>
         )}
+        {/* Gender + fragrance-family tags, sourced from the product's real
+            categories/fragranceFamily fields (not hardcoded). */}
+        {(gender || product.fragranceFamily) && (
+          <div className="pointer-events-none absolute right-3 top-3 flex flex-col items-end gap-1.5">
+            {gender && (
+              <span className="rounded-full border border-border bg-white/90 px-3 py-1 text-xs text-ink-soft">
+                {gender}
+              </span>
+            )}
+            {product.fragranceFamily && (
+              <span className="rounded-full border border-border bg-white/90 px-3 py-1 text-xs text-ink-soft">
+                {fragranceFamilyIcon(product.fragranceFamily)} {product.fragranceFamily}
+              </span>
+            )}
+          </div>
+        )}
       </div>
       <div className="mt-3 space-y-1">
-        <p className="text-sm text-ink">{product.name}</p>
+        <p className="font-serif text-lg text-ink">{product.name}</p>
         {product.scentAccords.length > 0 && (
           <p className="text-xs text-crimson">{product.scentAccords.join(" · ")}</p>
         )}
