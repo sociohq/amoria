@@ -63,7 +63,10 @@ export function ProductSection({
         </div>
       </div>
 
-      <div ref={scrollerRef} className="no-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth">
+      <div
+        ref={scrollerRef}
+        className="no-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto overflow-y-hidden scroll-smooth"
+      >
         {products.map((p, i) => (
           <Reveal
             key={p.id}

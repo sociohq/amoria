@@ -22,7 +22,7 @@ export function CategoryShowcase({ categories }: { categories: Category[] }) {
         </Link>
       </div>
 
-      <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-2">
+      <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden px-6 pb-2">
         {featured.map((c, i) => (
           <Reveal key={c.id} delayMs={i * 100} className="shrink-0">
             <Link href={`/shop?category=${c.slug}`} className="group relative block h-[420px] w-[280px] snap-start overflow-hidden">

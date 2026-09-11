@@ -109,7 +109,7 @@ export function ShopReels() {
     <section className="px-6 py-16">
       <p className="label-caps text-gold">Watch & Shop</p>
       <h2 className="mt-1 font-serif text-3xl text-ink">Shop By Reels</h2>
-      <div className="mt-8 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4">
+      <div className="mt-8 flex snap-x snap-mandatory gap-6 overflow-x-auto overflow-y-hidden pb-4">
         {reels.map((r) => (
           <ReelCard key={r.id} reel={r} />
         ))}
