@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { subscribeToNewsletter } from "@/lib/newsletter";
+import { ApiError } from "@/lib/api";
 
 const SHOP_LINKS = [
   { label: "All Fragrances", href: "/shop" },
@@ -45,13 +47,17 @@ export function Footer() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
-  // Not wired to a real mailing list yet — just a friendly local
-  // acknowledgment so the UI isn't a dead end. Needs a real subscribe
-  // endpoint before launch.
-  function handleSubscribe(e: React.FormEvent) {
+  async function handleSubscribe(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) return;
-    setSubscribed(true);
+    try {
+      await subscribeToNewsletter(email);
+      setSubscribed(true);
+    } catch (err) {
+      // Rare (the endpoint only really rejects a malformed email) — the
+      // input just stays put so they can fix it and retry.
+      alert(err instanceof ApiError ? err.message : "Something went wrong — please try again.");
+    }
   }
 
   return (
