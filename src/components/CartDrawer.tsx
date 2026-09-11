@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/lib/cart-context";
 import { formatAed } from "@/lib/money";
+import { ShippingProgress } from "./ShippingProgress";
 
 export function CartDrawer() {
   const { items, subtotal, itemCount, drawerOpen, closeDrawer, updateQuantity, removeItem } = useCart();
@@ -36,6 +37,8 @@ export function CartDrawer() {
             </svg>
           </button>
         </div>
+
+        {items.length > 0 && <ShippingProgress subtotal={subtotal} />}
 
         {items.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
