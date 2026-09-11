@@ -29,7 +29,7 @@ export function MegaMenu({ categories }: { categories: Category[] }) {
   const featured = categories.find((c) => c.featuredInMenu && c.image);
 
   return (
-    <div className="invisible absolute left-0 top-full pt-3 opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100">
+    <div className="invisible absolute left-0 top-full -translate-y-2 pt-3 opacity-0 transition-all duration-300 ease-out group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
       <div className="flex w-max max-w-[calc(100vw-3rem)] gap-16 border border-border bg-white px-10 py-8 shadow-sm">
         <div className="flex flex-1 gap-16">
           {groups.map((g) => (

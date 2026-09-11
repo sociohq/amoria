@@ -2,6 +2,7 @@ import { listProducts, listCategories } from "@/lib/products";
 import { Hero } from "@/components/Hero";
 import { CategoryShowcase } from "@/components/CategoryShowcase";
 import { ProductSection } from "@/components/ProductSection";
+import { FindYourScentBanner } from "@/components/FindYourScentBanner";
 import { OurStores } from "@/components/OurStores";
 import { Reveal } from "@/components/Reveal";
 
@@ -17,6 +18,9 @@ export default async function HomePage() {
       <CategoryShowcase categories={categories} />
       <Reveal>
         <ProductSection eyebrow="Extrait de Parfum" title="Featured Products" products={featured} />
+      </Reveal>
+      <Reveal>
+        <FindYourScentBanner />
       </Reveal>
       <Reveal>
         <OurStores />
