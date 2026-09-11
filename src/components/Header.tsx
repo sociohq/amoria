@@ -175,7 +175,7 @@ export function Header({ categories }: { categories: Category[] }) {
           Home
         </Link>
         <div
-          className="group relative"
+          className="relative"
           onMouseEnter={(e) => {
             trackPill(e);
             setShopMenuOpen(true);
@@ -191,7 +191,7 @@ export function Header({ categories }: { categories: Category[] }) {
               <path d="M6 9l6 6 6-6" />
             </svg>
           </Link>
-          <MegaMenu categories={categories} />
+          <MegaMenu categories={categories} open={shopMenuOpen} />
         </div>
         <Link
           href="/shop?category=gift-sets"
