@@ -56,7 +56,7 @@ export interface Product {
 export interface CartItem {
   id: string;
   quantity: number;
-  product: { id: string; name: string; slug: string };
+  product: { id: string; name: string; slug: string; image: string | null };
   variant: { id: string; size: string; price: number; stock: number };
   lineTotal: number;
 }

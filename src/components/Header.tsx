@@ -12,7 +12,7 @@ const SOLID_THRESHOLD_PX = 60;
 
 export function Header({ categories }: { categories: Category[] }) {
   const { user, logout } = useAuth();
-  const { itemCount } = useCart();
+  const { itemCount, openDrawer } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
@@ -74,7 +74,7 @@ export function Header({ categories }: { categories: Category[] }) {
               <path d="M12 21s-7-4.35-9.5-8.5C.5 8.5 2.5 5 6 5c2 0 3.5 1 4.5 2.5C11.5 6 13 5 15 5c3.5 0 5.5 3.5 3.5 7.5C19 16.65 12 21 12 21z" />
             </svg>
           </button>
-          <Link href="/cart" className="relative">
+          <button onClick={openDrawer} aria-label="Open cart" className="relative">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M6 6h15l-1.5 9h-13z" strokeLinejoin="round" />
               <path d="M6 6 4.5 2H2" strokeLinecap="round" />
@@ -86,7 +86,7 @@ export function Header({ categories }: { categories: Category[] }) {
                 {itemCount}
               </span>
             )}
-          </Link>
+          </button>
           {user ? (
             <button onClick={() => logout()} aria-label="Sign out" className="hidden sm:block">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

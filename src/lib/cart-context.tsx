@@ -43,6 +43,12 @@ interface CartContextValue {
   updateQuantity: (itemId: string, quantity: number) => Promise<void>;
   removeItem: (itemId: string) => Promise<void>;
   refresh: () => Promise<void>;
+  // Slide-out cart drawer, opened automatically after adding an item and
+  // from the header's cart icon — a full /cart page still exists
+  // separately for direct navigation.
+  drawerOpen: boolean;
+  openDrawer: () => void;
+  closeDrawer: () => void;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -69,6 +75,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [serverCart, setServerCart] = useState<Cart | null>(null);
   const [guestItems, setGuestItems] = useState<GuestItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   async function refreshServerCart() {
     const { cart } = await apiFetch<{ cart: Cart }>("/api/cart");
@@ -132,6 +139,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         return next;
       });
     }
+    setDrawerOpen(true);
   }
 
   async function updateQuantity(itemId: string, quantity: number) {
@@ -169,7 +177,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         variantSize: i.variant.size,
         price: i.variant.price,
         quantity: i.quantity,
-        image: null,
+        image: i.product.image,
         lineTotal: i.lineTotal,
       }))
     : guestItems.map((i) => ({
@@ -199,6 +207,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         updateQuantity,
         removeItem,
         refresh: user ? refreshServerCart : async () => setGuestItems(readGuestCart()),
+        drawerOpen,
+        openDrawer: () => setDrawerOpen(true),
+        closeDrawer: () => setDrawerOpen(false),
       }}
     >
       {children}

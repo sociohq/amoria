@@ -5,6 +5,7 @@ import { AuthProvider } from "@/lib/auth-context";
 import { CartProvider } from "@/lib/cart-context";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { CartDrawer } from "@/components/CartDrawer";
 import { listCategories } from "@/lib/products";
 
 const cormorant = Cormorant({
@@ -36,6 +37,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Header categories={categories} />
             <main className="min-h-screen">{children}</main>
             <Footer />
+            <CartDrawer />
           </CartProvider>
         </AuthProvider>
       </body>
