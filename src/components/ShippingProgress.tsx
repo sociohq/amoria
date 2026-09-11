@@ -16,22 +16,17 @@ export function ShippingProgress({ subtotal }: { subtotal: number }) {
   if (threshold == null || threshold <= 0) return null;
 
   const remaining = threshold - subtotal;
-  const progress = Math.min(100, Math.round((subtotal / threshold) * 100));
 
   return (
-    <div className="border-b border-border bg-cream-dark/40 px-6 py-3">
-      <p className="text-xs text-ink">
-        {remaining > 0 ? (
-          <>
-            Add <strong>{formatAed(remaining)}</strong> more for free shipping
-          </>
-        ) : (
-          <span className="text-emerald">You&apos;ve unlocked free shipping 🎉</span>
-        )}
-      </p>
-      <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-border">
-        <div className="h-full rounded-full bg-emerald transition-all duration-300" style={{ width: `${progress}%` }} />
-      </div>
+    <div className="flex items-center gap-2 border-b border-border px-8 py-3 text-sm">
+      <span aria-hidden>🚚</span>
+      {remaining > 0 ? (
+        <p className="text-ink">
+          Add <strong>{formatAed(remaining)}</strong> more to unlock <strong>free shipping</strong>
+        </p>
+      ) : (
+        <p className="text-emerald">You&apos;ve unlocked free shipping</p>
+      )}
     </div>
   );
 }
