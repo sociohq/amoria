@@ -63,3 +63,14 @@ body {
     animation: none;
   }
 }
+
+/* Hides the native scrollbar on a horizontally-scrollable row that has its
+   own arrow-button navigation (e.g. ProductSection) — the row still
+   scrolls (by drag/wheel/arrow buttons), it just doesn't show the bar. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
