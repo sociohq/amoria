@@ -40,6 +40,13 @@ export function Header({ categories }: { categories: Category[] }) {
   function hidePill() {
     setPill((p) => ({ ...p, visible: false }));
   }
+
+  // Dims the rest of the page behind a scrim while the mega menu is open,
+  // so the header + dropdown are the visual focus. Rendered as the first
+  // child of <header> (see below) so it paints under the header's own
+  // chrome — which comes later in DOM order — but above everything else
+  // on the page, since <header> itself sits at a higher z-index.
+  const [shopMenuOpen, setShopMenuOpen] = useState(false);
   // Only the home page has a full-viewport hero behind the header — there
   // the logo/nav rows start transparent (hero shows through) and turn
   // solid white once scrolled past it. Every other page is a plain solid
@@ -70,6 +77,16 @@ export function Header({ categories }: { categories: Category[] }) {
 
   return (
     <header className={isHome ? "fixed inset-x-0 top-0 z-40" : "sticky top-0 z-40"}>
+      {/* Backdrop scrim behind the mega menu — dims the rest of the page so
+          the header + dropdown stay the visual focus. First child so it
+          paints under the rest of the header's own (later-DOM) chrome. */}
+      <div
+        aria-hidden
+        className={`fixed inset-0 bg-black/60 transition-opacity duration-300 ${
+          shopMenuOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      />
+
       {/* Announcement bar — only shown at the very top; collapses away as
           soon as scrolling starts, on every page. */}
       <div
@@ -157,7 +174,14 @@ export function Header({ categories }: { categories: Category[] }) {
         >
           Home
         </Link>
-        <div className="group relative" onMouseEnter={trackPill}>
+        <div
+          className="group relative"
+          onMouseEnter={(e) => {
+            trackPill(e);
+            setShopMenuOpen(true);
+          }}
+          onMouseLeave={() => setShopMenuOpen(false)}
+        >
           <Link
             href="/shop"
             className={`relative flex items-center gap-1 text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
