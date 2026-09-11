@@ -9,9 +9,7 @@ const EMAIL = "amoriaperfumeofficial@gmail.com";
 const PHONE_DISPLAY = "+971 50 755 0447";
 const PHONE_HREF = "+971507550447";
 
-// TODO: swap for the real store/lifestyle photo once provided — this is a
-// placeholder so the layout can be seen with a real image in the meantime.
-const BACKGROUND_IMAGE = "/hero-banner.jpg";
+const BACKGROUND_IMAGE = "/banners/our-stores.png";
 
 export function OurStores() {
   const [email, setEmail] = useState("");
