@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Product } from "@/lib/types";
 import { formatAed, percentOff } from "@/lib/money";
-import { fragranceFamilyIcon, fragranceFamilyColor, genderTag } from "@/lib/fragrance";
+import { fragranceFamilyIcon, genderTag } from "@/lib/fragrance";
 
 export function ProductCard({ product }: { product: Product }) {
   const image = product.images[0];
@@ -48,14 +48,9 @@ export function ProductCard({ product }: { product: Product }) {
         )}
       </div>
       <div className="mt-3 space-y-1">
-        <p className="font-serif text-lg text-ink">{product.name}</p>
+        <p className="font-serif text-xl text-ink">{product.name}</p>
         {product.scentAccords.length > 0 && (
-          <p
-            className="text-xs"
-            style={{ color: product.fragranceFamily ? fragranceFamilyColor(product.fragranceFamily) : "var(--color-ink-soft)" }}
-          >
-            {product.scentAccords.join(" · ")}
-          </p>
+          <p className="text-xs text-ink-soft">{product.scentAccords.join(" · ")}</p>
         )}
         <div className="flex items-baseline gap-2">
           <span className="text-sm font-medium text-ink">{formatAed(product.price)}</span>
