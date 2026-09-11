@@ -11,7 +11,7 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <Link href={`/product/${product.slug}`} className="group block">
-      <div className="relative aspect-square overflow-hidden bg-cream-dark">
+      <div className="relative aspect-[4/5] overflow-hidden bg-cream-dark">
         {image ? (
           <Image
             src={image.url}

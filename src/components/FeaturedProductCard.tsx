@@ -37,7 +37,7 @@ export function FeaturedProductCard({ product }: { product: Product }) {
 
   return (
     <div className="group w-full shrink-0">
-      <div className="relative aspect-square overflow-hidden bg-cream-dark">
+      <div className="relative aspect-[4/5] overflow-hidden bg-cream-dark">
         <Link href={`/product/${product.slug}`} className="absolute inset-0">
           {image ? (
             <Image
