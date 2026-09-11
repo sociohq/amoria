@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useCart } from "@/lib/cart-context";
 import { Category } from "@/lib/types";
@@ -17,6 +17,23 @@ export function Header({ categories }: { categories: Category[] }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const navRef = useRef<HTMLElement>(null);
+  // A pill that slides to whichever nav item is hovered, instead of each
+  // link just changing color on its own — measured against the nav's own
+  // box so it works regardless of how wide each link's text is.
+  const [pill, setPill] = useState({ left: 0, width: 0, visible: false });
+
+  function trackPill(e: React.MouseEvent<HTMLElement>) {
+    const nav = navRef.current;
+    if (!nav) return;
+    const navRect = nav.getBoundingClientRect();
+    const itemRect = e.currentTarget.getBoundingClientRect();
+    setPill({ left: itemRect.left - navRect.left, width: itemRect.width, visible: true });
+  }
+
+  function hidePill() {
+    setPill((p) => ({ ...p, visible: false }));
+  }
   // Only the home page has a full-viewport hero behind the header — there
   // the logo/nav rows start transparent (hero shows through) and turn
   // solid white once scrolled past it. Every other page is a plain solid
@@ -39,7 +56,7 @@ export function Header({ categories }: { categories: Category[] }) {
   const barClasses = `relative flex items-center justify-center px-6 py-3 border-b transition-colors duration-300 ${
     transparent ? "border-white/25 bg-transparent" : "border-border bg-white"
   }`;
-  const navClasses = `hidden justify-center gap-10 py-4 transition-colors duration-300 md:flex ${
+  const navClasses = `relative hidden justify-center gap-10 py-4 transition-colors duration-300 md:flex ${
     transparent ? "bg-transparent" : "border-b border-border bg-white"
   }`;
   const textClass = transparent ? "text-cream" : "text-ink-soft";
@@ -119,14 +136,25 @@ export function Header({ categories }: { categories: Category[] }) {
       </div>
 
       {/* Nav row */}
-      <nav className={navClasses}>
-        <Link href="/" className={`text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}>
+      <nav ref={navRef} className={navClasses} onMouseLeave={hidePill}>
+        <span
+          aria-hidden
+          className={`pointer-events-none absolute top-1/2 h-9 -translate-y-1/2 rounded-full transition-all duration-300 ease-out ${
+            transparent ? "bg-cream/15" : "bg-ink/8"
+          }`}
+          style={{ left: pill.left, width: pill.width, opacity: pill.visible ? 1 : 0 }}
+        />
+        <Link
+          href="/"
+          onMouseEnter={trackPill}
+          className={`relative text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
+        >
           Home
         </Link>
-        <div className="group relative">
+        <div className="group relative" onMouseEnter={trackPill}>
           <Link
             href="/shop"
-            className={`flex items-center gap-1 text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
+            className={`relative flex items-center gap-1 text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
           >
             The Shop
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -137,25 +165,29 @@ export function Header({ categories }: { categories: Category[] }) {
         </div>
         <Link
           href="/shop?category=gift-sets"
-          className={`text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
+          onMouseEnter={trackPill}
+          className={`relative text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
         >
           Gift Sets
         </Link>
         <Link
           href="/custom-perfume"
-          className={`text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
+          onMouseEnter={trackPill}
+          className={`relative text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
         >
           Custom Perfume
         </Link>
         <Link
           href="/gift-cards"
-          className={`text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
+          onMouseEnter={trackPill}
+          className={`relative text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
         >
           Gift Cards
         </Link>
         <Link
           href="/our-story"
-          className={`text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
+          onMouseEnter={trackPill}
+          className={`relative text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
         >
           Our Story
         </Link>
