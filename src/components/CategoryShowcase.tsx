@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Category } from "@/lib/types";
+import { Reveal } from "./Reveal";
 
 // Only categories an admin has set an image on appear here — that's the
 // curation mechanism (no separate "featured" flag needed). Renders nothing
@@ -22,25 +23,23 @@ export function CategoryShowcase({ categories }: { categories: Category[] }) {
       </div>
 
       <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-2">
-        {featured.map((c) => (
-          <Link
-            key={c.id}
-            href={`/shop?category=${c.slug}`}
-            className="group relative h-[420px] w-[280px] shrink-0 snap-start overflow-hidden"
-          >
-            <Image
-              src={c.image as string}
-              alt={c.name}
-              fill
-              sizes="280px"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-            <div className="absolute bottom-6 left-6 right-6">
-              <p className="font-serif text-xl italic text-cream">{c.name}</p>
-              <span className="mt-1 inline-block text-sm text-cream underline underline-offset-4">Discover</span>
-            </div>
-          </Link>
+        {featured.map((c, i) => (
+          <Reveal key={c.id} delayMs={i * 100} className="shrink-0">
+            <Link href={`/shop?category=${c.slug}`} className="group relative block h-[420px] w-[280px] snap-start overflow-hidden">
+              <Image
+                src={c.image as string}
+                alt={c.name}
+                fill
+                sizes="280px"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+              <div className="absolute bottom-6 left-6 right-6">
+                <p className="font-serif text-xl italic text-cream">{c.name}</p>
+                <span className="mt-1 inline-block text-sm text-cream underline underline-offset-4">Discover</span>
+              </div>
+            </Link>
+          </Reveal>
         ))}
       </div>
     </section>

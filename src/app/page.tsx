@@ -3,6 +3,7 @@ import { Hero } from "@/components/Hero";
 import { CategoryShowcase } from "@/components/CategoryShowcase";
 import { ProductSection } from "@/components/ProductSection";
 import { OurStores } from "@/components/OurStores";
+import { Reveal } from "@/components/Reveal";
 
 export default async function HomePage() {
   const [{ products: featured }, categories] = await Promise.all([
@@ -14,8 +15,12 @@ export default async function HomePage() {
     <div>
       <Hero />
       <CategoryShowcase categories={categories} />
-      <ProductSection eyebrow="Extrait de Parfum" title="Featured Products" products={featured} />
-      <OurStores />
+      <Reveal>
+        <ProductSection eyebrow="Extrait de Parfum" title="Featured Products" products={featured} />
+      </Reveal>
+      <Reveal>
+        <OurStores />
+      </Reveal>
     </div>
   );
 }

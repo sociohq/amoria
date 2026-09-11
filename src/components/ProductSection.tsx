@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Product } from "@/lib/types";
 import { FeaturedProductCard } from "./FeaturedProductCard";
+import { Reveal } from "./Reveal";
 
 export function ProductSection({
   eyebrow,
@@ -25,8 +26,10 @@ export function ProductSection({
         </Link>
       </div>
       <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
-        {products.map((p) => (
-          <FeaturedProductCard key={p.id} product={p} />
+        {products.map((p, i) => (
+          <Reveal key={p.id} delayMs={(i % 4) * 100}>
+            <FeaturedProductCard product={p} />
+          </Reveal>
         ))}
       </div>
     </section>
