@@ -25,9 +25,13 @@ export function ProductSection({
           View all
         </Link>
       </div>
-      <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
+      <div className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4">
         {products.map((p, i) => (
-          <Reveal key={p.id} delayMs={(i % 4) * 100}>
+          <Reveal
+            key={p.id}
+            delayMs={(i % 4) * 100}
+            className="w-[calc(50%-12px)] shrink-0 snap-start sm:w-[calc(33.333%-16px)] md:w-[calc(25%-18px)]"
+          >
             <FeaturedProductCard product={p} />
           </Reveal>
         ))}
