@@ -34,9 +34,9 @@ export function FeaturedProductCard({ product }: { product: Product }) {
   }
 
   return (
-    <div className="w-full shrink-0">
-      <Link href={`/product/${product.slug}`} className="group block">
-        <div className="relative aspect-square overflow-hidden bg-cream-dark">
+    <div className="group w-full shrink-0">
+      <div className="relative aspect-square overflow-hidden bg-cream-dark">
+        <Link href={`/product/${product.slug}`} className="absolute inset-0">
           {image ? (
             <Image
               src={image.url}
@@ -50,8 +50,42 @@ export function FeaturedProductCard({ product }: { product: Product }) {
               <span className="font-serif text-sm tracking-widest text-ink-soft">AMORIA</span>
             </div>
           )}
-        </div>
-      </Link>
+        </Link>
+
+        {/* Hover quick-shop overlay: size selector + Add to Cart, revealed
+            over a faded-white panel at the bottom of the image. */}
+        {product.variants.length > 0 && (
+          <div className="absolute inset-x-0 bottom-0 translate-y-2 bg-gradient-to-t from-white from-55% to-transparent px-4 pb-4 pt-10 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+            {product.variants.length > 1 && (
+              <div className="mb-3 space-y-1.5">
+                {product.variants.map((v) => (
+                  <label
+                    key={v.id}
+                    className={`flex items-center gap-2 text-xs ${v.stock === 0 ? "cursor-not-allowed opacity-40" : "cursor-pointer"}`}
+                  >
+                    <input
+                      type="radio"
+                      name={`variant-${product.id}`}
+                      checked={v.id === variantId}
+                      onChange={() => setVariantId(v.id)}
+                      disabled={v.stock === 0}
+                      style={{ accentColor: "var(--color-ink)" }}
+                    />
+                    <span className="text-ink">{v.size}</span>
+                  </label>
+                ))}
+              </div>
+            )}
+            <button
+              onClick={handleAddToCart}
+              disabled={!variant || variant.stock === 0 || adding}
+              className="w-full border border-ink bg-white/80 py-2.5 label-caps text-ink transition-colors hover:bg-ink hover:text-cream disabled:opacity-50"
+            >
+              {variant?.stock === 0 ? "Out of Stock" : adding ? "Adding…" : "Add to Cart"}
+            </button>
+          </div>
+        )}
+      </div>
 
       <div className="mt-3">
         <Link href={`/product/${product.slug}`}>
@@ -68,31 +102,6 @@ export function FeaturedProductCard({ product }: { product: Product }) {
           {off && <span className="text-xs text-emerald">{off}% Off</span>}
         </div>
       </div>
-
-      {product.variants.length > 1 && (
-        <div className="mt-3 flex flex-wrap gap-2">
-          {product.variants.map((v) => (
-            <button
-              key={v.id}
-              onClick={() => setVariantId(v.id)}
-              disabled={v.stock === 0}
-              className={`border px-2.5 py-1 text-xs transition-colors ${
-                v.id === variantId ? "border-emerald bg-emerald text-cream" : "border-border text-ink-soft hover:border-emerald"
-              } ${v.stock === 0 ? "cursor-not-allowed opacity-40" : ""}`}
-            >
-              {v.size}
-            </button>
-          ))}
-        </div>
-      )}
-
-      <button
-        onClick={handleAddToCart}
-        disabled={!variant || variant.stock === 0 || adding}
-        className="mt-3 w-full bg-ink py-2.5 label-caps text-cream transition-opacity hover:opacity-90 disabled:opacity-50"
-      >
-        {variant?.stock === 0 ? "Out of Stock" : adding ? "Adding…" : "Add to Cart"}
-      </button>
     </div>
   );
 }
