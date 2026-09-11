@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Product } from "@/lib/types";
 import { formatAed, percentOff } from "@/lib/money";
-import { fragranceFamilyIcon, genderTag } from "@/lib/fragrance";
+import { fragranceFamilyIcon, fragranceFamilyColor, genderTag } from "@/lib/fragrance";
 import { useCart } from "@/lib/cart-context";
 
 export function FeaturedProductCard({ product }: { product: Product }) {
@@ -112,7 +112,12 @@ export function FeaturedProductCard({ product }: { product: Product }) {
           <p className="font-serif text-lg text-ink hover:text-emerald">{product.name}</p>
         </Link>
         {product.scentAccords.length > 0 && (
-          <p className="text-xs text-ink-soft">{product.scentAccords.join(" · ")}</p>
+          <p
+            className="text-xs"
+            style={{ color: product.fragranceFamily ? fragranceFamilyColor(product.fragranceFamily) : "var(--color-ink-soft)" }}
+          >
+            {product.scentAccords.join(" · ")}
+          </p>
         )}
         <div className="mt-1 flex items-baseline gap-2">
           <span className="text-sm font-medium text-ink">{formatAed(variant?.price ?? product.price)}</span>
