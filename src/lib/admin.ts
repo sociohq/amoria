@@ -1,5 +1,5 @@
 import { apiFetch, apiUpload } from "./api";
-import { Category, Product, ProductType, Coupon, Settings, DashboardSummary, AdminOrder } from "./types";
+import { Category, Product, ProductType, Coupon, Settings, DashboardSummary, AdminOrder, Reel } from "./types";
 
 // ---------- Dashboard ----------
 export const getDashboard = () => apiFetch<DashboardSummary>("/api/admin/dashboard");
@@ -117,3 +117,18 @@ export const updateOrderStatus = (id: string, status: string) =>
 export const getSettings = () => apiFetch<{ settings: Settings }>("/api/admin/settings");
 export const updateSettings = (data: Partial<Settings>) =>
   apiFetch<{ settings: Settings }>("/api/admin/settings", { method: "PATCH", body: JSON.stringify(data) });
+
+// ---------- Reels ("Shop by Reels" video carousel) ----------
+export interface ReelInput {
+  videoUrl: string;
+  productId: string;
+  position?: number;
+  active?: boolean;
+}
+
+export const listReelsAdmin = () => apiFetch<{ reels: Reel[] }>("/api/reels/admin");
+export const createReel = (data: ReelInput) =>
+  apiFetch<{ reel: Reel }>("/api/reels", { method: "POST", body: JSON.stringify(data) });
+export const updateReel = (id: string, data: Partial<ReelInput>) =>
+  apiFetch<{ reel: Reel }>(`/api/reels/${id}`, { method: "PATCH", body: JSON.stringify(data) });
+export const deleteReel = (id: string) => apiFetch<void>(`/api/reels/${id}`, { method: "DELETE" });

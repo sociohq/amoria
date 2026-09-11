@@ -56,6 +56,15 @@ export interface Product {
   variants: ProductVariant[];
 }
 
+export interface Reel {
+  id: string;
+  videoUrl: string;
+  productId: string;
+  position: number;
+  active: boolean;
+  product: Product;
+}
+
 export interface CartItem {
   id: string;
   quantity: number;
