@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import { Cormorant, Jost } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
+import { AuthDrawerProvider } from "@/lib/auth-drawer-context";
 import { CartProvider } from "@/lib/cart-context";
+import { WishlistProvider } from "@/lib/wishlist-context";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
+import { AuthDrawer } from "@/components/AuthDrawer";
 import { NewsletterPopup } from "@/components/NewsletterPopup";
 import { listCategories } from "@/lib/products";
 
@@ -34,13 +37,18 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en">
       <body className={`${cormorant.variable} ${jost.variable} font-sans antialiased`}>
         <AuthProvider>
-          <CartProvider>
-            <Header categories={categories} />
-            <main className="min-h-screen">{children}</main>
-            <Footer />
-            <CartDrawer />
-            <NewsletterPopup />
-          </CartProvider>
+          <AuthDrawerProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <Header categories={categories} />
+                <main className="min-h-screen">{children}</main>
+                <Footer />
+                <CartDrawer />
+                <AuthDrawer />
+                <NewsletterPopup />
+              </WishlistProvider>
+            </CartProvider>
+          </AuthDrawerProvider>
         </AuthProvider>
       </body>
     </html>

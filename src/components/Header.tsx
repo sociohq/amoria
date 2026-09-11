@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
+import { useAuthDrawer } from "@/lib/auth-drawer-context";
 import { useCart } from "@/lib/cart-context";
 import { Category } from "@/lib/types";
 import { MegaMenu } from "./MegaMenu";
@@ -13,6 +14,7 @@ const SOLID_THRESHOLD_PX = 60;
 
 export function Header({ categories }: { categories: Category[] }) {
   const { user, logout } = useAuth();
+  const { openDrawer: openAuthDrawer } = useAuthDrawer();
   const { itemCount, openDrawer } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -117,11 +119,11 @@ export function Header({ categories }: { categories: Category[] }) {
         </Link>
 
         <div className={`absolute inset-y-0 right-6 flex items-center gap-5 ${transparent ? "text-cream" : "text-ink"}`}>
-          <button aria-label="Wishlist" className="hidden sm:block">
+          <Link href="/wishlist" aria-label="Wishlist" className="hidden sm:block">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M12 21s-7-4.35-9.5-8.5C.5 8.5 2.5 5 6 5c2 0 3.5 1 4.5 2.5C11.5 6 13 5 15 5c3.5 0 5.5 3.5 3.5 7.5C19 16.65 12 21 12 21z" />
             </svg>
-          </button>
+          </Link>
           <button onClick={openDrawer} aria-label="Open cart" className="relative">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M6 6h15l-1.5 9h-13z" strokeLinejoin="round" />
@@ -143,12 +145,12 @@ export function Header({ categories }: { categories: Category[] }) {
               </svg>
             </button>
           ) : (
-            <Link href="/login" aria-label="Sign in" className="hidden sm:block">
+            <button onClick={() => openAuthDrawer("login")} aria-label="Sign in" className="hidden sm:block">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <circle cx="12" cy="8" r="4" />
                 <path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6" strokeLinecap="round" />
               </svg>
-            </Link>
+            </button>
           )}
           <button className="md:hidden" onClick={() => setMenuOpen((v) => !v)} aria-label="Menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -221,6 +223,13 @@ export function Header({ categories }: { categories: Category[] }) {
         >
           Our Story
         </Link>
+        <Link
+          href="/blog"
+          onMouseEnter={trackPill}
+          className={`relative text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
+        >
+          Journal
+        </Link>
       </nav>
 
       {menuOpen && (
@@ -253,10 +262,22 @@ export function Header({ categories }: { categories: Category[] }) {
           <Link href="/our-story" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
             Our Story
           </Link>
+          <Link href="/blog" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
+            Journal
+          </Link>
+          <Link href="/wishlist" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
+            Wishlist
+          </Link>
           {!user && (
-            <Link href="/login" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
+            <button
+              onClick={() => {
+                setMenuOpen(false);
+                openAuthDrawer("login");
+              }}
+              className="py-2 text-left label-caps text-ink-soft"
+            >
               Sign in
-            </Link>
+            </button>
           )}
         </nav>
       )}

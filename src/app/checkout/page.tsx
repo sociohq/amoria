@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart-context";
 import { useAuth } from "@/lib/auth-context";
+import { useAuthDrawer } from "@/lib/auth-drawer-context";
 import { apiFetch, ApiError } from "@/lib/api";
 import { formatAed } from "@/lib/money";
 
 export default function CheckoutPage() {
   const { items, subtotal, loading: cartLoading } = useCart();
   const { user, loading: authLoading } = useAuth();
-  const router = useRouter();
+  const { openDrawer } = useAuthDrawer();
 
   const [line1, setLine1] = useState("");
   const [line2, setLine2] = useState("");
@@ -24,9 +24,18 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  // No dedicated /login page anymore — checkout opens the sign-in drawer
+  // over itself instead of navigating away.
+  useEffect(() => {
+    if (!authLoading && !user) openDrawer("login");
+  }, [authLoading, user, openDrawer]);
+
   if (!authLoading && !user) {
-    router.replace("/login?next=/checkout");
-    return null;
+    return (
+      <div className="mx-auto max-w-md px-6 py-24 text-center">
+        <p className="text-ink-soft">Please sign in to continue to checkout.</p>
+      </div>
+    );
   }
 
   async function applyCoupon() {

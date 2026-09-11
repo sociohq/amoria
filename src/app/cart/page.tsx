@@ -5,11 +5,13 @@ import Image from "next/image";
 import { useState } from "react";
 import { useCart } from "@/lib/cart-context";
 import { useAuth } from "@/lib/auth-context";
+import { useAuthDrawer } from "@/lib/auth-drawer-context";
 import { formatAed } from "@/lib/money";
 
 export default function CartPage() {
   const { items, subtotal, loading, updateQuantity, removeItem } = useCart();
   const { user } = useAuth();
+  const { openDrawer: openAuthDrawer } = useAuthDrawer();
   const [busyId, setBusyId] = useState<string | null>(null);
 
   async function withBusy(id: string, fn: () => Promise<void>) {
@@ -90,12 +92,18 @@ export default function CartPage() {
             <span>{formatAed(subtotal)}</span>
           </div>
           <p className="text-xs text-ink-soft">Shipping and any coupon are applied at checkout.</p>
-          <Link
-            href={user ? "/checkout" : "/login?next=/checkout"}
-            className="block bg-emerald py-3 text-center label-caps text-cream hover:opacity-90"
-          >
-            {user ? "Proceed to Checkout" : "Sign in to Checkout"}
-          </Link>
+          {user ? (
+            <Link href="/checkout" className="block bg-emerald py-3 text-center label-caps text-cream hover:opacity-90">
+              Proceed to Checkout
+            </Link>
+          ) : (
+            <button
+              onClick={() => openAuthDrawer("login")}
+              className="block w-full bg-emerald py-3 text-center label-caps text-cream hover:opacity-90"
+            >
+              Sign in to Checkout
+            </button>
+          )}
         </div>
       </div>
     </div>

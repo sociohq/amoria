@@ -9,6 +9,7 @@ import { formatConcentration, deliveryEstimate } from "@/lib/format";
 import { StarRating } from "./StarRating";
 import { Accordion } from "./Accordion";
 import { useCart } from "@/lib/cart-context";
+import { WishlistButton } from "./WishlistButton";
 
 export function ProductDetail({ product }: { product: Product }) {
   const router = useRouter();
@@ -95,10 +96,18 @@ export function ProductDetail({ product }: { product: Product }) {
 
       {/* Details */}
       <div>
-        {category && <p className="label-caps text-ink-soft">The Shop · {category}</p>}
-        <h1 className="mt-2 font-serif text-3xl leading-snug text-ink">
-          {product.name} {product.concentrationType && formatConcentration(product.concentrationType)}
-        </h1>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            {category && <p className="label-caps text-ink-soft">The Shop · {category}</p>}
+            <h1 className="mt-2 font-serif text-3xl leading-snug text-ink">
+              {product.name} {product.concentrationType && formatConcentration(product.concentrationType)}
+            </h1>
+          </div>
+          <WishlistButton
+            productId={product.id}
+            className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border text-ink-soft transition-colors hover:text-crimson"
+          />
+        </div>
         {product.scentAccords.length > 0 && (
           <p className="mt-2 text-sm text-crimson">{product.scentAccords.join(" · ")}</p>
         )}

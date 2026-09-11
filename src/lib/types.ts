@@ -65,6 +65,33 @@ export interface Reel {
   product: Product;
 }
 
+export interface WishlistItem {
+  id: string;
+  productId: string;
+  product: Product;
+}
+
+export type BlogBlock =
+  | { type: "heading"; text: string }
+  | { type: "paragraph"; text: string }
+  | { type: "image"; url: string; caption?: string; aspect: "landscape" | "portrait" | "square" }
+  | { type: "video"; url: string; caption?: string }
+  | { type: "product"; productId: string; product: Product | null }
+  | { type: "quote"; text: string; attribution?: string };
+
+export interface Post {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  heroImage: string;
+  heroEyebrow: string | null;
+  content: BlogBlock[];
+  status: "DRAFT" | "PUBLISHED";
+  publishedAt: string | null;
+  createdAt: string;
+}
+
 export interface CartItem {
   id: string;
   quantity: number;
