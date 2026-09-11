@@ -1,12 +1,7 @@
 import { apiFetch } from "./api";
+import { Settings } from "./types";
 
-export interface PublicSettings {
-  freeShippingThreshold: number; // AED
-  standardShippingFee: number; // AED
-  orderCutoffHour: number;
-  minLeadDays: number;
-  maxLeadDays: number;
-}
+export type PublicSettings = Settings;
 
 export async function getPublicSettings(): Promise<PublicSettings> {
   const { settings } = await apiFetch<{ settings: PublicSettings }>("/api/settings");

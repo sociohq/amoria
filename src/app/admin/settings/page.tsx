@@ -95,6 +95,72 @@ export default function AdminSettingsPage() {
             className={inputClass}
           />
         </div>
+
+        <h2 className="pt-4 font-serif text-xl text-ink">Newsletter Popup</h2>
+        <p className="!mt-1 text-sm text-ink-soft">
+          Shown once per visitor, after the delay below, unless they&apos;ve already dismissed it or signed up.
+        </p>
+        <label className="flex items-center gap-2 text-sm text-ink">
+          <input
+            type="checkbox"
+            checked={settings.newsletterPopupEnabled}
+            onChange={(e) => setSettings({ ...settings, newsletterPopupEnabled: e.target.checked })}
+            style={{ accentColor: "var(--color-ink)" }}
+          />
+          Enabled
+        </label>
+        <div>
+          <label className="label-caps mb-1 block text-ink-soft">Delay Before Showing (seconds)</label>
+          <input
+            type="number"
+            min={0}
+            value={settings.newsletterPopupDelaySeconds}
+            onChange={(e) => setSettings({ ...settings, newsletterPopupDelaySeconds: Number(e.target.value) })}
+            className={inputClass}
+          />
+        </div>
+        <div>
+          <label className="label-caps mb-1 block text-ink-soft">Eyebrow</label>
+          <input
+            value={settings.newsletterPopupEyebrow}
+            onChange={(e) => setSettings({ ...settings, newsletterPopupEyebrow: e.target.value })}
+            className={inputClass}
+          />
+        </div>
+        <div>
+          <label className="label-caps mb-1 block text-ink-soft">Headline</label>
+          <input
+            value={settings.newsletterPopupHeadline}
+            onChange={(e) => setSettings({ ...settings, newsletterPopupHeadline: e.target.value })}
+            className={inputClass}
+          />
+        </div>
+        <div>
+          <label className="label-caps mb-1 block text-ink-soft">Subtext</label>
+          <textarea
+            rows={3}
+            value={settings.newsletterPopupSubtext}
+            onChange={(e) => setSettings({ ...settings, newsletterPopupSubtext: e.target.value })}
+            className={inputClass}
+          />
+        </div>
+        <div>
+          <label className="label-caps mb-1 block text-ink-soft">Button Text</label>
+          <input
+            value={settings.newsletterPopupButtonText}
+            onChange={(e) => setSettings({ ...settings, newsletterPopupButtonText: e.target.value })}
+            className={inputClass}
+          />
+        </div>
+        <div>
+          <label className="label-caps mb-1 block text-ink-soft">Image Path or URL</label>
+          <input
+            value={settings.newsletterPopupImage}
+            onChange={(e) => setSettings({ ...settings, newsletterPopupImage: e.target.value })}
+            className={inputClass}
+          />
+        </div>
+
         {error && <p className="text-sm text-crimson">{error}</p>}
         {saved && <p className="text-sm text-emerald">Saved.</p>}
         <button disabled={submitting} className="bg-emerald px-6 py-3 label-caps text-cream hover:opacity-90 disabled:opacity-50">

@@ -96,6 +96,13 @@ export interface Settings {
   maxLeadDays: number;
   freeShippingThreshold: number; // AED
   standardShippingFee: number; // AED
+  newsletterPopupEnabled: boolean;
+  newsletterPopupDelaySeconds: number;
+  newsletterPopupEyebrow: string;
+  newsletterPopupHeadline: string;
+  newsletterPopupSubtext: string;
+  newsletterPopupButtonText: string;
+  newsletterPopupImage: string;
 }
 
 export interface DashboardSummary {
