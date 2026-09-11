@@ -23,15 +23,17 @@ export function Header({ categories }: { categories: Category[] }) {
   const isHome = pathname === "/";
   const transparent = isHome && !scrolled;
 
+  // Tracked on every page, not just home — the announcement bar collapses
+  // on scroll everywhere, even though the transparent/solid logo treatment
+  // below only applies on home.
   useEffect(() => {
-    if (!isHome) return;
     function onScroll() {
       setScrolled(window.scrollY > SOLID_THRESHOLD_PX);
     }
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [isHome]);
+  }, []);
 
   const barClasses = `relative flex items-center justify-center px-6 py-3 border-b transition-colors duration-300 ${
     transparent ? "border-white/25 bg-transparent" : "border-border bg-white"
@@ -44,8 +46,13 @@ export function Header({ categories }: { categories: Category[] }) {
 
   return (
     <header className={isHome ? "fixed inset-x-0 top-0 z-40" : "sticky top-0 z-40"}>
-      {/* Announcement bar — always solid, on every page */}
-      <div className="relative bg-ink px-6 py-2 text-center">
+      {/* Announcement bar — only shown at the very top; collapses away as
+          soon as scrolling starts, on every page. */}
+      <div
+        className={`relative overflow-hidden bg-ink px-6 text-center transition-all duration-300 ${
+          scrolled ? "max-h-0 py-0 opacity-0" : "max-h-12 py-2 opacity-100"
+        }`}
+      >
         <p className="text-xs tracking-wide text-cream">Free Delivery in UAE for orders above AED 250</p>
         <div className="absolute inset-y-0 right-6 hidden items-center gap-4 text-xs text-cream/80 sm:flex">
           <span className="flex items-center gap-1">
