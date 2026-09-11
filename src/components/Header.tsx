@@ -23,12 +23,18 @@ export function Header({ categories }: { categories: Category[] }) {
   // box so it works regardless of how wide each link's text is.
   const [pill, setPill] = useState({ left: 0, width: 0, visible: false });
 
+  const PILL_PADDING_X = 14; // breathing room between the pill's edge and the link's text
+
   function trackPill(e: React.MouseEvent<HTMLElement>) {
     const nav = navRef.current;
     if (!nav) return;
     const navRect = nav.getBoundingClientRect();
     const itemRect = e.currentTarget.getBoundingClientRect();
-    setPill({ left: itemRect.left - navRect.left, width: itemRect.width, visible: true });
+    setPill({
+      left: itemRect.left - navRect.left - PILL_PADDING_X,
+      width: itemRect.width + PILL_PADDING_X * 2,
+      visible: true,
+    });
   }
 
   function hidePill() {
