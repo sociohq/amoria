@@ -1,5 +1,5 @@
 import { apiFetch, apiUpload } from "./api";
-import { Category, Product, ProductType, Coupon, Settings, DashboardSummary, AdminOrder, Reel } from "./types";
+import { Category, Product, ProductType, Coupon, Settings, DashboardSummary, AdminOrder, Reel, Post, BlogBlock } from "./types";
 
 // ---------- Dashboard ----------
 export const getDashboard = () => apiFetch<DashboardSummary>("/api/admin/dashboard");
@@ -132,3 +132,22 @@ export const createReel = (data: ReelInput) =>
 export const updateReel = (id: string, data: Partial<ReelInput>) =>
   apiFetch<{ reel: Reel }>(`/api/reels/${id}`, { method: "PATCH", body: JSON.stringify(data) });
 export const deleteReel = (id: string) => apiFetch<void>(`/api/reels/${id}`, { method: "DELETE" });
+
+// ---------- Blog Posts ----------
+export interface PostInput {
+  title: string;
+  slug?: string;
+  excerpt: string;
+  heroImage: string;
+  heroEyebrow?: string;
+  content: BlogBlock[];
+  status: "DRAFT" | "PUBLISHED";
+}
+
+export const listPostsAdmin = () => apiFetch<{ posts: Post[] }>("/api/posts/admin");
+export const getPostAdmin = (id: string) => apiFetch<{ post: Post }>(`/api/posts/admin/${id}`);
+export const createPost = (data: PostInput) =>
+  apiFetch<{ post: Post }>("/api/posts", { method: "POST", body: JSON.stringify(data) });
+export const updatePost = (id: string, data: Partial<PostInput>) =>
+  apiFetch<{ post: Post }>(`/api/posts/${id}`, { method: "PATCH", body: JSON.stringify(data) });
+export const deletePost = (id: string) => apiFetch<void>(`/api/posts/${id}`, { method: "DELETE" });
