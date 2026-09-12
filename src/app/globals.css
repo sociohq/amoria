@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --color-cream: #eeeae1;
-  --color-cream-dark: #e3ddcf;
+  --color-cream: #f6f4ee;
+  --color-cream-dark: #ece7db;
   --color-ink: #1c1a17;
   --color-ink-soft: #4a453e;
   --color-gold: #b08d57;
@@ -10,7 +10,7 @@
   --color-emerald: #0e3b2e;
   --color-emerald-light: #1c5c46;
   --color-crimson: #a3271e;
-  --color-border: #dcd5c6;
+  --color-border: #e2dccb;
 }
 
 @theme inline {
