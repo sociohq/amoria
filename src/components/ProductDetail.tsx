@@ -10,6 +10,7 @@ import { StarRating } from "./StarRating";
 import { Accordion } from "./Accordion";
 import { useCart } from "@/lib/cart-context";
 import { WishlistButton } from "./WishlistButton";
+import { DiscountIcon, AuthenticIcon, ShippingIcon } from "./icons/TrustIcons";
 
 export function ProductDetail({ product }: { product: Product }) {
   const router = useRouter();
@@ -59,9 +60,11 @@ export function ProductDetail({ product }: { product: Product }) {
 
   return (
     <div className="grid gap-12 px-6 py-12 lg:grid-cols-2">
-      {/* Gallery */}
-      <div>
-        <div className="relative aspect-square overflow-hidden bg-cream-dark">
+      {/* Gallery — sticky and height-capped to the viewport on large screens
+          so the whole image (plus thumbnails) stays fully in view while the
+          details column on the right scrolls past it. */}
+      <div className="lg:sticky lg:top-28 lg:self-start">
+        <div className="relative aspect-square overflow-hidden bg-cream-dark lg:aspect-auto lg:h-[calc(100vh-14rem)]">
           {images[activeImage]?.url ? (
             <Image
               src={images[activeImage].url}
@@ -144,12 +147,15 @@ export function ProductDetail({ product }: { product: Product }) {
 
         <div className="mt-8 grid grid-cols-3 gap-4 border-y border-border py-6 text-center">
           {[
-            { label: "Up To 85% Off", sub: "On All Your Perfume Orders" },
-            { label: "100% Authentic", sub: "Original & Verified Products" },
-            { label: "Free Shipping", sub: "All Orders Above AED 99" },
+            { icon: DiscountIcon, label: "Up To 85% Off", sub: "On All Your Perfume Orders" },
+            { icon: AuthenticIcon, label: "100% Authentic", sub: "Original & Verified Products" },
+            { icon: ShippingIcon, label: "Free Shipping", sub: "All Orders Above AED 99" },
           ].map((b) => (
-            <div key={b.label}>
-              <p className="text-xs font-medium text-ink">{b.label}</p>
+            <div key={b.label} className="flex flex-col items-center">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gold/10 text-emerald">
+                <b.icon className="h-5 w-5" />
+              </div>
+              <p className="mt-2 text-xs font-medium text-ink">{b.label}</p>
               <p className="mt-1 text-[11px] text-ink-soft">{b.sub}</p>
             </div>
           ))}
