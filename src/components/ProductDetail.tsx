@@ -71,7 +71,7 @@ export function ProductDetail({ product }: { product: Product }) {
               alt={images[activeImage].altText ?? product.name}
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
+              className="object-cover lg:object-contain"
               priority
             />
           ) : (
