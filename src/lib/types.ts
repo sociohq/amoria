@@ -157,6 +157,11 @@ export interface Order {
   shippingFee: number;
   total: number;
   createdAt: string;
+  guestEmail: string | null;
+  // True when this order was placed as a guest and the account created
+  // for it hasn't confirmed its email yet — the success page shows the
+  // OTP form while this is true.
+  needsGuestVerification: boolean;
   items: Array<{
     id: string;
     productName: string;
@@ -168,5 +173,7 @@ export interface Order {
 }
 
 export interface AdminOrder extends Order {
-  user: { id: string; email: string; name: string };
+  // Null only in the brief window between a guest's payment succeeding
+  // and the webhook provisioning their account.
+  user: { id: string; email: string; name: string } | null;
 }

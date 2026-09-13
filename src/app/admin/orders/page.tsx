@@ -57,9 +57,9 @@ export default function AdminOrdersPage() {
           {orders.map((o) => (
             <tr key={o.id} className="border-b border-border align-top">
               <td className="py-2 text-ink">
-                {o.user.name}
+                {o.user?.name ?? "Guest (pending)"}
                 <br />
-                <span className="text-xs text-ink-soft">{o.user.email}</span>
+                <span className="text-xs text-ink-soft">{o.user?.email ?? o.guestEmail}</span>
               </td>
               <td className="py-2 text-ink-soft">
                 {o.items.map((i) => (

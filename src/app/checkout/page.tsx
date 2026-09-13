@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCart } from "@/lib/cart-context";
 import { useAuth } from "@/lib/auth-context";
 import { useAuthDrawer } from "@/lib/auth-drawer-context";
@@ -12,6 +12,7 @@ export default function CheckoutPage() {
   const { user, loading: authLoading } = useAuth();
   const { openDrawer } = useAuthDrawer();
 
+  const [email, setEmail] = useState("");
   const [line1, setLine1] = useState("");
   const [line2, setLine2] = useState("");
   const [city, setCity] = useState("");
@@ -24,19 +25,10 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  // No dedicated /login page anymore — checkout opens the sign-in drawer
-  // over itself instead of navigating away.
-  useEffect(() => {
-    if (!authLoading && !user) openDrawer("login");
-  }, [authLoading, user, openDrawer]);
-
-  if (!authLoading && !user) {
-    return (
-      <div className="mx-auto max-w-md px-6 py-24 text-center">
-        <p className="text-ink-soft">Please sign in to continue to checkout.</p>
-      </div>
-    );
-  }
+  // No login required to buy — a guest checks out with just an email,
+  // typed into the form below, and gets an account created for them once
+  // payment succeeds (verified via an emailed code on the next page).
+  const checkoutEmail = user ? user.email : email;
 
   async function applyCoupon() {
     if (!couponCode.trim()) return;
@@ -45,7 +37,7 @@ export default function CheckoutPage() {
     try {
       const result = await apiFetch<{ discount: number }>("/api/coupons/validate", {
         method: "POST",
-        body: JSON.stringify({ code: couponCode, cartTotal: subtotal }),
+        body: JSON.stringify({ code: couponCode, cartTotal: subtotal, email: user ? undefined : checkoutEmail }),
       });
       setDiscount(result.discount);
     } catch (err) {
@@ -65,6 +57,8 @@ export default function CheckoutPage() {
         method: "POST",
         body: JSON.stringify({
           couponCode: discount !== null ? couponCode : undefined,
+          email: user ? undefined : checkoutEmail,
+          items: user ? undefined : items.map((i) => ({ variantId: i.variantId, quantity: i.quantity })),
           shippingAddress: { line1, line2: line2 || undefined, city, emirate, phone },
         }),
       });
@@ -86,7 +80,32 @@ export default function CheckoutPage() {
   return (
     <div className="grid max-w-4xl gap-12 px-6 py-12 md:grid-cols-2">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <h1 className="font-serif text-2xl text-ink">Shipping Details</h1>
+        <div className="flex items-baseline justify-between">
+          <h1 className="font-serif text-2xl text-ink">Contact &amp; Shipping</h1>
+          {!user && (
+            <button
+              type="button"
+              onClick={() => openDrawer("login")}
+              className="text-xs text-ink-soft underline underline-offset-2 hover:text-emerald"
+            >
+              Sign in instead
+            </button>
+          )}
+        </div>
+        <input
+          required
+          type="email"
+          placeholder="Email"
+          value={checkoutEmail}
+          disabled={Boolean(user)}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full border border-border bg-cream px-4 py-3 text-sm outline-none focus:border-emerald disabled:opacity-60"
+        />
+        {!user && (
+          <p className="text-xs text-ink-soft">
+            We&apos;ll email a code here to confirm your order and set up your account.
+          </p>
+        )}
         <input
           required
           placeholder="Address line 1"

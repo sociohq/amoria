@@ -43,6 +43,10 @@ interface CartContextValue {
   updateQuantity: (itemId: string, quantity: number) => Promise<void>;
   removeItem: (itemId: string) => Promise<void>;
   refresh: () => Promise<void>;
+  // Empties the guest (localStorage) cart — called once the order success
+  // page sees a guest order as PAID, since there's no server-side cart to
+  // be cleared for them the way a logged-in user's is on the webhook.
+  clearGuestCart: () => void;
   // Slide-out cart drawer, opened automatically after adding an item and
   // from the header's cart icon — a full /cart page still exists
   // separately for direct navigation.
@@ -207,6 +211,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
         updateQuantity,
         removeItem,
         refresh: user ? refreshServerCart : async () => setGuestItems(readGuestCart()),
+        clearGuestCart: () => {
+          writeGuestCart([]);
+          setGuestItems([]);
+        },
         drawerOpen,
         openDrawer: () => setDrawerOpen(true),
         closeDrawer: () => setDrawerOpen(false),

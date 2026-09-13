@@ -3,14 +3,94 @@
 import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { apiFetch } from "@/lib/api";
+import { apiFetch, ApiError } from "@/lib/api";
 import { Order } from "@/lib/types";
 import { formatAed } from "@/lib/money";
+import { useAuth } from "@/lib/auth-context";
+import { useCart } from "@/lib/cart-context";
+
+// Shown on a guest order once payment clears: confirms the email they
+// checked out with via a 6-digit code, which also signs them into the
+// account created for the order — no separate registration step.
+function GuestVerifyForm({ email, onVerified }: { email: string; onVerified: () => void }) {
+  const [code, setCode] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [verifying, setVerifying] = useState(false);
+  const [resent, setResent] = useState(false);
+  const [resending, setResending] = useState(false);
+
+  async function handleVerify(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setVerifying(true);
+    try {
+      await apiFetch("/api/auth/verify-guest-otp", { method: "POST", body: JSON.stringify({ email, code }) });
+      onVerified();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Something went wrong");
+    } finally {
+      setVerifying(false);
+    }
+  }
+
+  async function handleResend() {
+    setResending(true);
+    setError(null);
+    try {
+      await apiFetch("/api/auth/resend-guest-otp", { method: "POST", body: JSON.stringify({ email }) });
+      setResent(true);
+    } catch {
+      setError("Could not resend the code — please try again shortly.");
+    } finally {
+      setResending(false);
+    }
+  }
+
+  return (
+    <div className="mx-auto mt-8 max-w-sm border border-border bg-cream-dark/40 p-6 text-left">
+      <h2 className="font-serif text-lg text-ink">Verify your email</h2>
+      <p className="mt-1 text-sm text-ink-soft">
+        We&apos;ve sent a 6-digit code to <strong className="text-ink">{email}</strong> to confirm your order and
+        activate your account.
+      </p>
+      <form onSubmit={handleVerify} className="mt-4 space-y-3">
+        <input
+          required
+          inputMode="numeric"
+          maxLength={6}
+          placeholder="000000"
+          value={code}
+          onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+          className="w-full border border-border bg-cream px-4 py-3 text-center text-lg tracking-[0.5em] outline-none focus:border-emerald"
+        />
+        {error && <p className="text-sm text-crimson">{error}</p>}
+        <button
+          type="submit"
+          disabled={verifying || code.length !== 6}
+          className="w-full bg-emerald py-3 label-caps text-cream transition-opacity hover:opacity-90 disabled:opacity-50"
+        >
+          {verifying ? "Verifying…" : "Verify & Sign In"}
+        </button>
+      </form>
+      <button
+        type="button"
+        onClick={handleResend}
+        disabled={resending}
+        className="mt-3 text-xs text-ink-soft underline underline-offset-2 hover:text-emerald disabled:opacity-50"
+      >
+        {resent ? "Code resent — check your inbox" : resending ? "Resending…" : "Didn't get it? Resend code"}
+      </button>
+    </div>
+  );
+}
 
 function OrderSuccessContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
+  const { refresh: refreshAuth } = useAuth();
+  const { clearGuestCart } = useCart();
   const [order, setOrder] = useState<Order | null>(null);
+  const [verified, setVerified] = useState(false);
   // No orderId is known synchronously from the URL, so that case is baked
   // into the initial state rather than set from inside the effect.
   const [status, setStatus] = useState<"loading" | "ready" | "error">(orderId ? "loading" : "error");
@@ -21,8 +101,12 @@ function OrderSuccessContent() {
       .then(({ order }) => {
         setOrder(order);
         setStatus("ready");
+        if (order.status !== "PENDING") clearGuestCart();
       })
       .catch(() => setStatus("error"));
+    // Runs once per order id — clearGuestCart's identity is stable for the
+    // life of the provider, so it isn't worth re-running this for.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId]);
 
   if (status === "loading") {
@@ -33,6 +117,7 @@ function OrderSuccessContent() {
   }
 
   const isPaid = order.status !== "PENDING";
+  const showVerify = isPaid && order.needsGuestVerification && !verified;
 
   return (
     <div className="text-center">
@@ -57,6 +142,21 @@ function OrderSuccessContent() {
           <span>{formatAed(order.total)}</span>
         </div>
       </div>
+
+      {showVerify && order.guestEmail && (
+        <GuestVerifyForm
+          email={order.guestEmail}
+          onVerified={() => {
+            setVerified(true);
+            refreshAuth();
+          }}
+        />
+      )}
+      {verified && (
+        <p className="mx-auto mt-6 max-w-sm text-sm text-emerald">
+          Email verified — you&apos;re now signed in to your new Amoria account.
+        </p>
+      )}
 
       <Link href="/shop" className="mt-8 inline-block border border-ink px-8 py-3 label-caps text-ink hover:bg-ink hover:text-cream">
         Continue Shopping

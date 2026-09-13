@@ -10,6 +10,10 @@ interface AuthContextValue {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
   logout: () => Promise<void>;
+  // Re-checks the session — used after guest-checkout OTP verification
+  // (and passwordless login-with-code) sets a session cookie outside of
+  // login()/register() above, so the rest of the app needs to be told.
+  refresh: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -17,6 +21,15 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
+  async function refresh() {
+    try {
+      const { user } = await apiFetch<{ user: User }>("/api/auth/me");
+      setUser(user);
+    } catch {
+      setUser(null);
+    }
+  }
 
   useEffect(() => {
     apiFetch<{ user: User }>("/api/auth/me")
@@ -46,7 +59,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }
 
-  return <AuthContext.Provider value={{ user, loading, login, register, logout }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, loading, login, register, logout, refresh }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth(): AuthContextValue {
