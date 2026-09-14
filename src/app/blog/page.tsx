@@ -28,10 +28,14 @@ export default async function BlogIndexPage() {
         </div>
       </section>
 
-      <div className="px-6 py-16 sm:px-12">
-        {rest.length === 0 ? (
-          !featured && <p className="text-center text-ink-soft">No stories yet — check back soon.</p>
-        ) : (
+      {/* Only the featured post exists yet — no padded, empty section
+          reserving space below the hero for a "more stories" grid that
+          has nothing in it. */}
+      {rest.length === 0 && !featured && (
+        <p className="px-6 py-16 text-center text-ink-soft sm:px-12">No stories yet — check back soon.</p>
+      )}
+      {rest.length > 0 && (
+        <div className="px-6 py-16 sm:px-12">
           <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
             {rest.map((p) => (
               <Link key={p.id} href={`/blog/${p.slug}`} className="group block">
@@ -52,8 +56,8 @@ export default async function BlogIndexPage() {
               </Link>
             ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
