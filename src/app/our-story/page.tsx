@@ -53,8 +53,13 @@ export default function OurStoryPage() {
         </div>
       </section>
 
-      {/* Our Roots */}
-      <section className="grid gap-10 px-6 py-16 sm:px-12 lg:grid-cols-2 lg:items-center lg:gap-16 lg:py-24">
+      {/* Our Roots — text is top-aligned and sticky (lg:), so it holds its
+          position as the taller image scrolls past beside it, then
+          releases once the image runs out (see ProductDetail.tsx's
+          gallery column for the same lg:sticky lg:top-28 lg:self-start
+          pattern — its sticky containing block is the grid row itself,
+          which stretches to the image's height). */}
+      <section className="grid gap-10 px-6 py-16 sm:px-12 lg:grid-cols-2 lg:items-start lg:gap-16 lg:py-24">
         <Reveal className="relative aspect-[4/5] overflow-hidden bg-cream-dark">
           <Image
             src="/categories/amoria-signature.png"
@@ -64,7 +69,7 @@ export default function OurStoryPage() {
             className="object-cover"
           />
         </Reveal>
-        <Reveal delayMs={100}>
+        <Reveal delayMs={100} className="lg:sticky lg:top-28 lg:self-start">
           <p className="label-caps text-gold">Our Roots</p>
           <h2 className="mt-3 font-serif text-3xl text-ink sm:text-4xl">Born from oud and attar.</h2>
           <p className="mt-5 max-w-md text-ink-soft">
@@ -75,9 +80,9 @@ export default function OurStoryPage() {
         </Reveal>
       </section>
 
-      {/* The Craft */}
-      <section className="grid gap-10 bg-cream-dark px-6 py-16 sm:px-12 lg:grid-cols-2 lg:items-center lg:gap-16 lg:py-24">
-        <Reveal className="order-2 lg:order-1">
+      {/* The Craft — same sticky-text treatment, mirrored. */}
+      <section className="grid gap-10 bg-cream-dark px-6 py-16 sm:px-12 lg:grid-cols-2 lg:items-start lg:gap-16 lg:py-24">
+        <Reveal className="order-2 lg:sticky lg:top-28 lg:order-1 lg:self-start">
           <p className="label-caps text-gold">The Craft</p>
           <h2 className="mt-3 font-serif text-3xl text-ink sm:text-4xl">Composed, not mass-produced.</h2>
           <p className="mt-5 max-w-md text-ink-soft">
