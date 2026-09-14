@@ -20,27 +20,26 @@ export function Header({ categories }: { categories: Category[] }) {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
-  // A pill that slides to whichever nav item is hovered, instead of each
-  // link just changing color on its own — measured against the nav's own
-  // box so it works regardless of how wide each link's text is.
-  const [pill, setPill] = useState({ left: 0, width: 0, visible: false });
+  // A thin underline that slides to whichever nav item is hovered,
+  // instead of each link just changing color on its own — measured
+  // against the nav's own box so it works regardless of how wide each
+  // link's text is.
+  const [underline, setUnderline] = useState({ left: 0, width: 0, visible: false });
 
-  const PILL_PADDING_X = 14; // breathing room between the pill's edge and the link's text
-
-  function trackPill(e: React.MouseEvent<HTMLElement>) {
+  function trackUnderline(e: React.MouseEvent<HTMLElement>) {
     const nav = navRef.current;
     if (!nav) return;
     const navRect = nav.getBoundingClientRect();
     const itemRect = e.currentTarget.getBoundingClientRect();
-    setPill({
-      left: itemRect.left - navRect.left - PILL_PADDING_X,
-      width: itemRect.width + PILL_PADDING_X * 2,
+    setUnderline({
+      left: itemRect.left - navRect.left,
+      width: itemRect.width,
       visible: true,
     });
   }
 
-  function hidePill() {
-    setPill((p) => ({ ...p, visible: false }));
+  function hideUnderline() {
+    setUnderline((u) => ({ ...u, visible: false }));
   }
 
   // Dims the rest of the page behind a scrim while the mega menu is open,
@@ -161,17 +160,17 @@ export function Header({ categories }: { categories: Category[] }) {
       </div>
 
       {/* Nav row */}
-      <nav ref={navRef} className={navClasses} onMouseLeave={hidePill}>
+      <nav ref={navRef} className={navClasses} onMouseLeave={hideUnderline}>
         <span
           aria-hidden
-          className={`pointer-events-none absolute top-1/2 h-9 -translate-y-1/2 rounded-full transition-all duration-300 ease-out ${
-            transparent ? "bg-cream/15" : "bg-ink/8"
+          className={`pointer-events-none absolute bottom-2 h-px transition-all duration-300 ease-out ${
+            transparent ? "bg-gold-light" : "bg-royal"
           }`}
-          style={{ left: pill.left, width: pill.width, opacity: pill.visible ? 1 : 0 }}
+          style={{ left: underline.left, width: underline.width, opacity: underline.visible ? 1 : 0 }}
         />
         <Link
           href="/"
-          onMouseEnter={trackPill}
+          onMouseEnter={trackUnderline}
           className={`relative text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
         >
           Home
@@ -179,7 +178,7 @@ export function Header({ categories }: { categories: Category[] }) {
         <div
           className="relative"
           onMouseEnter={(e) => {
-            trackPill(e);
+            trackUnderline(e);
             setShopMenuOpen(true);
           }}
           onMouseLeave={() => setShopMenuOpen(false)}
@@ -197,35 +196,35 @@ export function Header({ categories }: { categories: Category[] }) {
         </div>
         <Link
           href="/shop?category=gift-sets"
-          onMouseEnter={trackPill}
+          onMouseEnter={trackUnderline}
           className={`relative text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
         >
           Gift Sets
         </Link>
         <Link
           href="/custom-perfume"
-          onMouseEnter={trackPill}
+          onMouseEnter={trackUnderline}
           className={`relative text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
         >
           Custom Perfume
         </Link>
         <Link
           href="/gift-cards"
-          onMouseEnter={trackPill}
+          onMouseEnter={trackUnderline}
           className={`relative text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
         >
           Gift Cards
         </Link>
         <Link
           href="/our-story"
-          onMouseEnter={trackPill}
+          onMouseEnter={trackUnderline}
           className={`relative text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
         >
           Our Story
         </Link>
         <Link
           href="/blog"
-          onMouseEnter={trackPill}
+          onMouseEnter={trackUnderline}
           className={`relative text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
         >
           Journal
