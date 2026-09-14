@@ -44,11 +44,19 @@ export function MegaMenu({ categories, open }: { categories: Category[]; open: b
   const visible = open && height > 0;
 
   return (
-    <div className="absolute left-0 top-full pt-3">
+    // The panel's content is wider than its "Shop" trigger (w-max, so it
+    // can span under the other nav items) — while closed this outer box
+    // still occupies that full width, just at zero height, and without
+    // pointer-events-none here that invisible strip stays a real hover
+    // target: moving the mouse near the bottom of *any* nav item close
+    // enough to clip it would re-open this menu. Gated on `open` (not
+    // `visible`) so it becomes interactive the instant you hover the
+    // trigger, not only once the height animation finishes measuring.
+    <div className={`absolute left-0 top-full pt-3 ${open ? "" : "pointer-events-none"}`}>
       <div
         style={{ height }}
         className={`overflow-hidden transition-[height,opacity] duration-300 ease-in ${
-          visible ? "opacity-100" : "pointer-events-none opacity-0"
+          visible ? "opacity-100" : "opacity-0"
         }`}
       >
         <div
