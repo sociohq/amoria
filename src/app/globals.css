@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  /* #faf0e6 ("linen") is the user's exact requested background color.
+  /* #eeeae1 is the user's exact requested background color.
      --color-cream-dark/--color-border are derived from it (same offset
      from cream as before this change) rather than picked freestanding,
      so the page-bg / secondary-panel-bg / hairline-border hierarchy
      keeps reading correctly against whatever --color-cream is set to. */
-  --color-cream: #faf0e6;
-  --color-cream-dark: #f2e7d8;
+  --color-cream: #eeeae1;
+  --color-cream-dark: #e6e1d3;
   --color-ink: #1c1a17;
   --color-ink-soft: #4a453e;
   --color-gold: #b08d57;
@@ -19,7 +19,7 @@
   --color-royal: #6f5a38;
   --color-royal-light: #a4895f;
   --color-crimson: #a3271e;
-  --color-border: #ebdecb;
+  --color-border: #dfd8c6;
 }
 
 @theme inline {
