@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useRef, useState } from "react";
+import { useLenis } from "lenis/react";
 import { subscribeToNewsletter } from "@/lib/newsletter";
 import { ApiError } from "@/lib/api";
 
@@ -9,16 +9,34 @@ const EMAIL = "amoriaperfumeofficial@gmail.com";
 const PHONE_DISPLAY = "+971 50 755 0447";
 const PHONE_HREF = "+971507550447";
 
-// Was "/banners/our-stores.png" — that file turned out to be a photo of a
-// Louis Vuitton counter display, not an Amoria store. Using a competitor's
-// branded retail photo here would misrepresent whose store this is, so
-// it's swapped for Amoria's own product photography instead.
-const BACKGROUND_IMAGE = "/categories/amoria-signature.png";
+// Was a static image (before that, briefly, a photo of a Louis Vuitton
+// counter display — not an Amoria store, swapped out). Now a looping
+// background video with a scroll-linked parallax drift.
+const BACKGROUND_VIDEO = "/videos/our-stores-bg.mp4";
+// How strongly the video drifts relative to the page's own scroll — kept
+// subtle; the video's own transform (below) scales it up by enough to
+// cover that drift range without exposing an edge.
+const PARALLAX_STRENGTH = 0.15;
 
 export function OurStores() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [parallaxOffset, setParallaxOffset] = useState(0);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+
+  // Hooks into the site's existing Lenis smooth-scroll (see
+  // SmoothScroll.tsx) rather than a raw window scroll listener, so the
+  // video's drift stays in sync with the same eased scroll position
+  // everything else on the page is already animating against.
+  useLenis(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const el = sectionRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const distanceFromCenter = rect.top + rect.height / 2 - window.innerHeight / 2;
+    setParallaxOffset(distanceFromCenter * PARALLAX_STRENGTH);
+  });
 
   async function handleSubscribe(e: React.FormEvent) {
     e.preventDefault();
@@ -34,8 +52,20 @@ export function OurStores() {
   }
 
   return (
-    <section className="relative flex min-h-[600px] items-center overflow-hidden">
-      <Image src={BACKGROUND_IMAGE} alt="" fill sizes="100vw" className="object-cover" />
+    <section ref={sectionRef} className="relative flex min-h-[600px] items-center overflow-hidden bg-ink">
+      {/* Scaled up beyond the section's own bounds so the parallax
+          translate never exposes an edge, muted+loop+playsInline so it
+          autoplays inline on mobile Safari without a user gesture. */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+        style={{ transform: `scale(1.1) translateY(${parallaxOffset}px)` }}
+      >
+        <source src={BACKGROUND_VIDEO} type="video/mp4" />
+      </video>
 
       <div className="relative z-10 m-6 ml-auto w-full max-w-md bg-cream-dark p-10 shadow-xl sm:m-10 sm:p-12">
         <h2 className="font-serif text-3xl text-ink">New Here?</h2>
