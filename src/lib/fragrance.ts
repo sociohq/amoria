@@ -7,6 +7,7 @@ const FAMILY_ICONS: Array<[string, string]> = [
   ["fruity", "🍑"],
   ["floral", "🌸"],
   ["oriental", "✨"],
+  ["leather", "🥾"],
   ["woody", "🌳"],
   ["musk", "🌙"],
   ["spicy", "🌶️"],
@@ -14,6 +15,7 @@ const FAMILY_ICONS: Array<[string, string]> = [
   ["sweet", "🍯"],
   ["aquatic", "💧"],
   ["fresh", "💧"],
+  ["green", "🌿"],
 ];
 
 export function fragranceFamilyIcon(family: string): string {

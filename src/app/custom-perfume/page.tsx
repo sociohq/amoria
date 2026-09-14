@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useAuthDrawer } from "@/lib/auth-drawer-context";
 import { ApiError } from "@/lib/api";
 import { formatAed } from "@/lib/money";
+import { fragranceFamilyIcon } from "@/lib/fragrance";
 import {
   FRAGRANCE_FAMILIES,
   FragranceFamily,
@@ -24,10 +25,13 @@ const STEPS = [
   { n: 5, label: "Review & Pay" },
 ] as const;
 
-const GENDER_OPTIONS: { value: Gender; label: string }[] = [
-  { value: "him", label: "For Him" },
-  { value: "her", label: "For Her" },
-  { value: "unisex", label: "Unisex" },
+// Pictorial icons rather than text alone — one at a time (not "not
+// particular" as a literal third gender, but a neutral/either-gender
+// person for "For Everyone").
+const GENDER_OPTIONS: { value: Gender; label: string; icon: string }[] = [
+  { value: "him", label: "For Him", icon: "👨" },
+  { value: "her", label: "For Her", icon: "👩" },
+  { value: "unisex", label: "For Everyone", icon: "🧑" },
 ];
 
 const inputClass =
@@ -59,10 +63,32 @@ function OptionTile({
   );
 }
 
+// A wider, left-aligned tile (icon + label) for the 8-option fragrance
+// family grid — a row of centered OptionTiles would be too cramped for
+// that many options, so this reuses the reference's 2-column layout
+// instead.
+function FamilyTile({ active, onClick, icon, label }: { active: boolean; onClick: () => void; icon: string; label: string }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex items-center gap-3 border px-4 py-4 text-left transition-colors ${
+        active ? "border-royal bg-royal/5 text-ink" : "border-border text-ink-soft hover:border-ink/30"
+      }`}
+    >
+      <span className="text-xl" aria-hidden>
+        {icon}
+      </span>
+      <span className="label-caps">{label}</span>
+    </button>
+  );
+}
+
 export default function CustomPerfumePage() {
   const { user, loading: authLoading } = useAuth();
   const { openDrawer } = useAuthDrawer();
 
+  const [modalOpen, setModalOpen] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
 
   const [customerName, setCustomerName] = useState("");
@@ -119,301 +145,362 @@ export default function CustomPerfumePage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-16 sm:px-12">
-      <div className="text-center">
-        <p className="label-caps text-gold">Your Story. Your Scent.</p>
-        <h1 className="mt-2 font-serif text-4xl text-ink sm:text-5xl">Create Your Own Perfume</h1>
-        <p className="mx-auto mt-3 max-w-lg text-sm text-ink-soft">
-          Personal, meaningful, and uniquely yours. Tell us a little about you and we&apos;ll craft a fragrance to
-          match.
-        </p>
-      </div>
+    <div className="mx-auto max-w-3xl px-6 py-24 text-center sm:px-12">
+      <p className="label-caps text-gold">Your Story. Your Scent.</p>
+      <h1 className="mt-2 font-serif text-4xl text-ink sm:text-5xl">Create Your Own Perfume</h1>
+      <p className="mx-auto mt-3 max-w-lg text-sm text-ink-soft">
+        Personal, meaningful, and uniquely yours. Tell us a little about you and we&apos;ll craft a fragrance to
+        match.
+      </p>
+      <button
+        type="button"
+        onClick={() => setModalOpen(true)}
+        className="mt-8 inline-block bg-ink px-10 py-3 label-caps text-cream hover:opacity-90"
+      >
+        Begin Customization →
+      </button>
 
-      {/* Step indicator */}
-      <div className="mt-10 flex flex-wrap items-center justify-center gap-y-3">
-        {STEPS.map((s, i) => (
-          <div key={s.n} className="flex items-center">
-            <button
-              type="button"
-              onClick={() => s.n < step && setStep(s.n)}
-              disabled={s.n >= step}
-              className="flex items-center gap-2 disabled:cursor-default"
-            >
-              <span
-                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs ${
-                  step === s.n ? "bg-ink text-cream" : step > s.n ? "bg-royal text-cream" : "bg-cream-dark text-ink-soft"
-                }`}
-              >
-                {s.n}
-              </span>
-              <span className={`label-caps hidden sm:inline ${step === s.n ? "text-ink" : "text-ink-soft"}`}>
-                {s.label}
-              </span>
-            </button>
-            {i < STEPS.length - 1 && <span className="mx-2 text-border sm:mx-4">›</span>}
-          </div>
-        ))}
-      </div>
+      {/* Backdrop */}
+      <div
+        onClick={() => setModalOpen(false)}
+        className={`fixed inset-0 z-50 bg-ink/50 transition-opacity duration-300 ${
+          modalOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      />
 
-      <div className="mx-auto mt-10 max-w-xl">
-        {step === 1 && (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setStep(2);
-            }}
-            className="space-y-4"
+      {/* The process modal — every step, plus the WhatsApp offer below
+          them, lives here so it reads as one distinct "customization"
+          window, separate from the marketing heading above. Stays
+          mounted (visibility toggled via classes) so progress survives
+          closing and reopening it. */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Create Your Own Perfume"
+        data-lenis-prevent
+        className={`fixed left-1/2 top-1/2 z-50 max-h-[88vh] w-[92vw] max-w-2xl -translate-x-1/2 overflow-y-auto bg-white text-left shadow-2xl transition-all duration-300 ${
+          modalOpen ? "-translate-y-1/2 opacity-100" : "pointer-events-none -translate-y-[45%] opacity-0"
+        }`}
+      >
+        <div className="flex items-center justify-between border-b border-border px-6 py-4">
+          <p className="label-caps text-ink">Create Your Own Perfume</p>
+          <button
+            type="button"
+            onClick={() => setModalOpen(false)}
+            aria-label="Close"
+            className="text-ink-soft transition-colors hover:text-ink"
           >
-            <h2 className="font-serif text-2xl text-ink">Let&apos;s start with your name</h2>
-            <div>
-              <label className="label-caps mb-1 block text-ink-soft">Your Name</label>
-              <input
-                required
-                placeholder="Jane Doe"
-                value={checkoutName}
-                disabled={Boolean(user)}
-                onChange={(e) => setCustomerName(e.target.value)}
-                className={inputClass}
-              />
-            </div>
-            <button type="submit" className="w-full bg-ink py-3 label-caps text-cream hover:opacity-90">
-              Continue →
-            </button>
-          </form>
-        )}
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
+              <path d="M6 6l12 12M18 6 6 18" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
 
-        {step === 2 && (
-          <div className="space-y-6">
-            <h2 className="font-serif text-2xl text-ink">Who is this fragrance for?</h2>
-            <div className="flex gap-4">
-              {GENDER_OPTIONS.map((o) => (
-                <OptionTile key={o.value} active={gender === o.value} onClick={() => setGender(o.value)}>
-                  <span className="label-caps">{o.label}</span>
-                </OptionTile>
-              ))}
-            </div>
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="w-1/3 border border-ink py-3 label-caps text-ink hover:bg-ink hover:text-cream"
-              >
-                ← Back
-              </button>
-              <button
-                type="button"
-                disabled={!gender}
-                onClick={() => setStep(3)}
-                className="flex-1 bg-ink py-3 label-caps text-cream hover:opacity-90 disabled:opacity-40"
-              >
-                Continue →
-              </button>
-            </div>
-          </div>
-        )}
-
-        {step === 3 && (
-          <div className="space-y-6">
-            <h2 className="font-serif text-2xl text-ink">Which fragrance family appeals to you?</h2>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              {FRAGRANCE_FAMILIES.map((f) => (
-                <OptionTile key={f} active={fragranceFamily === f} onClick={() => setFragranceFamily(f)}>
-                  <span className="label-caps">{f}</span>
-                </OptionTile>
-              ))}
-            </div>
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => setStep(2)}
-                className="w-1/3 border border-ink py-3 label-caps text-ink hover:bg-ink hover:text-cream"
-              >
-                ← Back
-              </button>
-              <button
-                type="button"
-                disabled={!fragranceFamily}
-                onClick={() => setStep(4)}
-                className="flex-1 bg-ink py-3 label-caps text-cream hover:opacity-90 disabled:opacity-40"
-              >
-                Continue →
-              </button>
-            </div>
-          </div>
-        )}
-
-        {step === 4 && (
-          <div className="space-y-6">
-            <h2 className="font-serif text-2xl text-ink">Choose your concentration</h2>
-            <p className="text-sm text-ink-soft">A higher concentration means richer, longer-lasting fragrance oil.</p>
-            {tiersError ? (
-              <p className="text-sm text-crimson">
-                Custom perfume pricing isn&apos;t available right now. Please try again shortly.
-              </p>
-            ) : !tiers ? (
-              <p className="text-sm text-ink-soft">Loading pricing…</p>
-            ) : (
-              <div className="flex flex-col gap-3 sm:flex-row">
-                {tiers.map((t) => (
-                  <OptionTile
-                    key={t.concentration}
-                    active={concentration === t.concentration}
-                    onClick={() => setConcentration(t.concentration)}
+        <div className="p-6 sm:p-8">
+          {/* Step indicator */}
+          <div className="flex flex-wrap items-center justify-center gap-y-3">
+            {STEPS.map((s, i) => (
+              <div key={s.n} className="flex items-center">
+                <button
+                  type="button"
+                  onClick={() => s.n < step && setStep(s.n)}
+                  disabled={s.n >= step}
+                  className="flex items-center gap-2 disabled:cursor-default"
+                >
+                  <span
+                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs ${
+                      step === s.n
+                        ? "bg-ink text-cream"
+                        : step > s.n
+                          ? "bg-royal text-cream"
+                          : "bg-cream-dark text-ink-soft"
+                    }`}
                   >
-                    <span className="label-caps block">{t.concentration}%</span>
-                    <span className="mt-1 block text-sm text-ink">{formatAed(t.price)}</span>
-                  </OptionTile>
-                ))}
+                    {s.n}
+                  </span>
+                  <span className={`label-caps hidden sm:inline ${step === s.n ? "text-ink" : "text-ink-soft"}`}>
+                    {s.label}
+                  </span>
+                </button>
+                {i < STEPS.length - 1 && <span className="mx-2 text-border sm:mx-4">›</span>}
               </div>
-            )}
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => setStep(3)}
-                className="w-1/3 border border-ink py-3 label-caps text-ink hover:bg-ink hover:text-cream"
-              >
-                ← Back
-              </button>
-              <button
-                type="button"
-                disabled={!concentration}
-                onClick={() => setStep(5)}
-                className="flex-1 bg-ink py-3 label-caps text-cream hover:opacity-90 disabled:opacity-40"
-              >
-                Continue →
-              </button>
-            </div>
+            ))}
           </div>
-        )}
 
-        {step === 5 && gender && fragranceFamily && concentration && (
-          <form onSubmit={handleConfirm} className="space-y-6">
-            <h2 className="font-serif text-2xl text-ink">Review &amp; Confirm</h2>
-
-            <div className="border border-border p-4">
-              <div className="flex items-center justify-between">
-                <p className="label-caps text-ink-soft">Your Perfume</p>
-                <button
-                  type="button"
-                  onClick={() => setStep(2)}
-                  className="text-xs text-ink-soft underline underline-offset-2 hover:text-royal"
-                >
-                  Edit
+          <div className="mx-auto mt-10 max-w-xl">
+            {step === 1 && (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setStep(2);
+                }}
+                className="space-y-4"
+              >
+                <h2 className="font-serif text-2xl text-ink">Let&apos;s start with your name</h2>
+                <div>
+                  <label className="label-caps mb-1 block text-ink-soft">Your Name</label>
+                  <input
+                    required
+                    placeholder="Jane Doe"
+                    value={checkoutName}
+                    disabled={Boolean(user)}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+                <button type="submit" className="w-full bg-ink py-3 label-caps text-cream hover:opacity-90">
+                  Continue →
                 </button>
-              </div>
-              <p className="mt-1 text-sm text-ink">
-                {checkoutName} · {GENDER_OPTIONS.find((o) => o.value === gender)?.label} · {fragranceFamily} ·{" "}
-                {concentration}%
-              </p>
-              {selectedTier && <p className="mt-2 font-serif text-2xl text-ink">{formatAed(selectedTier.price)}</p>}
-            </div>
-
-            {!user && (
-              <div>
-                <label className="label-caps mb-1 block text-ink-soft">Email</label>
-                <input
-                  required
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={inputClass}
-                />
-              </div>
+              </form>
             )}
-            <div>
-              <label className="label-caps mb-1 block text-ink-soft">Contact Number</label>
-              <input
-                required
-                type="tel"
-                placeholder="+971 50 123 4567"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className={inputClass}
-              />
-            </div>
-            <div>
-              <label className="label-caps mb-1 block text-ink-soft">Address Line 1</label>
-              <input required value={line1} onChange={(e) => setLine1(e.target.value)} className={inputClass} />
-            </div>
-            <div>
-              <label className="label-caps mb-1 block text-ink-soft">Address Line 2 (Optional)</label>
-              <input value={line2} onChange={(e) => setLine2(e.target.value)} className={inputClass} />
-            </div>
-            <div className="flex gap-4">
-              <div className="w-1/2">
-                <label className="label-caps mb-1 block text-ink-soft">City</label>
-                <input required value={city} onChange={(e) => setCity(e.target.value)} className={inputClass} />
-              </div>
-              <div className="w-1/2">
-                <label className="label-caps mb-1 block text-ink-soft">Emirate</label>
-                <select value={emirate} onChange={(e) => setEmirate(e.target.value)} className={inputClass}>
-                  {EMIRATES.map((e) => (
-                    <option key={e} value={e}>
-                      {e}
-                    </option>
+
+            {step === 2 && (
+              <div className="space-y-6">
+                <h2 className="font-serif text-2xl text-ink">Who is this fragrance for?</h2>
+                <div className="flex gap-4">
+                  {GENDER_OPTIONS.map((o) => (
+                    <OptionTile key={o.value} active={gender === o.value} onClick={() => setGender(o.value)}>
+                      <span className="block text-2xl" aria-hidden>
+                        {o.icon}
+                      </span>
+                      <span className="label-caps mt-2 block">{o.label}</span>
+                    </OptionTile>
                   ))}
-                </select>
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setStep(1)}
+                    className="w-1/3 border border-ink py-3 label-caps text-ink hover:bg-ink hover:text-cream"
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!gender}
+                    onClick={() => setStep(3)}
+                    className="flex-1 bg-ink py-3 label-caps text-cream hover:opacity-90 disabled:opacity-40"
+                  >
+                    Continue →
+                  </button>
+                </div>
               </div>
-            </div>
-
-            {error && <p className="text-sm text-crimson">{error}</p>}
-
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => setStep(4)}
-                className="w-1/3 border border-ink py-3 label-caps text-ink hover:bg-ink hover:text-cream"
-              >
-                ← Back
-              </button>
-              <button
-                type="submit"
-                disabled={submitting}
-                className="flex-1 bg-royal py-3 label-caps text-cream hover:opacity-90 disabled:opacity-50"
-              >
-                {submitting ? "Redirecting to payment…" : `Confirm & Pay${selectedTier ? ` ${formatAed(selectedTier.price)}` : ""}`}
-              </button>
-            </div>
-
-            {!user && (
-              <p className="text-center text-sm text-ink-soft">
-                Already have an account?{" "}
-                <button
-                  type="button"
-                  onClick={() => openDrawer("login")}
-                  className="underline underline-offset-2 hover:text-royal"
-                >
-                  Sign in
-                </button>
-              </p>
             )}
-          </form>
-        )}
-      </div>
 
-      {/* Below the wizard regardless of step — the site owner's WhatsApp
-          concierge offer: every custom blend is filmed while it's made,
-          and that video is sent over WhatsApp on request rather than
-          posted anywhere public. */}
-      <div className="mx-auto mt-16 max-w-2xl border border-border bg-cream-dark/40 p-8 text-center">
-        <p className="label-caps text-gold">Watch Yours Come To Life</p>
-        <h2 className="mt-2 font-serif text-2xl text-ink">Join Our WhatsApp For Your Perfume&apos;s Video</h2>
-        <p className="mx-auto mt-3 max-w-md text-sm text-ink-soft">
-          Every custom blend is hand-crafted, and we film the process. Message us on WhatsApp and we&apos;ll send
-          you the video of your own perfume being made.
-        </p>
-        <a
-          href={`https://wa.me/971507550447?text=${encodeURIComponent(
-            "Hi! I'd love a video of how my custom Amoria perfume was made."
-          )}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-6 inline-flex items-center gap-2 bg-ink px-8 py-3 label-caps text-cream hover:opacity-90"
-        >
-          <WhatsAppIcon />
-          Chat On WhatsApp
-        </a>
+            {step === 3 && (
+              <div className="space-y-6">
+                <h2 className="font-serif text-2xl text-ink">Which fragrance family appeals to you?</h2>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {FRAGRANCE_FAMILIES.map((f) => (
+                    <FamilyTile
+                      key={f}
+                      active={fragranceFamily === f}
+                      onClick={() => setFragranceFamily(f)}
+                      icon={fragranceFamilyIcon(f)}
+                      label={f}
+                    />
+                  ))}
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setStep(2)}
+                    className="w-1/3 border border-ink py-3 label-caps text-ink hover:bg-ink hover:text-cream"
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!fragranceFamily}
+                    onClick={() => setStep(4)}
+                    className="flex-1 bg-ink py-3 label-caps text-cream hover:opacity-90 disabled:opacity-40"
+                  >
+                    Continue →
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {step === 4 && (
+              <div className="space-y-6">
+                <h2 className="font-serif text-2xl text-ink">Choose your concentration</h2>
+                <p className="text-sm text-ink-soft">
+                  A higher concentration means richer, longer-lasting fragrance oil.
+                </p>
+                {tiersError ? (
+                  <p className="text-sm text-crimson">
+                    Custom perfume pricing isn&apos;t available right now. Please try again shortly.
+                  </p>
+                ) : !tiers ? (
+                  <p className="text-sm text-ink-soft">Loading pricing…</p>
+                ) : (
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    {tiers.map((t) => (
+                      <OptionTile
+                        key={t.concentration}
+                        active={concentration === t.concentration}
+                        onClick={() => setConcentration(t.concentration)}
+                      >
+                        <span className="label-caps block">{t.concentration}%</span>
+                        <span className="mt-1 block text-sm text-ink">{formatAed(t.price)}</span>
+                      </OptionTile>
+                    ))}
+                  </div>
+                )}
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setStep(3)}
+                    className="w-1/3 border border-ink py-3 label-caps text-ink hover:bg-ink hover:text-cream"
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!concentration}
+                    onClick={() => setStep(5)}
+                    className="flex-1 bg-ink py-3 label-caps text-cream hover:opacity-90 disabled:opacity-40"
+                  >
+                    Continue →
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {step === 5 && gender && fragranceFamily && concentration && (
+              <form onSubmit={handleConfirm} className="space-y-6">
+                <h2 className="font-serif text-2xl text-ink">Review &amp; Confirm</h2>
+
+                <div className="border border-border p-4">
+                  <div className="flex items-center justify-between">
+                    <p className="label-caps text-ink-soft">Your Perfume</p>
+                    <button
+                      type="button"
+                      onClick={() => setStep(2)}
+                      className="text-xs text-ink-soft underline underline-offset-2 hover:text-royal"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                  <p className="mt-1 text-sm text-ink">
+                    {checkoutName} · {GENDER_OPTIONS.find((o) => o.value === gender)?.label} · {fragranceFamily} ·{" "}
+                    {concentration}%
+                  </p>
+                  {selectedTier && (
+                    <p className="mt-2 font-serif text-2xl text-ink">{formatAed(selectedTier.price)}</p>
+                  )}
+                </div>
+
+                {!user && (
+                  <div>
+                    <label className="label-caps mb-1 block text-ink-soft">Email</label>
+                    <input
+                      required
+                      type="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+                <div>
+                  <label className="label-caps mb-1 block text-ink-soft">Contact Number</label>
+                  <input
+                    required
+                    type="tel"
+                    placeholder="+971 50 123 4567"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="label-caps mb-1 block text-ink-soft">Address Line 1</label>
+                  <input required value={line1} onChange={(e) => setLine1(e.target.value)} className={inputClass} />
+                </div>
+                <div>
+                  <label className="label-caps mb-1 block text-ink-soft">Address Line 2 (Optional)</label>
+                  <input value={line2} onChange={(e) => setLine2(e.target.value)} className={inputClass} />
+                </div>
+                <div className="flex gap-4">
+                  <div className="w-1/2">
+                    <label className="label-caps mb-1 block text-ink-soft">City</label>
+                    <input required value={city} onChange={(e) => setCity(e.target.value)} className={inputClass} />
+                  </div>
+                  <div className="w-1/2">
+                    <label className="label-caps mb-1 block text-ink-soft">Emirate</label>
+                    <select value={emirate} onChange={(e) => setEmirate(e.target.value)} className={inputClass}>
+                      {EMIRATES.map((e) => (
+                        <option key={e} value={e}>
+                          {e}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {error && <p className="text-sm text-crimson">{error}</p>}
+
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setStep(4)}
+                    className="w-1/3 border border-ink py-3 label-caps text-ink hover:bg-ink hover:text-cream"
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="flex-1 bg-royal py-3 label-caps text-cream hover:opacity-90 disabled:opacity-50"
+                  >
+                    {submitting
+                      ? "Redirecting to payment…"
+                      : `Confirm & Pay${selectedTier ? ` ${formatAed(selectedTier.price)}` : ""}`}
+                  </button>
+                </div>
+
+                {!user && (
+                  <p className="text-center text-sm text-ink-soft">
+                    Already have an account?{" "}
+                    <button
+                      type="button"
+                      onClick={() => openDrawer("login")}
+                      className="underline underline-offset-2 hover:text-royal"
+                    >
+                      Sign in
+                    </button>
+                  </p>
+                )}
+              </form>
+            )}
+          </div>
+        </div>
+
+        {/* Below every step, inside the same modal — the site owner's
+            WhatsApp concierge offer: every custom blend is filmed while
+            it's made, and that video is sent over WhatsApp on request
+            rather than posted anywhere public. */}
+        <div className="border-t border-border bg-cream-dark/40 p-8 text-center">
+          <p className="label-caps text-gold">Watch Yours Come To Life</p>
+          <h2 className="mt-2 font-serif text-2xl text-ink">Join Our WhatsApp For Your Perfume&apos;s Video</h2>
+          <p className="mx-auto mt-3 max-w-md text-sm text-ink-soft">
+            Every custom blend is hand-crafted, and we film the process. Message us on WhatsApp and we&apos;ll send
+            you the video of your own perfume being made.
+          </p>
+          <a
+            href={`https://wa.me/971507550447?text=${encodeURIComponent(
+              "Hi! I'd love a video of how my custom Amoria perfume was made."
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex items-center gap-2 bg-ink px-8 py-3 label-caps text-cream hover:opacity-90"
+          >
+            <WhatsAppIcon />
+            Chat On WhatsApp
+          </a>
+        </div>
       </div>
     </div>
   );

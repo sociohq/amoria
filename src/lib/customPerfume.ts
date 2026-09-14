@@ -1,7 +1,18 @@
 import { apiFetch } from "./api";
 
 export type Gender = "him" | "her" | "unisex";
-export const FRAGRANCE_FAMILIES = ["Fresh Fruity", "Oriental Floral", "Tropical Fruity"] as const;
+// A standard, broader family list rather than the real catalog's 3 —
+// a bespoke blend isn't limited to what's already in stock.
+export const FRAGRANCE_FAMILIES = [
+  "Fresh & Citrusy",
+  "Green & Aromatic",
+  "Fruity & Delicious",
+  "Floral & Delicate",
+  "Woody & Profound",
+  "Sweet & Gourmand",
+  "Spicy & Ambery",
+  "Leathery & Distinctive",
+] as const;
 export type FragranceFamily = (typeof FRAGRANCE_FAMILIES)[number];
 export type Concentration = "20" | "25" | "30";
 
