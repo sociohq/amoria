@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
+import { ParallaxHero } from "@/components/ParallaxHero";
 
 const VALUES = [
   "Extrait De Parfum Only",
@@ -14,12 +15,21 @@ export default function OurStoryPage() {
   return (
     <div>
       {/* Hero — full-bleed, oversized serif headline pinned to the bottom,
-          the same device the rest of the site uses for section heroes
-          (see Hero.tsx, blog/[slug]) but sized up for an editorial feel. */}
-      <section className="relative flex h-[70vh] min-h-[480px] items-end overflow-hidden bg-ink">
-        <Image src="/banners/find-your-scent.png" alt="" fill priority sizes="100vw" className="object-cover" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
-        <div className="relative z-10 px-6 pb-14 sm:px-12">
+          the same parallax device Hero.tsx uses on the homepage, plus the
+          same transparent-over-hero header treatment (see Header.tsx's
+          hasFullBleedHero check) since the header sits fixed on top of it. */}
+      <ParallaxHero
+        image="/banners/find-your-scent.png"
+        heightClassName="h-[70vh] min-h-[480px]"
+        // find-your-scent.png is bright sky at the top, unlike Hero.tsx's
+        // naturally dark banner — with the transparent header now sitting
+        // over this hero too, the top needs its own darkening (not just
+        // the bottom, for the headline) or the cream nav text has almost
+        // no contrast to read against.
+        overlayClassName="bg-gradient-to-b from-black/55 via-black/10 to-black/75"
+        contentClassName="flex h-full items-end px-6 pb-14 sm:px-12"
+      >
+        <div>
           <p className="label-caps text-gold-light">Our Story</p>
           <h1 className="mt-3 font-serif text-6xl leading-[0.95] text-cream sm:text-7xl lg:text-8xl">
             The House of
@@ -27,7 +37,7 @@ export default function OurStoryPage() {
             <em className="italic text-gold-light">Amoria</em>
           </h1>
         </div>
-      </section>
+      </ParallaxHero>
 
       {/* Manifesto */}
       <section className="px-6 py-20 sm:px-12 lg:py-28">
