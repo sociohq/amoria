@@ -15,16 +15,24 @@ export default async function BlogIndexPage() {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         <div className="relative z-10 px-6 pb-16 sm:px-12">
           <p className="label-caps text-gold-light">The Journal</p>
-          {featured ? (
-            <Link href={`/blog/${featured.slug}`}>
-              <h1 className="mt-3 max-w-3xl font-serif text-4xl leading-tight text-cream hover:text-gold-light sm:text-5xl">
-                {featured.title}
-              </h1>
-            </Link>
-          ) : (
-            <h1 className="mt-3 font-serif text-4xl text-cream sm:text-5xl">Stories from Amoria</h1>
+          {/* Deliberately plain text, not a link to the post — landing on
+              /blog from the nav should always feel like a listing page,
+              even with only one story published, rather than the
+              headline itself acting as a shortcut straight into it. */}
+          <h1 className="mt-3 max-w-3xl font-serif text-4xl leading-tight text-cream sm:text-5xl">
+            {featured ? featured.title : "Stories from Amoria"}
+          </h1>
+          {featured && (
+            <>
+              <p className="mt-4 max-w-xl text-cream/85">{featured.excerpt}</p>
+              <Link
+                href={`/blog/${featured.slug}`}
+                className="mt-6 inline-block border border-cream px-8 py-3 label-caps text-cream hover:bg-cream hover:text-ink"
+              >
+                Read The Story
+              </Link>
+            </>
           )}
-          {featured && <p className="mt-4 max-w-xl text-cream/85">{featured.excerpt}</p>}
         </div>
       </section>
 
