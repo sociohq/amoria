@@ -128,6 +128,10 @@ body {
   .border-beam {
     animation: none;
   }
+  .typing-dot {
+    animation: none;
+    opacity: 0.7;
+  }
 }
 
 /* Floating Amoria mark (AuroraMark.tsx): a warm, iridescent gradient sweep
@@ -209,4 +213,52 @@ body {
   to {
     offset-distance: 100%;
   }
+}
+
+/* "Find Your Scent" chat (ScentFinderChat.tsx): three dots bouncing in
+   sequence while the bot is "typing" a reply, so a new message reads as a
+   response arriving rather than the next line just snapping into place. */
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--color-gold);
+  animation: typing-bounce 1.2s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes typing-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+/* Thin, on-brand scrollbar for the chat transcript, in place of the bulky
+   default OS scrollbar — a slim gold-tinted thumb rather than hiding
+   scrollability entirely (unlike .no-scrollbar, used elsewhere for rows
+   that have their own arrow-button navigation). */
+.chat-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gold-light) transparent;
+}
+.chat-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.chat-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--color-gold-light);
+  border-radius: 9999px;
 }

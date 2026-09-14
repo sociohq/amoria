@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ScentFinderChat } from "./ScentFinderChat";
 
 // Scrolling this far down the page counts as "spent some time on the page"
 // — past the hero on most pages — before the circle introduces itself.
@@ -36,9 +37,9 @@ const COLLAPSE_TRANSITION = `width 260ms ${EASE_IN}, margin-right 260ms ${EASE_I
 // then tucks itself back into a circle after a few seconds and reopens
 // periodically with a differently-worded version of the same invitation —
 // a gentle, occasional nudge rather than a persistent label or a one-off
-// reveal. Functionality is intentionally a no-op for now; the user will
-// specify what it should do on click in a later request.
+// reveal. Clicking it opens the "Find Your Scent" chat quiz (ScentFinderChat).
 export function AuroraMark() {
+  const [chatOpen, setChatOpen] = useState(false);
   const [started, setStarted] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [phraseIndex, setPhraseIndex] = useState(0);
@@ -94,58 +95,62 @@ export function AuroraMark() {
   const width = expanded ? currentWidth : 0;
 
   return (
-    <button
-      type="button"
-      aria-label={PHRASES[phraseIndex]}
-      className="group fixed bottom-6 right-6 z-40 inline-flex h-14 items-center rounded-full bg-white py-1.5 pr-1.5 shadow-sm shadow-ink/10 transition-[padding-left] duration-300 ease-out hover:scale-105"
-      style={{
-        paddingLeft: expanded ? "1.125rem" : "0.375rem",
-        transitionTimingFunction: expanded ? EASE_OUT : EASE_IN,
-        transitionDuration: expanded ? "380ms" : "260ms",
-      }}
-    >
-      {/* A small comet of light continuously orbiting the pill's own edge,
-          in the icon's gold/crimson palette — independent of expand/collapse
-          state, so it keeps travelling whether this is a circle or a pill.
-          See the CSS for how the ring-only reveal works. */}
-      <span aria-hidden className="border-beam-mask">
-        <span className="border-beam" />
-      </span>
-      <span
-        aria-hidden
-        className="overflow-hidden whitespace-nowrap text-[13px] font-medium text-ink"
+    <>
+      <ScentFinderChat open={chatOpen} onClose={() => setChatOpen(false)} />
+      <button
+        type="button"
+        onClick={() => setChatOpen((v) => !v)}
+        aria-label={chatOpen ? "Close Find Your Scent" : PHRASES[phraseIndex]}
+        className="group fixed bottom-6 right-6 z-40 inline-flex h-14 items-center rounded-full bg-white py-1.5 pr-1.5 shadow-sm shadow-ink/10 transition-[padding-left] duration-300 ease-out hover:scale-105"
         style={{
-          width,
-          marginRight: expanded ? 10 : 0,
-          opacity: expanded ? 1 : 0,
-          transition: expanded ? EXPAND_TRANSITION : COLLAPSE_TRANSITION,
+          paddingLeft: expanded ? "1.125rem" : "0.375rem",
+          transitionTimingFunction: expanded ? EASE_OUT : EASE_IN,
+          transitionDuration: expanded ? "380ms" : "260ms",
         }}
       >
-        {PHRASES[phraseIndex]}
-      </span>
-      {/* Off-screen twin of the current phrase, purely to measure its
-          natural width (see the effect above) — never shown. */}
-      <span
-        aria-hidden
-        ref={measureRef}
-        className="pointer-events-none fixed -left-[9999px] -top-[9999px] whitespace-nowrap text-[13px] font-medium"
-      >
-        {PHRASES[phraseIndex]}
-      </span>
-      <span
-        aria-hidden
-        className="aurora-mark relative h-11 w-11 shrink-0"
-        style={{
-          WebkitMaskImage: "url(/icons/amoria-mark.svg)",
-          maskImage: "url(/icons/amoria-mark.svg)",
-          WebkitMaskRepeat: "no-repeat",
-          maskRepeat: "no-repeat",
-          WebkitMaskPosition: "center",
-          maskPosition: "center",
-          WebkitMaskSize: "contain",
-          maskSize: "contain",
-        }}
-      />
-    </button>
+        {/* A small comet of light continuously orbiting the pill's own edge,
+            in the icon's gold/crimson palette — independent of expand/collapse
+            state, so it keeps travelling whether this is a circle or a pill.
+            See the CSS for how the ring-only reveal works. */}
+        <span aria-hidden className="border-beam-mask">
+          <span className="border-beam" />
+        </span>
+        <span
+          aria-hidden
+          className="overflow-hidden whitespace-nowrap text-[13px] font-medium text-ink"
+          style={{
+            width,
+            marginRight: expanded ? 10 : 0,
+            opacity: expanded ? 1 : 0,
+            transition: expanded ? EXPAND_TRANSITION : COLLAPSE_TRANSITION,
+          }}
+        >
+          {PHRASES[phraseIndex]}
+        </span>
+        {/* Off-screen twin of the current phrase, purely to measure its
+            natural width (see the effect above) — never shown. */}
+        <span
+          aria-hidden
+          ref={measureRef}
+          className="pointer-events-none fixed -left-[9999px] -top-[9999px] whitespace-nowrap text-[13px] font-medium"
+        >
+          {PHRASES[phraseIndex]}
+        </span>
+        <span
+          aria-hidden
+          className="aurora-mark relative h-11 w-11 shrink-0"
+          style={{
+            WebkitMaskImage: "url(/icons/amoria-mark.svg)",
+            maskImage: "url(/icons/amoria-mark.svg)",
+            WebkitMaskRepeat: "no-repeat",
+            maskRepeat: "no-repeat",
+            WebkitMaskPosition: "center",
+            maskPosition: "center",
+            WebkitMaskSize: "contain",
+            maskSize: "contain",
+          }}
+        />
+      </button>
+    </>
   );
 }
