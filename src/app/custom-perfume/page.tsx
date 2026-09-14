@@ -144,13 +144,17 @@ export default function CustomPerfumePage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-24 sm:px-12">
+    <div className="mx-auto max-w-6xl px-6 py-24 sm:px-12">
       {/* A curved panel split in two: the marketing heading top-aligned on
           the left, the interactive customization flow (plus the WhatsApp
           offer, spanning the full width below both) on the right — not a
-          popup, and not stacked above the form either. */}
+          popup, and not stacked above the form either. The form side gets
+          more of the width (7:10 rather than an even split) since Step 5's
+          full contact/address form needs the room to lay fields out side
+          by side instead of one long stack that forces the whole panel to
+          scroll. */}
       <div className="mx-auto overflow-hidden rounded-[2rem] border border-border bg-white shadow-xl">
-        <div className="md:grid md:grid-cols-2">
+        <div className="md:grid md:grid-cols-[7fr_10fr]">
           {/* Left: heading */}
           <div className="border-b border-border p-6 sm:p-10 md:border-b-0 md:border-r">
             <p className="label-caps text-gold">Your Story. Your Scent.</p>
@@ -198,7 +202,7 @@ export default function CustomPerfumePage() {
               Step {step} of {STEPS.length} — {STEPS[step - 1].label}
             </p>
 
-            <div className="mt-10">
+            <div className="mt-6">
               {step === 1 && (
               <form
                 onSubmit={(e) => {
@@ -339,7 +343,7 @@ export default function CustomPerfumePage() {
             )}
 
             {step === 5 && gender && fragranceFamily && concentration && (
-              <form onSubmit={handleConfirm} className="space-y-6">
+              <form onSubmit={handleConfirm} className="space-y-4">
                 <h2 className="font-serif text-2xl text-ink">Review &amp; Confirm</h2>
 
                 <div className="border border-border p-4">
@@ -362,44 +366,57 @@ export default function CustomPerfumePage() {
                   )}
                 </div>
 
-                {!user && (
+                {/* Paired up (email+phone, then city+emirate) rather than
+                    one long single-column stack, now that the wider form
+                    column has the room for it — keeps the whole step
+                    visible without scrolling the panel. */}
+                <div className={`grid gap-4 ${user ? "" : "sm:grid-cols-2"}`}>
+                  {!user && (
+                    <div>
+                      <label className="label-caps mb-1 block text-ink-soft">Email</label>
+                      <input
+                        required
+                        type="email"
+                        placeholder="you@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className={inputClass}
+                      />
+                    </div>
+                  )}
                   <div>
-                    <label className="label-caps mb-1 block text-ink-soft">Email</label>
+                    <label className="label-caps mb-1 block text-ink-soft">Contact Number</label>
                     <input
                       required
-                      type="email"
-                      placeholder="you@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      type="tel"
+                      placeholder="+971 50 123 4567"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
                       className={inputClass}
                     />
                   </div>
-                )}
-                <div>
-                  <label className="label-caps mb-1 block text-ink-soft">Contact Number</label>
-                  <input
-                    required
-                    type="tel"
-                    placeholder="+971 50 123 4567"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className={inputClass}
-                  />
                 </div>
-                <div>
-                  <label className="label-caps mb-1 block text-ink-soft">Address Line 1</label>
-                  <input required value={line1} onChange={(e) => setLine1(e.target.value)} className={inputClass} />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="label-caps mb-1 block text-ink-soft">Address Line 1</label>
+                    <input
+                      required
+                      value={line1}
+                      onChange={(e) => setLine1(e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label className="label-caps mb-1 block text-ink-soft">Address Line 2 (Optional)</label>
+                    <input value={line2} onChange={(e) => setLine2(e.target.value)} className={inputClass} />
+                  </div>
                 </div>
-                <div>
-                  <label className="label-caps mb-1 block text-ink-soft">Address Line 2 (Optional)</label>
-                  <input value={line2} onChange={(e) => setLine2(e.target.value)} className={inputClass} />
-                </div>
-                <div className="flex gap-4">
-                  <div className="w-1/2">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
                     <label className="label-caps mb-1 block text-ink-soft">City</label>
                     <input required value={city} onChange={(e) => setCity(e.target.value)} className={inputClass} />
                   </div>
-                  <div className="w-1/2">
+                  <div>
                     <label className="label-caps mb-1 block text-ink-soft">Emirate</label>
                     <select value={emirate} onChange={(e) => setEmirate(e.target.value)} className={inputClass}>
                       {EMIRATES.map((e) => (
