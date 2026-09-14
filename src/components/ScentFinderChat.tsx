@@ -118,7 +118,7 @@ export function ScentFinderChat({ open, onClose }: { open: boolean; onClose: () 
       aria-modal="true"
       aria-label="Find your scent"
       data-lenis-prevent
-      className={`fixed bottom-24 right-6 z-50 flex h-[min(600px,80vh)] w-[380px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-border bg-cream shadow-2xl transition-all duration-300 ${
+      className={`fixed bottom-24 right-6 z-50 flex h-[min(600px,80vh)] w-[380px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-2xl transition-all duration-300 ${
         open ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0"
       }`}
     >
