@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import { useLenis } from "lenis/react";
 import { BlogBlock } from "@/lib/types";
 import { slugify } from "@/lib/slugify";
 import { ProductCard } from "./ProductCard";
@@ -26,6 +27,7 @@ function toEmbedUrl(url: string) {
 export function PostBody({ content }: { content: BlogBlock[] }) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const lenis = useLenis();
 
   // Headings double as the TOC — dedupe ids so two identically-worded
   // headings don't collide. `headingIdByBlockIndex` lets the render below
@@ -73,8 +75,15 @@ export function PostBody({ content }: { content: BlogBlock[] }) {
   function jumpTo(id: string) {
     const el = document.getElementById(id);
     if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET_PX;
-    window.scrollTo({ top, behavior: "smooth" });
+    // Routed through the shared Lenis instance (see SmoothScroll.tsx)
+    // rather than native window.scrollTo — calling the native API while
+    // Lenis owns the scroll would have the two fight each other.
+    if (lenis) {
+      lenis.scrollTo(el, { offset: -HEADER_OFFSET_PX });
+    } else {
+      const top = el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET_PX;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
   }
 
   return (

@@ -11,6 +11,7 @@ import { CartDrawer } from "@/components/CartDrawer";
 import { AuthDrawer } from "@/components/AuthDrawer";
 import { NewsletterPopup } from "@/components/NewsletterPopup";
 import { PageLoader } from "@/components/PageLoader";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import { listCategories } from "@/lib/products";
 
 const cormorant = Cormorant({
@@ -41,21 +42,23 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body className={`${cormorant.variable} ${jost.variable} font-sans antialiased`}>
-        <PageLoader />
-        <AuthProvider>
-          <AuthDrawerProvider>
-            <CartProvider>
-              <WishlistProvider>
-                <Header categories={categories} />
-                <main className="min-h-screen">{children}</main>
-                <Footer />
-                <CartDrawer />
-                <AuthDrawer />
-                <NewsletterPopup />
-              </WishlistProvider>
-            </CartProvider>
-          </AuthDrawerProvider>
-        </AuthProvider>
+        <SmoothScroll>
+          <PageLoader />
+          <AuthProvider>
+            <AuthDrawerProvider>
+              <CartProvider>
+                <WishlistProvider>
+                  <Header categories={categories} />
+                  <main className="min-h-screen">{children}</main>
+                  <Footer />
+                  <CartDrawer />
+                  <AuthDrawer />
+                  <NewsletterPopup />
+                </WishlistProvider>
+              </CartProvider>
+            </AuthDrawerProvider>
+          </AuthProvider>
+        </SmoothScroll>
       </body>
     </html>
   );
