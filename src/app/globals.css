@@ -110,4 +110,11 @@ body {
   .loader-rule {
     animation: none;
   }
+  /* The Shop The Look hotspot dots use Tailwind's built-in animate-ping
+     for their attention pulse — this is the only place that's used, so
+     it's simplest to disable it here rather than reach for a JS-driven
+     conditional class like the other motion in this file. */
+  .animate-ping {
+    animation: none;
+  }
 }

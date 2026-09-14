@@ -1,5 +1,18 @@
 import { apiFetch, apiUpload } from "./api";
-import { Category, Product, ProductType, Coupon, Settings, DashboardSummary, AdminOrder, Reel, Post, BlogBlock } from "./types";
+import {
+  Category,
+  Product,
+  ProductType,
+  Coupon,
+  Settings,
+  DashboardSummary,
+  AdminOrder,
+  Reel,
+  Post,
+  BlogBlock,
+  ShopTheLookSection,
+  ShopTheLookHotspot,
+} from "./types";
 
 // ---------- Dashboard ----------
 export const getDashboard = () => apiFetch<DashboardSummary>("/api/admin/dashboard");
@@ -132,6 +145,44 @@ export const createReel = (data: ReelInput) =>
 export const updateReel = (id: string, data: Partial<ReelInput>) =>
   apiFetch<{ reel: Reel }>(`/api/reels/${id}`, { method: "PATCH", body: JSON.stringify(data) });
 export const deleteReel = (id: string) => apiFetch<void>(`/api/reels/${id}`, { method: "DELETE" });
+
+// ---------- Shop The Look (homepage hotspot banner) ----------
+export interface ShopTheLookSectionInput {
+  title?: string;
+  subtitle?: string;
+  active?: boolean;
+}
+export interface HotspotInput {
+  productId: string;
+  x: number;
+  y: number;
+  position?: number;
+}
+
+export const getShopTheLookAdmin = () =>
+  apiFetch<{ section: ShopTheLookSection | null }>("/api/shop-the-look/admin");
+export const upsertShopTheLookSection = (data: ShopTheLookSectionInput) =>
+  apiFetch<{ section: ShopTheLookSection }>("/api/shop-the-look/admin", {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+export const uploadShopTheLookImage = (file: File) => {
+  const formData = new FormData();
+  formData.append("image", file);
+  return apiUpload<{ section: ShopTheLookSection }>("/api/shop-the-look/admin/upload", formData);
+};
+export const createHotspot = (data: HotspotInput) =>
+  apiFetch<{ hotspot: ShopTheLookHotspot }>("/api/shop-the-look/admin/hotspots", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+export const updateHotspot = (id: string, data: Partial<HotspotInput>) =>
+  apiFetch<{ hotspot: ShopTheLookHotspot }>(`/api/shop-the-look/admin/hotspots/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+export const deleteHotspot = (id: string) =>
+  apiFetch<void>(`/api/shop-the-look/admin/hotspots/${id}`, { method: "DELETE" });
 
 // ---------- Blog Posts ----------
 export interface PostInput {

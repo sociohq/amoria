@@ -1,5 +1,5 @@
 import { apiFetch } from "./api";
-import { Product, Category } from "./types";
+import { Product, Category, ShopTheLookSection } from "./types";
 
 export interface ListProductsParams {
   category?: string;
@@ -46,4 +46,11 @@ export async function listCategories(): Promise<Category[]> {
 // that drifts as the catalog changes.
 export async function getPriceRange(): Promise<{ min: number; max: number }> {
   return apiFetch<{ min: number; max: number }>("/api/products/price-range");
+}
+
+// null until an admin has uploaded an image and added at least one
+// hotspot — the homepage section simply doesn't render until then.
+export async function getShopTheLook(): Promise<ShopTheLookSection | null> {
+  const { section } = await apiFetch<{ section: ShopTheLookSection | null }>("/api/shop-the-look");
+  return section;
 }

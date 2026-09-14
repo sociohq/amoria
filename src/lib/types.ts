@@ -65,6 +65,25 @@ export interface Reel {
   product: Product;
 }
 
+export interface ShopTheLookHotspot {
+  id: string;
+  sectionId: string;
+  productId: string;
+  x: number; // percent, 0-100, from the image's left edge
+  y: number; // percent, 0-100, from the image's top edge
+  position: number;
+  product: Product;
+}
+
+export interface ShopTheLookSection {
+  id: string;
+  title: string;
+  subtitle: string | null;
+  image: string | null;
+  active: boolean;
+  hotspots: ShopTheLookHotspot[];
+}
+
 export interface WishlistItem {
   id: string;
   productId: string;
