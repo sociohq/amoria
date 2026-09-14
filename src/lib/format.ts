@@ -23,3 +23,9 @@ export function deliveryEstimate(minDays = 2, maxDays = 4): string {
   end.setDate(end.getDate() + maxDays);
   return `${fmt(start)} to ${fmt(end)}`;
 }
+
+// For blog cards — the long month name reads better against the site's
+// editorial serif tone than a numeric date.
+export function formatPostDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("en-AE", { day: "numeric", month: "long", year: "numeric" });
+}

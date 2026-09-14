@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { listPosts } from "@/lib/posts";
+import { formatPostDate } from "@/lib/format";
 
 export default async function BlogIndexPage() {
   const posts = await listPosts().catch(() => []);
@@ -26,21 +27,25 @@ export default async function BlogIndexPage() {
         {posts.length === 0 ? (
           <p className="py-16 text-center text-ink-soft">No stories yet. Check back soon.</p>
         ) : (
-          <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
             {posts.map((p) => (
               <Link key={p.id} href={`/blog/${p.slug}`} className="group block">
-                <div className="relative aspect-[4/5] overflow-hidden bg-cream-dark">
+                {/* Small landscape rectangle, not a tall portrait — reads
+                    as a compact preview thumbnail rather than a second
+                    hero image. */}
+                <div className="relative aspect-[3/2] overflow-hidden bg-cream-dark">
                   <Image
                     src={p.heroImage}
                     alt={p.title}
                     fill
-                    sizes="(min-width: 1024px) 33vw, 50vw"
+                    sizes="(min-width: 1024px) 25vw, 33vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
                 <div className="mt-3">
                   {p.heroEyebrow && <p className="label-caps text-gold">{p.heroEyebrow}</p>}
-                  <p className="mt-1 font-serif text-xl text-ink group-hover:text-royal">{p.title}</p>
+                  <p className="mt-1 text-xs text-ink-soft">{formatPostDate(p.publishedAt ?? p.createdAt)}</p>
+                  <p className="mt-1 font-serif text-lg text-ink group-hover:text-royal">{p.title}</p>
                   <p className="mt-1 line-clamp-2 text-sm text-ink-soft">{p.excerpt}</p>
                 </div>
               </Link>
