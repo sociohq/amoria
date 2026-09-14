@@ -35,6 +35,11 @@ function ArrowButton({ direction, onClick }: { direction: "left" | "right"; onCl
 // sync off one piece of state.
 export function ShopTheLook({ section }: { section: ShopTheLookSection }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  // Briefly fades/shifts the panel out, swaps the product underneath while
+  // it's invisible, then fades it back in — so an arrow/dot/hotspot click
+  // reads as a smooth transition instead of the name/image/price snapping
+  // to the next product instantly.
+  const [visible, setVisible] = useState(true);
   const hotspots = section.hotspots;
   const active = hotspots[activeIndex];
   if (!active || !section.image) return null;
@@ -44,8 +49,17 @@ export function ShopTheLook({ section }: { section: ShopTheLookSection }) {
   const price = variant?.price ?? product.price;
   const off = percentOff(price, product.compareAtPrice);
 
+  function goTo(index: number) {
+    if (index === activeIndex) return;
+    setVisible(false);
+    window.setTimeout(() => {
+      setActiveIndex(index);
+      setVisible(true);
+    }, 200);
+  }
+
   function go(delta: number) {
-    setActiveIndex((i) => (i + delta + hotspots.length) % hotspots.length);
+    goTo((activeIndex + delta + hotspots.length) % hotspots.length);
   }
 
   return (
@@ -70,7 +84,7 @@ export function ShopTheLook({ section }: { section: ShopTheLookSection }) {
             <button
               key={h.id}
               type="button"
-              onClick={() => setActiveIndex(i)}
+              onClick={() => goTo(i)}
               aria-label={`Show ${h.product.name}`}
               className="absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center"
               style={{ left: `${h.x}%`, top: `${h.y}%` }}
@@ -91,7 +105,11 @@ export function ShopTheLook({ section }: { section: ShopTheLookSection }) {
         <div className="flex items-center gap-3 sm:gap-6">
           {hotspots.length > 1 && <ArrowButton direction="left" onClick={() => go(-1)} />}
 
-          <div className="flex-1 text-center">
+          <div
+            className={`flex-1 text-center transition-all duration-200 ease-out ${
+              visible ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"
+            }`}
+          >
             <div className="relative mx-auto h-64 w-64">
               {product.images[0]?.url && (
                 <Image
@@ -127,7 +145,7 @@ export function ShopTheLook({ section }: { section: ShopTheLookSection }) {
                   <button
                     key={h.id}
                     type="button"
-                    onClick={() => setActiveIndex(i)}
+                    onClick={() => goTo(i)}
                     aria-label={`Show ${h.product.name}`}
                     className={`h-1.5 w-1.5 rounded-full transition-colors ${
                       i === activeIndex ? "bg-royal" : "bg-border"
