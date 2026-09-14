@@ -124,49 +124,41 @@ body {
   .animate-ping {
     animation: none;
   }
-  .aurora-mark,
-  .aurora-text {
+  .aurora-mark {
     animation: none;
   }
 }
 
-/* Floating Amoria mark (AuroraMark.tsx): reproduces the exact colors and
-   motion of Magic UI's "Animated Gradient Text" component — speed 2,
-   colorFrom #4ade80, colorTo #06b6d4 — per the user's explicit request,
-   without importing that library. The technique (confirmed from Magic UI's
-   own published source): a linear-gradient from -> to -> from, sized to
-   `speed * 300%` of the element and animated continuously/linearly across
-   itself, background-position 0 -> that size, 8s per loop. speed 2 here
-   gives a 600% background-size.
-     - .aurora-mark applies it as the fill behind the icon's CSS mask.
-     - .aurora-text applies it as gradient text (background-clip: text) on
-       the pill's label.
-   This is a deliberate, one-off exception to the site's otherwise
-   green-free palette (see the "no green" rule elsewhere in this file's
-   history) — scoped to just this shimmer, at the user's request. */
-:root {
-  --magic-gradient-from: #4ade80;
-  --magic-gradient-to: #06b6d4;
-  --magic-gradient-size: 600%;
-}
-@keyframes magic-gradient-shift {
-  to {
-    background-position: var(--magic-gradient-size) 0;
-  }
-}
-.aurora-mark,
-.aurora-text {
-  background-image: linear-gradient(
-    to right,
-    var(--magic-gradient-from),
-    var(--magic-gradient-to),
-    var(--magic-gradient-from)
+/* Floating Amoria mark (AuroraMark.tsx): a warm, iridescent gradient sweep
+   across the icon that settles, then recurs every few seconds — built from
+   the site's own gold/royal/crimson palette (no green/blue aurora hues, to
+   stay on-theme) rather than a literal aurora borealis look. The icon is
+   used as a CSS mask so this gradient (not a flat fill) shows through its
+   shape. Held static for most of the cycle, then sweeps, so it reads as a
+   recurring shimmer rather than a constant animation. */
+.aurora-mark {
+  background: linear-gradient(
+    115deg,
+    var(--color-gold) 0%,
+    var(--color-gold-light) 22%,
+    var(--color-royal-light) 40%,
+    var(--color-royal) 55%,
+    var(--color-crimson) 70%,
+    var(--color-gold-light) 88%,
+    var(--color-gold) 100%
   );
-  background-size: var(--magic-gradient-size) 100%;
-  animation: magic-gradient-shift 8s linear infinite;
+  background-size: 320% 320%;
+  animation: aurora-sweep 6s ease-in-out infinite;
 }
-.aurora-text {
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+@keyframes aurora-sweep {
+  0%,
+  55% {
+    background-position: 0% 50%;
+  }
+  80% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }

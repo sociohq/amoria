@@ -106,7 +106,7 @@ export function AuroraMark() {
     >
       <span
         aria-hidden
-        className="aurora-text overflow-hidden whitespace-nowrap text-[13px] font-medium"
+        className="overflow-hidden whitespace-nowrap text-[13px] font-medium text-ink"
         style={{
           width,
           marginRight: expanded ? 10 : 0,
