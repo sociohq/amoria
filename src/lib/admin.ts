@@ -12,6 +12,7 @@ import {
   BlogBlock,
   ShopTheLookSection,
   ShopTheLookHotspot,
+  Review,
 } from "./types";
 
 // ---------- Dashboard ----------
@@ -183,6 +184,27 @@ export const updateHotspot = (id: string, data: Partial<HotspotInput>) =>
   });
 export const deleteHotspot = (id: string) =>
   apiFetch<void>(`/api/shop-the-look/admin/hotspots/${id}`, { method: "DELETE" });
+
+// ---------- Reviews ----------
+export interface ReviewInput {
+  customerName: string;
+  rating: number; // 1-5
+  reviewText: string;
+  productId?: string | null;
+  featured?: boolean;
+}
+
+export const listReviewsAdmin = () => apiFetch<{ reviews: Review[] }>("/api/reviews/admin");
+export const createReview = (data: ReviewInput) =>
+  apiFetch<{ review: Review }>("/api/reviews/admin", { method: "POST", body: JSON.stringify(data) });
+export const updateReview = (id: string, data: Partial<ReviewInput>) =>
+  apiFetch<{ review: Review }>(`/api/reviews/admin/${id}`, { method: "PATCH", body: JSON.stringify(data) });
+export const deleteReview = (id: string) => apiFetch<void>(`/api/reviews/admin/${id}`, { method: "DELETE" });
+export const uploadReviewImage = (id: string, file: File) => {
+  const formData = new FormData();
+  formData.append("image", file);
+  return apiUpload<{ review: Review }>(`/api/reviews/admin/${id}/upload`, formData);
+};
 
 // ---------- Blog Posts ----------
 export interface PostInput {

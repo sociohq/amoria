@@ -1,5 +1,5 @@
 import { apiFetch } from "./api";
-import { Product, Category, ShopTheLookSection } from "./types";
+import { Product, Category, ShopTheLookSection, Review } from "./types";
 
 export interface ListProductsParams {
   category?: string;
@@ -53,4 +53,19 @@ export async function getPriceRange(): Promise<{ min: number; max: number }> {
 export async function getShopTheLook(): Promise<ShopTheLookSection | null> {
   const { section } = await apiFetch<{ section: ShopTheLookSection | null }>("/api/shop-the-look");
   return section;
+}
+
+// The homepage's curated testimonials — empty until an admin marks at
+// least one review "featured", rather than ever showing invented ones.
+export async function getFeaturedReviews(): Promise<Review[]> {
+  const { reviews } = await apiFetch<{ reviews: Review[] }>("/api/reviews/featured");
+  return reviews;
+}
+
+// "Recommended for you" on a product page — same fragrance family first,
+// then category, then newest, filled server-side (see
+// getRecommendedProducts in product.controller.ts).
+export async function getRecommendedProducts(slug: string): Promise<Product[]> {
+  const { products } = await apiFetch<{ products: Product[] }>(`/api/products/${slug}/recommended`);
+  return products;
 }

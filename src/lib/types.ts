@@ -54,6 +54,23 @@ export interface Product {
   categories: Category[];
   images: ProductImage[];
   variants: ProductVariant[];
+  // Only present on the single-product fetch (getProductBySlug) — list
+  // views (shop page, homepage) don't include the full review list, only
+  // the avgRating/reviewCount summary above.
+  reviews?: Review[];
+}
+
+export interface Review {
+  id: string;
+  customerName: string;
+  rating: number; // 1-5
+  reviewText: string;
+  customerImage: string | null;
+  productId: string | null;
+  featured: boolean;
+  createdAt: string;
+  // Only present on the admin list (joined for display there).
+  product?: { name: string; slug: string } | null;
 }
 
 export interface Reel {
