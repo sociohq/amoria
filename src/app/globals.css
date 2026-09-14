@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  /* Lightened and de-saturated from the original #f6f4ee/#ece7db/#e2dccb —
-     user feedback that the page background read as "too much beige".
-     Same warm family, just a lighter, quieter version of it rather than a
-     literal white (which would fight the gold/royal accents that were
-     tuned against a warm base). */
-  --color-cream: #f9f8f5;
-  --color-cream-dark: #f1efe7;
+  /* #faf0e6 ("linen") is the user's exact requested background color.
+     --color-cream-dark/--color-border are derived from it (same offset
+     from cream as before this change) rather than picked freestanding,
+     so the page-bg / secondary-panel-bg / hairline-border hierarchy
+     keeps reading correctly against whatever --color-cream is set to. */
+  --color-cream: #faf0e6;
+  --color-cream-dark: #f2e7d8;
   --color-ink: #1c1a17;
   --color-ink-soft: #4a453e;
   --color-gold: #b08d57;
@@ -19,7 +19,7 @@
   --color-royal: #6f5a38;
   --color-royal-light: #a4895f;
   --color-crimson: #a3271e;
-  --color-border: #eae6da;
+  --color-border: #ebdecb;
 }
 
 @theme inline {
