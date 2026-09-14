@@ -14,8 +14,17 @@ export function Hero() {
           Scent, the way Arabia remembers it.
         </h1>
         <p className="mt-5 text-cream/85">Ouds, attars and signature perfumes crafted for the Gulf, delivered across the UAE.</p>
-        <Link href="/shop" className="mt-8 inline-block bg-ink px-8 py-3 label-caps text-cream hover:opacity-90">
-          Shop Amoria Signature
+        <Link
+          href="/shop"
+          className="group relative mt-8 inline-block overflow-hidden bg-ink px-8 py-3 label-caps text-cream transition-all duration-500 ease-out hover:scale-[1.03] hover:bg-royal hover:shadow-lg hover:shadow-royal/30"
+        >
+          <span className="relative z-10">Shop Amoria Signature</span>
+          {/* A thin gold sheen that sweeps across on hover — the "luxury
+              touch" rather than a plain opacity fade. */}
+          <span
+            aria-hidden
+            className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-gold-light/50 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full"
+          />
         </Link>
       </div>
     </ParallaxHero>
