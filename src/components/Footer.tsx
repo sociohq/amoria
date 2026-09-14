@@ -24,7 +24,8 @@ const HOUSE_LINKS = [
 const LEGAL_LINKS = [
   { label: "Terms & Conditions", href: "/terms" },
   { label: "Privacy Policy", href: "/privacy" },
-  { label: "Return & Refund Policy", href: "/returns" },
+  { label: "Return, Refund & Exchange Policy", href: "/returns" },
+  { label: "Delivery & Shipping Policy", href: "/shipping" },
 ];
 
 function FooterColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
