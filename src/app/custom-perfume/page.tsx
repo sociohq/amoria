@@ -160,15 +160,20 @@ export default function CustomPerfumePage() {
           above, without leaving the page. */}
       <div className="mx-auto mt-12 max-w-2xl overflow-hidden rounded-[2rem] border border-border bg-white shadow-xl">
         <div className="p-6 sm:p-10">
-          {/* Step indicator */}
-          <div className="flex flex-wrap items-center justify-center gap-y-3">
+          {/* Step indicator — circles + connectors only, always one line
+              (labels alongside each circle didn't fit the panel's fixed
+              width without wrapping); the current step's name is shown
+              as its own caption underneath instead. */}
+          <div className="flex items-center justify-center">
             {STEPS.map((s, i) => (
               <div key={s.n} className="flex items-center">
                 <button
                   type="button"
                   onClick={() => s.n < step && setStep(s.n)}
                   disabled={s.n >= step}
-                  className="flex items-center gap-2 disabled:cursor-default"
+                  aria-label={s.label}
+                  aria-current={step === s.n ? "step" : undefined}
+                  className="disabled:cursor-default"
                 >
                   <span
                     className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs ${
@@ -181,14 +186,14 @@ export default function CustomPerfumePage() {
                   >
                     {s.n}
                   </span>
-                  <span className={`label-caps hidden sm:inline ${step === s.n ? "text-ink" : "text-ink-soft"}`}>
-                    {s.label}
-                  </span>
                 </button>
-                {i < STEPS.length - 1 && <span className="mx-2 text-border sm:mx-4">›</span>}
+                {i < STEPS.length - 1 && <span className="mx-1.5 text-border sm:mx-3">›</span>}
               </div>
             ))}
           </div>
+          <p className="label-caps mt-3 text-center text-ink-soft">
+            Step {step} of {STEPS.length} — {STEPS[step - 1].label}
+          </p>
 
           <div className="mx-auto mt-10 max-w-xl">
             {step === 1 && (
