@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import { ParallaxHero } from "@/components/ParallaxHero";
 import { OurStores } from "@/components/OurStores";
@@ -122,17 +121,6 @@ export default function OurStoryPage() {
       {/* Visit Us — the same section used at the bottom of the homepage,
           rather than a one-off panel duplicating what it already says. */}
       <OurStores />
-
-      {/* Closing */}
-      <section className="bg-ink px-6 py-20 text-center sm:px-12">
-        <p className="font-serif text-3xl text-cream sm:text-4xl">Find your signature scent.</p>
-        <Link
-          href="/shop"
-          className="mt-8 inline-block bg-cream px-10 py-4 label-caps text-ink hover:opacity-90"
-        >
-          Shop The Collection
-        </Link>
-      </section>
     </div>
   );
 }
