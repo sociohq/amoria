@@ -104,6 +104,13 @@ export function AuroraMark() {
         transitionDuration: expanded ? "380ms" : "260ms",
       }}
     >
+      {/* A small comet of light continuously orbiting the pill's own edge,
+          in the icon's gold/crimson palette — independent of expand/collapse
+          state, so it keeps travelling whether this is a circle or a pill.
+          See the CSS for how the ring-only reveal works. */}
+      <span aria-hidden className="border-beam-mask">
+        <span className="border-beam" />
+      </span>
       <span
         aria-hidden
         className="overflow-hidden whitespace-nowrap text-[13px] font-medium text-ink"

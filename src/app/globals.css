@@ -124,7 +124,8 @@ body {
   .animate-ping {
     animation: none;
   }
-  .aurora-mark {
+  .aurora-mark,
+  .border-beam {
     animation: none;
   }
 }
@@ -160,5 +161,52 @@ body {
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+/* Border beam on the same floating mark: a small comet of light that
+   continuously orbits the button's own edge, in the icon's gold/crimson
+   palette — same technique as Magic UI's "Border Beam" component
+   (confirmed from its own published source), reimplemented here with no
+   dependency on it. Two parts:
+     - .border-beam-mask reveals only a thin ring around the button — a
+       transparent border, "cut out" via two masks intersected so just the
+       border-box-minus-padding-box area shows through — so whatever moves
+       inside it is invisible except where it overlaps that ring.
+     - .border-beam is a small gradient square animated along the button's
+       own edge via offset-path/offset-distance (natively CSS-animatable,
+       no JS motion library needed), which is what actually looks like it's
+       travelling around the ring. rounded-[9999px] in the offset-path
+       matches the button's own rounded-full, so it traces a circle when
+       collapsed and a pill once it's expanded — and since offset-path's
+       `rect(... auto ...)` resolves against the button's live size, it
+       keeps tracing correctly through the expand/collapse transition
+       itself, independent of that animation's own state.
+   Runs continuously regardless of collapsed/expanded state, per the
+   request that it keep rotating in both. */
+.border-beam-mask {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1.5px solid transparent;
+  -webkit-mask: linear-gradient(#000, #000) padding-box, linear-gradient(#000, #000);
+  mask: linear-gradient(#000, #000) padding-box, linear-gradient(#000, #000);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+.border-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 18px;
+  aspect-ratio: 1;
+  background: linear-gradient(to left, var(--color-gold-light), var(--color-crimson), transparent);
+  offset-path: rect(0 auto auto 0 round 9999px);
+  offset-distance: 0%;
+  animation: border-beam-travel 5s linear infinite;
+}
+@keyframes border-beam-travel {
+  to {
+    offset-distance: 100%;
   }
 }
