@@ -18,6 +18,7 @@ export default function AdminReviewsPage() {
   const [products, setProducts] = useState<Product[]>([]);
 
   const [customerName, setCustomerName] = useState("");
+  const [location, setLocation] = useState("");
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
   const [productId, setProductId] = useState(""); // "" = no product (homepage-only)
@@ -50,12 +51,14 @@ export default function AdminReviewsPage() {
     try {
       await createReview({
         customerName,
+        location: location || null,
         rating,
         reviewText,
         productId: productId || null,
         featured,
       });
       setCustomerName("");
+      setLocation("");
       setRating(5);
       setReviewText("");
       setProductId("");
@@ -119,7 +122,13 @@ export default function AdminReviewsPage() {
             placeholder="Customer name"
             value={customerName}
             onChange={(e) => setCustomerName(e.target.value)}
-            className={`${inputClass} min-w-[200px] flex-1`}
+            className={`${inputClass} min-w-[160px] flex-1`}
+          />
+          <input
+            placeholder="Location (optional, e.g. Dubai)"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            className={`${inputClass} min-w-[160px] flex-1`}
           />
           <select
             value={rating}
@@ -210,6 +219,7 @@ export default function AdminReviewsPage() {
               </td>
               <td className="max-w-[220px] py-3 text-ink">
                 {r.customerName}
+                {r.location && <span className="text-ink-soft">, {r.location}</span>}
                 <p className="mt-1 max-w-[220px] truncate text-xs text-ink-soft" title={r.reviewText}>
                   {r.reviewText}
                 </p>

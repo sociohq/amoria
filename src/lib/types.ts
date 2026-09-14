@@ -63,6 +63,7 @@ export interface Product {
 export interface Review {
   id: string;
   customerName: string;
+  location: string | null; // e.g. "Dubai" — shown as "Name, Location" when set
   rating: number; // 1-5
   reviewText: string;
   customerImage: string | null;

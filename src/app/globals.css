@@ -268,3 +268,31 @@ body {
   background-color: var(--color-gold-light);
   border-radius: 9999px;
 }
+
+/* ReviewsSection: continuously scrolls the (doubled) review list from
+   left to right — -50% to 0% rather than the more common 0 to -50%, since
+   that direction is what reads as "moving left to right" (new cards enter
+   from the left edge, travel right, and exit). Pauses on hover so a
+   review can actually be read; animation-duration is set per-instance
+   (via inline style, scaled to the review count) rather than fixed here. */
+@keyframes reviews-marquee {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0%);
+  }
+}
+.reviews-marquee {
+  animation-name: reviews-marquee;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.reviews-marquee:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reviews-marquee {
+    animation: none;
+  }
+}

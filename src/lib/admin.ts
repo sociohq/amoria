@@ -188,6 +188,7 @@ export const deleteHotspot = (id: string) =>
 // ---------- Reviews ----------
 export interface ReviewInput {
   customerName: string;
+  location?: string | null;
   rating: number; // 1-5
   reviewText: string;
   productId?: string | null;
