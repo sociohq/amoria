@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const FAQS = [
   {
@@ -92,6 +92,14 @@ const FAQS = [
 // styling, which reads poorly for full questions this long.
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
+  const contentRef = useRef<HTMLParagraphElement>(null);
+  // Grows/shrinks from a measured pixel height instead of popping in and
+  // out instantly — same technique as Accordion.tsx / MegaMenu.tsx.
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    setHeight(open ? (contentRef.current?.scrollHeight ?? 0) : 0);
+  }, [open]);
 
   return (
     <div className="py-5">
@@ -99,7 +107,11 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         <span className="font-serif text-lg text-ink">{q}</span>
         <span className="shrink-0 text-lg font-light text-ink-soft">{open ? "−" : "+"}</span>
       </button>
-      {open && <p className="mt-3 text-sm leading-relaxed text-ink-soft">{a}</p>}
+      <div style={{ height }} className="overflow-hidden transition-[height] duration-300 ease-in-out">
+        <p ref={contentRef} className="pt-3 text-sm leading-relaxed text-ink-soft">
+          {a}
+        </p>
+      </div>
     </div>
   );
 }
