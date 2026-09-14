@@ -12,11 +12,11 @@ export function AuroraMark() {
     <button
       type="button"
       aria-label="Amoria"
-      className="group fixed bottom-6 right-6 z-40 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-md shadow-ink/10 transition-transform duration-300 hover:scale-105"
+      className="group fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-md shadow-ink/10 transition-transform duration-300 hover:scale-105"
     >
       <span
         aria-hidden
-        className="aurora-mark relative h-16 w-16"
+        className="aurora-mark relative h-11 w-11"
         style={{
           WebkitMaskImage: "url(/icons/amoria-mark.svg)",
           maskImage: "url(/icons/amoria-mark.svg)",
