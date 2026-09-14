@@ -17,6 +17,10 @@ const cormorant = Cormorant({
   subsets: ["latin"],
   variable: "--font-cormorant",
   weight: ["400", "500", "600", "700"],
+  // Italic loaded for editorial pages (e.g. Our Story) that lean on it for
+  // emphasis — without this an `italic` class would fall back to a
+  // browser-synthesized slant instead of Cormorant's own italic glyphs.
+  style: ["normal", "italic"],
 });
 
 const jost = Jost({

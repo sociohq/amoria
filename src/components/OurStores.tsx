@@ -9,7 +9,11 @@ const EMAIL = "amoriaperfumeofficial@gmail.com";
 const PHONE_DISPLAY = "+971 50 755 0447";
 const PHONE_HREF = "+971507550447";
 
-const BACKGROUND_IMAGE = "/banners/our-stores.png";
+// Was "/banners/our-stores.png" — that file turned out to be a photo of a
+// Louis Vuitton counter display, not an Amoria store. Using a competitor's
+// branded retail photo here would misrepresent whose store this is, so
+// it's swapped for Amoria's own product photography instead.
+const BACKGROUND_IMAGE = "/categories/amoria-signature.png";
 
 export function OurStores() {
   const [email, setEmail] = useState("");
