@@ -124,8 +124,7 @@ body {
   .animate-ping {
     animation: none;
   }
-  .aurora-mark,
-  .aurora-glow {
+  .aurora-mark {
     animation: none;
   }
 }
@@ -161,32 +160,5 @@ body {
   }
   100% {
     background-position: 0% 50%;
-  }
-}
-
-/* Soft ambient glow behind the mark, pulsing in sync with the sweep above. */
-.aurora-glow {
-  position: absolute;
-  inset: -10px;
-  z-index: -1;
-  border-radius: 9999px;
-  background: radial-gradient(circle, var(--color-gold-light) 0%, var(--color-royal-light) 45%, transparent 72%);
-  filter: blur(12px);
-  opacity: 0;
-  animation: aurora-glow-pulse 6s ease-in-out infinite;
-}
-@keyframes aurora-glow-pulse {
-  0%,
-  55% {
-    opacity: 0;
-  }
-  70% {
-    opacity: 0.6;
-  }
-  90% {
-    opacity: 0.2;
-  }
-  100% {
-    opacity: 0;
   }
 }

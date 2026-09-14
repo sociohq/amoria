@@ -3,8 +3,10 @@
 // Floating bottom-right mark with a recurring "aurora" gradient shimmer —
 // the icon itself is used as a CSS mask (its solid black shapes become the
 // visible region) so the gradient can move across it, rather than being a
-// flat single-colour icon. Functionality is intentionally a no-op for now;
-// the user will specify what it should do on click in a later request.
+// flat single-colour icon. The moving gradient stays confined to the icon's
+// own shape (no glow/blur bleeding outside it). Functionality is
+// intentionally a no-op for now; the user will specify what it should do on
+// click in a later request.
 export function AuroraMark() {
   return (
     <button
@@ -12,7 +14,6 @@ export function AuroraMark() {
       aria-label="Amoria"
       className="group fixed bottom-6 right-6 z-40 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-md shadow-ink/10 transition-transform duration-300 hover:scale-105"
     >
-      <span aria-hidden className="aurora-glow" />
       <span
         aria-hidden
         className="aurora-mark relative h-16 w-16"
