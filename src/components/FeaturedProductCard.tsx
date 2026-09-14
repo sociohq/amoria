@@ -112,7 +112,7 @@ export function FeaturedProductCard({ product }: { product: Product }) {
 
       <div className="mt-3">
         <Link href={`/product/${product.slug}`}>
-          <p className="font-serif text-xl text-ink hover:text-emerald">{product.name}</p>
+          <p className="font-serif text-xl text-ink hover:text-royal">{product.name}</p>
         </Link>
         {product.scentAccords.length > 0 && (
           <p className="text-xs text-ink-soft">{product.scentAccords.join(" · ")}</p>
@@ -122,7 +122,7 @@ export function FeaturedProductCard({ product }: { product: Product }) {
           {product.compareAtPrice && (
             <span className="text-xs text-ink-soft line-through">{formatAed(product.compareAtPrice)}</span>
           )}
-          {off && <span className="text-xs text-emerald">{off}% Off</span>}
+          {off && <span className="text-xs text-royal">{off}% Off</span>}
         </div>
       </div>
     </div>

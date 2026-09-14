@@ -83,7 +83,7 @@ export default function WishlistPage() {
         </svg>
         <h1 className="mt-4 font-serif text-2xl text-ink">Your wishlist is empty</h1>
         <p className="mt-3 text-sm text-ink-soft">
-          Save the fragrances that catch your eye — tap the heart on any product to add it here.
+          Save the fragrances that catch your eye. Tap the heart on any product to add it here.
         </p>
         <Link
           href="/shop"
@@ -126,7 +126,7 @@ export default function WishlistPage() {
               </Link>
               <div className="mt-3">
                 <Link href={`/product/${product.slug}`}>
-                  <p className="font-serif text-xl text-ink hover:text-emerald">{product.name}</p>
+                  <p className="font-serif text-xl text-ink hover:text-royal">{product.name}</p>
                 </Link>
                 {product.categories[0] && <p className="text-xs text-ink-soft">{product.categories[0].name}</p>}
                 <p className="mt-1 text-sm text-ink">{formatAed(variant?.price ?? product.price)}</p>

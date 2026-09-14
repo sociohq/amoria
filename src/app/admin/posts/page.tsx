@@ -52,7 +52,7 @@ export default function AdminPostsPage() {
               <td className="py-2 text-ink">{p.title}</td>
               <td className="py-2 text-ink-soft">{p.status === "PUBLISHED" ? "Published" : "Draft"}</td>
               <td className="py-2 text-right">
-                <Link href={`/admin/posts/${p.id}`} className="mr-4 text-emerald hover:underline">
+                <Link href={`/admin/posts/${p.id}`} className="mr-4 text-royal hover:underline">
                   Edit
                 </Link>
                 <button onClick={() => handleDelete(p.id)} className="text-crimson hover:underline">

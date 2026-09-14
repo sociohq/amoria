@@ -4,7 +4,7 @@ export default function SustainabilityPage() {
   return (
     <ComingSoon
       title="Sustainability"
-      description="Our commitment to responsible sourcing and packaging — full details coming soon."
+      description="Our commitment to responsible sourcing and packaging. Full details coming soon."
     />
   );
 }

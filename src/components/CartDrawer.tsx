@@ -67,7 +67,7 @@ export function CartDrawer() {
                       <Link
                         href={`/product/${item.productSlug}`}
                         onClick={closeDrawer}
-                        className="text-sm font-medium text-ink hover:text-emerald"
+                        className="text-sm font-medium text-ink hover:text-royal"
                       >
                         {item.productName}
                       </Link>
@@ -102,14 +102,14 @@ export function CartDrawer() {
               <Link
                 href="/checkout"
                 onClick={closeDrawer}
-                className="block bg-emerald py-4 text-center label-caps text-cream hover:opacity-90"
+                className="block bg-royal py-4 text-center label-caps text-cream hover:opacity-90"
               >
                 Checkout
               </Link>
               <Link
                 href="/cart"
                 onClick={closeDrawer}
-                className="mt-3 block text-center text-sm text-ink-soft underline hover:text-emerald"
+                className="mt-3 block text-center text-sm text-ink-soft underline hover:text-royal"
               >
                 View Full Cart
               </Link>

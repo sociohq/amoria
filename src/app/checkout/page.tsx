@@ -86,7 +86,7 @@ export default function CheckoutPage() {
             <button
               type="button"
               onClick={() => openDrawer("login")}
-              className="text-xs text-ink-soft underline underline-offset-2 hover:text-emerald"
+              className="text-xs text-ink-soft underline underline-offset-2 hover:text-royal"
             >
               Sign in instead
             </button>
@@ -99,7 +99,7 @@ export default function CheckoutPage() {
           value={checkoutEmail}
           disabled={Boolean(user)}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full border border-border bg-cream px-4 py-3 text-sm outline-none focus:border-emerald disabled:opacity-60"
+          className="w-full border border-border bg-cream px-4 py-3 text-sm outline-none focus:border-royal disabled:opacity-60"
         />
         {!user && (
           <p className="text-xs text-ink-soft">
@@ -111,13 +111,13 @@ export default function CheckoutPage() {
           placeholder="Address line 1"
           value={line1}
           onChange={(e) => setLine1(e.target.value)}
-          className="w-full border border-border bg-cream px-4 py-3 text-sm outline-none focus:border-emerald"
+          className="w-full border border-border bg-cream px-4 py-3 text-sm outline-none focus:border-royal"
         />
         <input
           placeholder="Address line 2 (optional)"
           value={line2}
           onChange={(e) => setLine2(e.target.value)}
-          className="w-full border border-border bg-cream px-4 py-3 text-sm outline-none focus:border-emerald"
+          className="w-full border border-border bg-cream px-4 py-3 text-sm outline-none focus:border-royal"
         />
         <div className="flex gap-4">
           <input
@@ -125,12 +125,12 @@ export default function CheckoutPage() {
             placeholder="City"
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className="w-1/2 border border-border bg-cream px-4 py-3 text-sm outline-none focus:border-emerald"
+            className="w-1/2 border border-border bg-cream px-4 py-3 text-sm outline-none focus:border-royal"
           />
           <select
             value={emirate}
             onChange={(e) => setEmirate(e.target.value)}
-            className="w-1/2 border border-border bg-cream px-4 py-3 text-sm outline-none focus:border-emerald"
+            className="w-1/2 border border-border bg-cream px-4 py-3 text-sm outline-none focus:border-royal"
           >
             {["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Fujairah", "Ras Al Khaimah", "Umm Al Quwain"].map((e) => (
               <option key={e} value={e}>
@@ -145,14 +145,14 @@ export default function CheckoutPage() {
           placeholder="Phone"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          className="w-full border border-border bg-cream px-4 py-3 text-sm outline-none focus:border-emerald"
+          className="w-full border border-border bg-cream px-4 py-3 text-sm outline-none focus:border-royal"
         />
 
         {error && <p className="text-sm text-crimson">{error}</p>}
         <button
           type="submit"
           disabled={submitting}
-          className="w-full bg-emerald py-3 label-caps text-cream hover:opacity-90 disabled:opacity-50"
+          className="w-full bg-royal py-3 label-caps text-cream hover:opacity-90 disabled:opacity-50"
         >
           {submitting ? "Redirecting to payment…" : "Continue to Payment"}
         </button>
@@ -176,7 +176,7 @@ export default function CheckoutPage() {
             placeholder="Coupon code"
             value={couponCode}
             onChange={(e) => setCouponCode(e.target.value)}
-            className="flex-1 border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-emerald"
+            className="flex-1 border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-royal"
           />
           <button
             type="button"
@@ -188,7 +188,7 @@ export default function CheckoutPage() {
           </button>
         </div>
         {couponError && <p className="mt-2 text-sm text-crimson">{couponError}</p>}
-        {discount !== null && <p className="mt-2 text-sm text-emerald">Coupon applied: -{formatAed(discount)}</p>}
+        {discount !== null && <p className="mt-2 text-sm text-royal">Coupon applied: -{formatAed(discount)}</p>}
 
         <div className="mt-6 space-y-2 text-sm">
           <div className="flex justify-between text-ink">
@@ -196,7 +196,7 @@ export default function CheckoutPage() {
             <span>{formatAed(subtotal)}</span>
           </div>
           {discount !== null && (
-            <div className="flex justify-between text-emerald">
+            <div className="flex justify-between text-royal">
               <span>Discount</span>
               <span>-{formatAed(discount)}</span>
             </div>

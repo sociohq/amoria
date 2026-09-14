@@ -75,7 +75,7 @@ export function Header({ categories }: { categories: Category[] }) {
     transparent ? "bg-transparent" : "border-b border-border bg-white"
   }`;
   const textClass = transparent ? "text-cream" : "text-ink-soft";
-  const linkHoverClass = transparent ? "hover:text-gold-light" : "hover:text-emerald";
+  const linkHoverClass = transparent ? "hover:text-gold-light" : "hover:text-royal";
 
   return (
     <header className={isHome ? "fixed inset-x-0 top-0 z-40" : "sticky top-0 z-40"}>

@@ -74,13 +74,13 @@ export default function AdminReelsPage() {
     }
   }
 
-  const inputClass = "border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-emerald";
+  const inputClass = "border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-royal";
 
   return (
     <div>
       <h1 className="mb-6 font-serif text-2xl text-ink">Reels</h1>
       <p className="mb-6 max-w-2xl text-sm text-ink-soft">
-        The homepage&apos;s &quot;Shop By Reels&quot; video carousel — each entry is one looping video tied to a real
+        The homepage&apos;s &quot;Shop By Reels&quot; video carousel: each entry is one looping video tied to a real
         product. Only <strong className="text-ink">Active</strong> reels show on the storefront. Video URL can be a
         local <code>/public</code> path or any hosted video URL.
       </p>
@@ -128,7 +128,7 @@ export default function AdminReelsPage() {
                   type="number"
                   defaultValue={r.position}
                   onBlur={(e) => savePosition(r.id, Number(e.target.value))}
-                  className="w-16 border border-border bg-cream px-2 py-1 text-xs outline-none focus:border-emerald"
+                  className="w-16 border border-border bg-cream px-2 py-1 text-xs outline-none focus:border-royal"
                 />
               </td>
               <td className="py-2 text-center">

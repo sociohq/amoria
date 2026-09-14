@@ -15,7 +15,7 @@ export function VariantManager({
 }) {
   const [draft, setDraft] = useState({ size: "", price: 0, stock: 0, sku: "" });
   const [error, setError] = useState<string | null>(null);
-  const inputClass = "w-full border border-border bg-cream px-2 py-1.5 text-sm outline-none focus:border-emerald";
+  const inputClass = "w-full border border-border bg-cream px-2 py-1.5 text-sm outline-none focus:border-royal";
 
   async function handleUpdateField(v: ProductVariant, field: "price" | "stock", value: number) {
     try {

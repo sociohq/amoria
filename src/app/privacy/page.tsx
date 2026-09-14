@@ -16,7 +16,7 @@ export default function PrivacyPage() {
         },
         {
           heading: "How We Use Your Information",
-          body: "Your information is used to process orders, provide customer support, and — only with your consent — send updates about new products and offers.",
+          body: "Your information is used to process orders, provide customer support, and (only with your consent) send updates about new products and offers.",
         },
         {
           heading: "Data Sharing",

@@ -155,7 +155,7 @@ export function PostBody({ content }: { content: BlogBlock[] }) {
               return (
                 <blockquote key={i} className="border-l-2 border-gold py-1 pl-6">
                   <p className="font-serif text-xl leading-snug text-ink">&ldquo;{block.text}&rdquo;</p>
-                  {block.attribution && <cite className="mt-2 block text-xs not-italic text-ink-soft">— {block.attribution}</cite>}
+                  {block.attribution && <cite className="mt-2 block text-xs not-italic text-ink-soft">{block.attribution}</cite>}
                 </blockquote>
               );
             case "product":

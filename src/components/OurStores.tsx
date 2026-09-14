@@ -25,7 +25,7 @@ export function OurStores() {
       setStatus("done");
     } catch (err) {
       setStatus("error");
-      setError(err instanceof ApiError ? err.message : "Something went wrong — please try again.");
+      setError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
     }
   }
 
@@ -40,7 +40,7 @@ export function OurStores() {
         </p>
 
         {status === "done" ? (
-          <p className="mt-5 text-sm text-emerald">Thank you for signing up — welcome to Amoria.</p>
+          <p className="mt-5 text-sm text-royal">Thank you for signing up. Welcome to Amoria.</p>
         ) : (
           <form onSubmit={handleSubscribe} className="mt-5 flex items-center border border-ink/30 px-4 py-3">
             <input
@@ -69,16 +69,16 @@ export function OurStores() {
 
         <p className="label-caps text-gold">Visit Us</p>
         <p className="mt-2 text-sm text-ink-soft">
-          Icon Residency 2, Shop 7 — opposite ADNOC service station
+          Icon Residency 2, Shop 7 (opposite ADNOC service station)
           <br />
           Al Muwaihat 3, Ajman, United Arab Emirates
         </p>
 
         <p className="label-caps mt-6 text-gold">Get In Touch</p>
-        <a href={`mailto:${EMAIL}`} className="mt-2 block text-sm text-ink hover:text-emerald">
+        <a href={`mailto:${EMAIL}`} className="mt-2 block text-sm text-ink hover:text-royal">
           {EMAIL}
         </a>
-        <a href={`tel:${PHONE_HREF}`} className="mt-1 block text-sm text-ink hover:text-emerald">
+        <a href={`tel:${PHONE_HREF}`} className="mt-1 block text-sm text-ink hover:text-royal">
           {PHONE_DISPLAY}
         </a>
       </div>

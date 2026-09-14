@@ -25,8 +25,8 @@ const jost = Jost({
 });
 
 export const metadata: Metadata = {
-  title: "Amoria — Luxury Perfumes",
-  description: "Fragrances for men, women, and unisex — crafted for the moments that matter.",
+  title: "Amoria | Luxury Perfumes",
+  description: "Fragrances for men, women, and unisex, crafted for the moments that matter.",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

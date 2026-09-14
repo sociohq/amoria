@@ -34,7 +34,7 @@ function FooterColumn({ title, links }: { title: string; links: { label: string;
       <ul className="space-y-2">
         {links.map((l) => (
           <li key={l.href}>
-            <a href={l.href} className="text-sm text-ink hover:text-emerald">
+            <a href={l.href} className="text-sm text-ink hover:text-royal">
               {l.label}
             </a>
           </li>
@@ -57,7 +57,7 @@ export function Footer() {
     } catch (err) {
       // Rare (the endpoint only really rejects a malformed email) — the
       // input just stays put so they can fix it and retry.
-      alert(err instanceof ApiError ? err.message : "Something went wrong — please try again.");
+      alert(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
     }
   }
 
@@ -82,7 +82,7 @@ export function Footer() {
         <div>
           <p className="label-caps mb-4 text-cream/50">Stay Informed</p>
           {subscribed ? (
-            <p className="text-sm text-gold-light">You&apos;re on the list — thank you.</p>
+            <p className="text-sm text-gold-light">You&apos;re on the list. Thank you.</p>
           ) : (
             <form onSubmit={handleSubscribe} className="flex items-center border-b border-cream/30 pb-2">
               <input

@@ -49,7 +49,7 @@ export default function CartPage() {
               {item.image && <Image src={item.image} alt={item.productName} fill sizes="80px" className="object-cover" />}
             </div>
             <div className="flex-1">
-              <Link href={`/product/${item.productSlug}`} className="text-sm text-ink hover:text-emerald">
+              <Link href={`/product/${item.productSlug}`} className="text-sm text-ink hover:text-royal">
                 {item.productName}
               </Link>
               <p className="text-xs text-ink-soft">{item.variantSize}</p>
@@ -93,13 +93,13 @@ export default function CartPage() {
           </div>
           <p className="text-xs text-ink-soft">Shipping and any coupon are applied at checkout.</p>
           {user ? (
-            <Link href="/checkout" className="block bg-emerald py-3 text-center label-caps text-cream hover:opacity-90">
+            <Link href="/checkout" className="block bg-royal py-3 text-center label-caps text-cream hover:opacity-90">
               Proceed to Checkout
             </Link>
           ) : (
             <button
               onClick={() => openAuthDrawer("login")}
-              className="block w-full bg-emerald py-3 text-center label-caps text-cream hover:opacity-90"
+              className="block w-full bg-royal py-3 text-center label-caps text-cream hover:opacity-90"
             >
               Sign in to Checkout
             </button>

@@ -20,7 +20,7 @@ export default function AdminProductsPage() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-serif text-2xl text-ink">Products</h1>
-        <Link href="/admin/products/new" className="bg-emerald px-5 py-2 label-caps text-cream hover:opacity-90">
+        <Link href="/admin/products/new" className="bg-royal px-5 py-2 label-caps text-cream hover:opacity-90">
           + New Product
         </Link>
       </div>
@@ -48,7 +48,7 @@ export default function AdminProductsPage() {
                 <td className="py-2 text-ink-soft">{formatAed(p.price)}</td>
                 <td className="py-2 text-ink-soft">{p.variants.length}</td>
                 <td className="py-2 text-right">
-                  <Link href={`/admin/products/${p.slug}`} className="text-emerald hover:underline">
+                  <Link href={`/admin/products/${p.slug}`} className="text-royal hover:underline">
                     Edit
                   </Link>
                 </td>

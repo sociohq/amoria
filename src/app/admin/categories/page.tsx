@@ -108,10 +108,10 @@ export default function AdminCategoriesPage() {
         A category with an image appears as a card in the homepage &quot;Browse Our Category&quot; showcase.
         <br />
         <strong className="text-ink">Menu Group</strong> is the column heading this category appears under in the
-        header&apos;s &quot;The Shop&quot; dropdown (e.g. &quot;Shop By Gender&quot;) — leave blank to keep it out of
+        header&apos;s &quot;The Shop&quot; dropdown (e.g. &quot;Shop By Gender&quot;); leave blank to keep it out of
         the dropdown entirely. <strong className="text-ink">Position</strong> orders categories within their group,
         lowest first. <strong className="text-ink">Featured</strong> puts one category&apos;s image up as the
-        dropdown&apos;s promo tile — checking it here unchecks it everywhere else, and it needs an image set first.
+        dropdown&apos;s promo tile. Checking it here unchecks it everywhere else, and it needs an image set first.
       </p>
 
       <form onSubmit={handleCreate} className="mb-8 flex max-w-md gap-2">
@@ -120,7 +120,7 @@ export default function AdminCategoriesPage() {
           placeholder="Category name (e.g. Men)"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="flex-1 border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-emerald"
+          className="flex-1 border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-royal"
         />
         <button disabled={submitting} className="bg-ink px-5 py-2 label-caps text-cream hover:opacity-90 disabled:opacity-50">
           Add
@@ -169,7 +169,7 @@ export default function AdminCategoriesPage() {
                   value={drafts[c.id]?.menuGroup ?? ""}
                   onChange={(e) => setDrafts((d) => ({ ...d, [c.id]: { ...d[c.id], menuGroup: e.target.value } }))}
                   onBlur={() => saveMenuGroup(c.id)}
-                  className="w-40 border border-border bg-cream px-2 py-1 text-xs outline-none focus:border-emerald"
+                  className="w-40 border border-border bg-cream px-2 py-1 text-xs outline-none focus:border-royal"
                 />
               </td>
               <td className="py-2">
@@ -178,7 +178,7 @@ export default function AdminCategoriesPage() {
                   value={drafts[c.id]?.position ?? "0"}
                   onChange={(e) => setDrafts((d) => ({ ...d, [c.id]: { ...d[c.id], position: e.target.value } }))}
                   onBlur={() => savePosition(c.id)}
-                  className="w-16 border border-border bg-cream px-2 py-1 text-xs outline-none focus:border-emerald"
+                  className="w-16 border border-border bg-cream px-2 py-1 text-xs outline-none focus:border-royal"
                 />
               </td>
               <td className="py-2 text-center">

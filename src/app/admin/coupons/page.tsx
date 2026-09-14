@@ -40,7 +40,7 @@ export default function AdminCouponsPage() {
     refresh();
   }
 
-  const inputClass = "border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-emerald";
+  const inputClass = "border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-royal";
 
   return (
     <div>

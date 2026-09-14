@@ -17,7 +17,7 @@ export function CategoryShowcase({ categories }: { categories: Category[] }) {
           <p className="label-caps text-gold">Extrait De Parfum</p>
           <h2 className="mt-1 font-serif text-3xl text-ink">Browse Our Category</h2>
         </div>
-        <Link href="/shop" className="text-sm text-ink underline underline-offset-4 hover:text-emerald">
+        <Link href="/shop" className="text-sm text-ink underline underline-offset-4 hover:text-royal">
           View all
         </Link>
       </div>

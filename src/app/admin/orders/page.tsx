@@ -85,7 +85,7 @@ export default function AdminOrdersPage() {
                     ))}
                   </select>
                 ) : (
-                  <span className="text-xs text-ink-soft">—</span>
+                  <span className="text-xs text-ink-soft">N/A</span>
                 )}
               </td>
             </tr>

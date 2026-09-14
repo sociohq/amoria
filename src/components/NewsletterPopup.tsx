@@ -72,7 +72,7 @@ export function NewsletterPopup() {
       }
     } catch (err) {
       setStatus("error");
-      setError(err instanceof ApiError ? err.message : "Something went wrong — please try again.");
+      setError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
     }
   }
 
@@ -126,7 +126,7 @@ export function NewsletterPopup() {
               <p className="mt-4 text-sm text-cream/75">{settings.newsletterPopupSubtext}</p>
 
               {status === "done" ? (
-                <p className="mt-6 text-sm text-cream">Thank you for signing up — welcome to Amoria.</p>
+                <p className="mt-6 text-sm text-cream">Thank you for signing up. Welcome to Amoria.</p>
               ) : (
                 <form onSubmit={handleSubmit} className="mt-6">
                   <input

@@ -51,7 +51,7 @@ export function ProductSection({
           <h2 className="mt-1 font-serif text-3xl text-ink">{title}</h2>
         </div>
         <div className="flex items-center gap-5">
-          <Link href="/shop" className="text-sm text-ink underline underline-offset-4 hover:text-emerald">
+          <Link href="/shop" className="text-sm text-ink underline underline-offset-4 hover:text-royal">
             View all
           </Link>
           {products.length > 4 && (

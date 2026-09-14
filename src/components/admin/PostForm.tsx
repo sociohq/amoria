@@ -8,7 +8,7 @@ import { Post, Product, BlogBlock } from "@/lib/types";
 import { ApiError } from "@/lib/api";
 import { PostBlockEditor } from "./PostBlockEditor";
 
-const inputClass = "w-full border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-emerald";
+const inputClass = "w-full border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-royal";
 
 const EMPTY: PostInput = {
   title: "",
@@ -78,7 +78,7 @@ export function PostForm({ post }: { post?: Post }) {
         />
       </div>
       <div>
-        <label className="label-caps mb-1 block text-ink-soft">Slug (optional — derived from title)</label>
+        <label className="label-caps mb-1 block text-ink-soft">Slug (optional, derived from title)</label>
         <input
           value={draft.slug ?? ""}
           onChange={(e) => setDraft({ ...draft, slug: e.target.value })}

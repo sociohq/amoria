@@ -54,7 +54,7 @@ export function AuthDrawer() {
     }
   }
 
-  const inputClass = "w-full border border-border bg-white px-4 py-3 text-sm outline-none focus:border-emerald";
+  const inputClass = "w-full border border-border bg-white px-4 py-3 text-sm outline-none focus:border-royal";
 
   return (
     <>
@@ -131,14 +131,14 @@ export function AuthDrawer() {
             {mode === "login" ? (
               <>
                 New here?{" "}
-                <button onClick={() => switchMode("register")} className="text-emerald hover:underline">
+                <button onClick={() => switchMode("register")} className="text-royal hover:underline">
                   Create an account
                 </button>
               </>
             ) : (
               <>
                 Already have an account?{" "}
-                <button onClick={() => switchMode("login")} className="text-emerald hover:underline">
+                <button onClick={() => switchMode("login")} className="text-royal hover:underline">
                   Sign in
                 </button>
               </>

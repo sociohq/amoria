@@ -25,7 +25,7 @@ export function AdminNav() {
           <Link
             key={link.href}
             href={link.href}
-            className={`label-caps ${active ? "text-emerald" : "text-ink-soft hover:text-emerald"}`}
+            className={`label-caps ${active ? "text-royal" : "text-ink-soft hover:text-royal"}`}
           >
             {link.label}
           </Link>

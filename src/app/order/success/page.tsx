@@ -40,7 +40,7 @@ function GuestVerifyForm({ email, onVerified }: { email: string; onVerified: () 
       await apiFetch("/api/auth/resend-guest-otp", { method: "POST", body: JSON.stringify({ email }) });
       setResent(true);
     } catch {
-      setError("Could not resend the code — please try again shortly.");
+      setError("Could not resend the code. Please try again shortly.");
     } finally {
       setResending(false);
     }
@@ -61,13 +61,13 @@ function GuestVerifyForm({ email, onVerified }: { email: string; onVerified: () 
           placeholder="000000"
           value={code}
           onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-          className="w-full border border-border bg-cream px-4 py-3 text-center text-lg tracking-[0.5em] outline-none focus:border-emerald"
+          className="w-full border border-border bg-cream px-4 py-3 text-center text-lg tracking-[0.5em] outline-none focus:border-royal"
         />
         {error && <p className="text-sm text-crimson">{error}</p>}
         <button
           type="submit"
           disabled={verifying || code.length !== 6}
-          className="w-full bg-emerald py-3 label-caps text-cream transition-opacity hover:opacity-90 disabled:opacity-50"
+          className="w-full bg-royal py-3 label-caps text-cream transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           {verifying ? "Verifying…" : "Verify & Sign In"}
         </button>
@@ -76,9 +76,9 @@ function GuestVerifyForm({ email, onVerified }: { email: string; onVerified: () 
         type="button"
         onClick={handleResend}
         disabled={resending}
-        className="mt-3 text-xs text-ink-soft underline underline-offset-2 hover:text-emerald disabled:opacity-50"
+        className="mt-3 text-xs text-ink-soft underline underline-offset-2 hover:text-royal disabled:opacity-50"
       >
-        {resent ? "Code resent — check your inbox" : resending ? "Resending…" : "Didn't get it? Resend code"}
+        {resent ? "Code resent. Check your inbox" : resending ? "Resending…" : "Didn't get it? Resend code"}
       </button>
     </div>
   );
@@ -124,7 +124,7 @@ function OrderSuccessContent() {
       <h1 className="font-serif text-3xl text-ink">{isPaid ? "Thank you for your order" : "Order received"}</h1>
       <p className="mt-2 text-ink-soft">
         {isPaid
-          ? "Your payment was successful — a confirmation has been recorded."
+          ? "Your payment was successful. A confirmation has been recorded."
           : "We're still confirming your payment. This page will update once it clears."}
       </p>
 
@@ -153,8 +153,8 @@ function OrderSuccessContent() {
         />
       )}
       {verified && (
-        <p className="mx-auto mt-6 max-w-sm text-sm text-emerald">
-          Email verified — you&apos;re now signed in to your new Amoria account.
+        <p className="mx-auto mt-6 max-w-sm text-sm text-royal">
+          Email verified. You&apos;re now signed in to your new Amoria account.
         </p>
       )}
 

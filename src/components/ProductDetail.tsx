@@ -86,7 +86,7 @@ export function ProductDetail({ product }: { product: Product }) {
               <button
                 key={img.id}
                 onClick={() => setActiveImage(i)}
-                className={`relative h-20 w-20 overflow-hidden bg-cream-dark ${i === activeImage ? "ring-2 ring-emerald" : ""}`}
+                className={`relative h-20 w-20 overflow-hidden bg-cream-dark ${i === activeImage ? "ring-2 ring-royal" : ""}`}
               >
                 {img.url && (
                   <Image src={img.url} alt={img.altText ?? product.name} fill sizes="80px" className="object-cover" />
@@ -124,7 +124,7 @@ export function ProductDetail({ product }: { product: Product }) {
           {product.compareAtPrice && (
             <span className="text-ink-soft line-through">{formatAed(product.compareAtPrice)}</span>
           )}
-          {off && <span className="font-medium text-emerald">{off}% Off</span>}
+          {off && <span className="font-medium text-royal">{off}% Off</span>}
         </div>
         <p className="mt-1 text-xs text-ink-soft">Tax included. Shipping calculated at checkout.</p>
 
@@ -136,7 +136,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 onClick={() => setVariantId(v.id)}
                 disabled={v.stock === 0}
                 className={`border px-4 py-2 text-sm transition-colors ${
-                  v.id === variantId ? "border-emerald bg-emerald text-cream" : "border-border text-ink hover:border-emerald"
+                  v.id === variantId ? "border-royal bg-royal text-cream" : "border-border text-ink hover:border-royal"
                 } ${v.stock === 0 ? "cursor-not-allowed opacity-40" : ""}`}
               >
                 {v.size}
@@ -152,7 +152,7 @@ export function ProductDetail({ product }: { product: Product }) {
             { icon: ShippingIcon, label: "Free Shipping", sub: "All Orders Above AED 99" },
           ].map((b) => (
             <div key={b.label} className="flex flex-col items-center">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gold/10 text-emerald">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gold/10 text-royal">
                 <b.icon className="h-5 w-5" />
               </div>
               <p className="mt-2 text-xs font-medium text-ink">{b.label}</p>
@@ -223,7 +223,7 @@ export function ProductDetail({ product }: { product: Product }) {
           {isScentCapable && (
             <Accordion title="How, When & Where to Apply Fragrances">
               <p>
-                Apply to pulse points — wrists, neck, and behind the ears — right after showering, when skin is
+                Apply to pulse points (wrists, neck, and behind the ears) right after showering, when skin is
                 warm and slightly damp for the longest-lasting effect.
               </p>
             </Accordion>
@@ -233,7 +233,7 @@ export function ProductDetail({ product }: { product: Product }) {
           </Accordion>
         </div>
 
-        <p className="mt-6 flex items-center gap-2 text-sm text-emerald">
+        <p className="mt-6 flex items-center gap-2 text-sm text-royal">
           <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="9" /></svg>
           Order today, you&apos;ll receive your package between <strong>{deliveryEstimate()}</strong>
         </p>

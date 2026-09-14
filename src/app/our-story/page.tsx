@@ -6,11 +6,11 @@ export default function OurStoryPage() {
       <div className="mt-8 space-y-5 text-ink-soft">
         <p>
           Amoria was founded on a simple idea: fragrance should feel considered, not mass-produced. Every scent
-          in the collection is an Extrait de Parfum — the most concentrated, longest-lasting form of perfume —
+          in the collection is an Extrait de Parfum, the most concentrated, longest-lasting form of perfume,
           composed and bottled in small batches rather than rushed to shelf.
         </p>
         <p>
-          We work with ouds, attars, and classic French perfumery techniques to build fragrances for the Gulf —
+          We work with ouds, attars, and classic French perfumery techniques to build fragrances for the Gulf,
           made to hold up through the heat of the day and linger long after.
         </p>
       </div>

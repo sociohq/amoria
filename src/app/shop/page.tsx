@@ -50,7 +50,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
               <Link
                 key={s.value}
                 href={withParam("sort", s.value)}
-                className={`label-caps ${sort === s.value ? "text-emerald" : "text-ink-soft hover:text-emerald"}`}
+                className={`label-caps ${sort === s.value ? "text-royal" : "text-ink-soft hover:text-royal"}`}
               >
                 {s.label}
               </Link>
@@ -70,7 +70,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
       {products.length === 0 ? (
         <p className="py-20 text-center text-ink-soft">
-          No products found yet — check back soon, or ask an admin to add one.
+          No products found yet. Check back soon, or ask an admin to add one.
         </p>
       ) : (
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
@@ -86,7 +86,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
             <Link
               key={n}
               href={withParam("page", String(n))}
-              className={`h-8 w-8 text-center leading-8 ${n === page ? "bg-emerald text-cream" : "text-ink-soft hover:text-emerald"}`}
+              className={`h-8 w-8 text-center leading-8 ${n === page ? "bg-royal text-cream" : "text-ink-soft hover:text-royal"}`}
             >
               {n}
             </Link>

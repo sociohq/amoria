@@ -4,7 +4,7 @@ export default function GiftCardsPage() {
   return (
     <ComingSoon
       title="Gift Cards"
-      description="Give the gift of fragrance. Digital gift cards are on their way — check back soon."
+      description="Give the gift of fragrance. Digital gift cards are on their way. Check back soon."
     />
   );
 }

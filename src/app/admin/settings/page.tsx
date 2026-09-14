@@ -34,7 +34,7 @@ export default function AdminSettingsPage() {
 
   if (!settings) return <p className="text-ink-soft">Loading…</p>;
 
-  const inputClass = "w-full border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-emerald";
+  const inputClass = "w-full border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-royal";
 
   return (
     <div>
@@ -162,8 +162,8 @@ export default function AdminSettingsPage() {
         </div>
 
         {error && <p className="text-sm text-crimson">{error}</p>}
-        {saved && <p className="text-sm text-emerald">Saved.</p>}
-        <button disabled={submitting} className="bg-emerald px-6 py-3 label-caps text-cream hover:opacity-90 disabled:opacity-50">
+        {saved && <p className="text-sm text-royal">Saved.</p>}
+        <button disabled={submitting} className="bg-royal px-6 py-3 label-caps text-cream hover:opacity-90 disabled:opacity-50">
           {submitting ? "Saving…" : "Save Settings"}
         </button>
       </form>

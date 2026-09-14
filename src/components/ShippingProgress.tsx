@@ -25,7 +25,7 @@ export function ShippingProgress({ subtotal }: { subtotal: number }) {
           Add <strong>{formatAed(remaining)}</strong> more to unlock <strong>free shipping</strong>
         </p>
       ) : (
-        <p className="text-emerald">You&apos;ve unlocked free shipping</p>
+        <p className="text-royal">You&apos;ve unlocked free shipping</p>
       )}
     </div>
   );

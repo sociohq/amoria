@@ -64,7 +64,7 @@ export function MegaMenu({ categories, open }: { categories: Category[]; open: b
                     <li key={c.id}>
                       <Link
                         href={`/shop?category=${c.slug}`}
-                        className="whitespace-nowrap text-sm text-ink transition-colors hover:text-emerald"
+                        className="whitespace-nowrap text-sm text-ink transition-colors hover:text-royal"
                       >
                         {c.name}
                       </Link>

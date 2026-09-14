@@ -32,7 +32,7 @@ export default async function BlogIndexPage() {
           reserving space below the hero for a "more stories" grid that
           has nothing in it. */}
       {rest.length === 0 && !featured && (
-        <p className="px-6 py-16 text-center text-ink-soft sm:px-12">No stories yet — check back soon.</p>
+        <p className="px-6 py-16 text-center text-ink-soft sm:px-12">No stories yet. Check back soon.</p>
       )}
       {rest.length > 0 && (
         <div className="px-6 py-16 sm:px-12">
@@ -50,7 +50,7 @@ export default async function BlogIndexPage() {
                 </div>
                 <div className="mt-3">
                   {p.heroEyebrow && <p className="label-caps text-gold">{p.heroEyebrow}</p>}
-                  <p className="mt-1 font-serif text-xl text-ink group-hover:text-emerald">{p.title}</p>
+                  <p className="mt-1 font-serif text-xl text-ink group-hover:text-royal">{p.title}</p>
                   <p className="mt-1 line-clamp-2 text-sm text-ink-soft">{p.excerpt}</p>
                 </div>
               </Link>

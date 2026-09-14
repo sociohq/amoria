@@ -93,7 +93,7 @@ export function ShopFilterDrawer({
     <>
       <button
         onClick={openDrawer}
-        className="flex items-center gap-2 label-caps text-ink-soft transition-colors hover:text-emerald"
+        className="flex items-center gap-2 label-caps text-ink-soft transition-colors hover:text-royal"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
           <line x1="4" y1="7" x2="20" y2="7" />
@@ -103,7 +103,7 @@ export function ShopFilterDrawer({
         </svg>
         Filter
         {activeCount > 0 && (
-          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald text-[10px] text-cream">
+          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-royal text-[10px] text-cream">
             {activeCount}
           </span>
         )}
@@ -146,7 +146,7 @@ export function ShopFilterDrawer({
                       key={c.id}
                       onClick={() => setCategory(active ? "" : c.slug)}
                       className={`border px-4 py-2 text-sm transition-colors ${
-                        active ? "border-emerald bg-emerald text-cream" : "border-border text-ink hover:border-emerald"
+                        active ? "border-royal bg-royal text-cream" : "border-border text-ink hover:border-royal"
                       }`}
                     >
                       {c.name}
@@ -177,12 +177,12 @@ export function ShopFilterDrawer({
         <div className="space-y-3 border-t border-border px-8 py-7">
           <button
             onClick={apply}
-            className="w-full bg-emerald py-4 label-caps text-cream transition-opacity hover:opacity-90"
+            className="w-full bg-royal py-4 label-caps text-cream transition-opacity hover:opacity-90"
           >
             Apply Filters
           </button>
           {activeCount > 0 && (
-            <button onClick={clearAll} className="w-full text-center text-sm text-ink-soft underline hover:text-emerald">
+            <button onClick={clearAll} className="w-full text-center text-sm text-ink-soft underline hover:text-royal">
               Clear All
             </button>
           )}

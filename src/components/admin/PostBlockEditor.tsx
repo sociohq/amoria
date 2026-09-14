@@ -2,7 +2,7 @@
 
 import { Product, BlogBlock } from "@/lib/types";
 
-const inputClass = "w-full border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-emerald";
+const inputClass = "w-full border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-royal";
 
 const BLOCK_DEFAULTS: Record<BlogBlock["type"], BlogBlock> = {
   heading: { type: "heading", text: "" },
@@ -131,7 +131,7 @@ export function PostBlockEditor({
             key={t}
             type="button"
             onClick={() => addBlock(t)}
-            className="border border-border px-3 py-1.5 text-xs text-ink-soft hover:border-emerald hover:text-emerald"
+            className="border border-border px-3 py-1.5 text-xs text-ink-soft hover:border-royal hover:text-royal"
           >
             + {t}
           </button>

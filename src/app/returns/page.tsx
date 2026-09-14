@@ -20,7 +20,7 @@ export default function ReturnsPage() {
         },
         {
           heading: "Damaged or Incorrect Items",
-          body: "If your order arrives damaged or incorrect, contact us within 48 hours of delivery with photos — we'll arrange a replacement or refund at no extra cost.",
+          body: "If your order arrives damaged or incorrect, contact us within 48 hours of delivery with photos, and we'll arrange a replacement or refund at no extra cost.",
         },
       ]}
     />

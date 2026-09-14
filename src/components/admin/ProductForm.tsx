@@ -124,7 +124,7 @@ export function ProductForm({
     }
   }
 
-  const inputClass = "w-full border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-emerald";
+  const inputClass = "w-full border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-royal";
   const scentCapable = SCENT_CAPABLE_TYPES.includes(value.productType);
 
   return (
@@ -320,7 +320,7 @@ export function ProductForm({
             className={`${inputClass} font-mono text-xs`}
           />
           <p className="mt-1 text-xs text-ink-soft">
-            Anything specific to this product type that doesn&apos;t have its own field yet — e.g. material, dimensions, burn time.
+            Anything specific to this product type that doesn&apos;t have its own field yet (e.g. material, dimensions, burn time).
           </p>
         </div>
       )}
@@ -365,7 +365,7 @@ export function ProductForm({
           <button
             type="button"
             onClick={() => set("variants", [...value.variants, { size: "", price: 0, stock: 0, sku: "" }])}
-            className="mt-2 text-sm text-emerald hover:underline"
+            className="mt-2 text-sm text-royal hover:underline"
           >
             + Add variant
           </button>
@@ -373,7 +373,7 @@ export function ProductForm({
       )}
 
       {error && <p className="text-sm text-crimson">{error}</p>}
-      <button disabled={submitting} className="bg-emerald px-6 py-3 label-caps text-cream hover:opacity-90 disabled:opacity-50">
+      <button disabled={submitting} className="bg-royal px-6 py-3 label-caps text-cream hover:opacity-90 disabled:opacity-50">
         {submitting ? "Saving…" : submitLabel}
       </button>
     </form>

@@ -112,7 +112,7 @@ export function PriceRangeSlider({ min, max, value, onChange, step = 10, formatV
       </div>
       <div ref={trackRef} onClick={handleTrackClick} className="relative h-1.5 cursor-pointer rounded-full bg-border">
         <div
-          className="absolute h-1.5 rounded-full bg-emerald"
+          className="absolute h-1.5 rounded-full bg-royal"
           style={{ left: `${lowPct}%`, width: `${highPct - lowPct}%` }}
         />
         {(
@@ -134,7 +134,7 @@ export function PriceRangeSlider({ min, max, value, onChange, step = 10, formatV
               if (e.key === "ArrowRight" || e.key === "ArrowUp") nudge(which, step);
               if (e.key === "ArrowLeft" || e.key === "ArrowDown") nudge(which, -step);
             }}
-            className="absolute top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 cursor-grab touch-none rounded-full border-2 border-emerald bg-white shadow transition-transform active:scale-110 active:cursor-grabbing"
+            className="absolute top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 cursor-grab touch-none rounded-full border-2 border-royal bg-white shadow transition-transform active:scale-110 active:cursor-grabbing"
             style={{ left: `${pct}%` }}
           />
         ))}

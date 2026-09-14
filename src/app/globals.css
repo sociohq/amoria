@@ -7,8 +7,12 @@
   --color-ink-soft: #4a453e;
   --color-gold: #b08d57;
   --color-gold-light: #d4b483;
-  --color-emerald: #0e3b2e;
-  --color-emerald-light: #1c5c46;
+  /* Royal beige — the site's primary accent (CTAs, active/success states,
+     links). Replaces a former deep-green "emerald" token; kept deep enough
+     for cream-text buttons to stay readable, and deliberately more muted
+     / grayer than --color-gold so the two accents stay visually distinct. */
+  --color-royal: #6f5a38;
+  --color-royal-light: #a4895f;
   --color-crimson: #a3271e;
   --color-border: #e2dccb;
 }
@@ -20,8 +24,8 @@
   --color-ink-soft: var(--color-ink-soft);
   --color-gold: var(--color-gold);
   --color-gold-light: var(--color-gold-light);
-  --color-emerald: var(--color-emerald);
-  --color-emerald-light: var(--color-emerald-light);
+  --color-royal: var(--color-royal);
+  --color-royal-light: var(--color-royal-light);
   --color-crimson: var(--color-crimson);
   --color-border: var(--color-border);
   --font-serif: var(--font-cormorant);

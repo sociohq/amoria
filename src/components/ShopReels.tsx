@@ -70,7 +70,7 @@ function ReelCard({ reel }: { reel: Reel }) {
           {image && <Image src={image.url} alt={product.name} fill sizes="48px" className="object-cover" />}
         </Link>
         <div className="min-w-0 flex-1">
-          <Link href={`/product/${product.slug}`} className="block truncate text-sm text-ink hover:text-emerald">
+          <Link href={`/product/${product.slug}`} className="block truncate text-sm text-ink hover:text-royal">
             {product.name}
           </Link>
           <p className="text-xs text-ink-soft">{formatAed(variant?.price ?? product.price)}</p>

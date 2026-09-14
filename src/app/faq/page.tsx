@@ -1,7 +1,7 @@
 const FAQS = [
   {
     q: "Is Amoria 100% authentic?",
-    a: "Yes — every bottle is original and verified, sourced directly from Amoria Perfume.",
+    a: "Yes. Every bottle is original and verified, sourced directly from Amoria Perfume.",
   },
   {
     q: "How fast is shipping in the UAE?",
@@ -9,7 +9,7 @@ const FAQS = [
   },
   {
     q: "Can I return a product?",
-    a: "Unopened items can be returned within 14 days of delivery — see our Return & Refund Policy for details.",
+    a: "Unopened items can be returned within 14 days of delivery. See our Return & Refund Policy for details.",
   },
   {
     q: "How long does an Extrait de Parfum last?",

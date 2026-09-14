@@ -12,7 +12,7 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     getDashboard()
       .then(setSummary)
-      .catch(() => setError("Could not load dashboard — is the backend reachable?"));
+      .catch(() => setError("Could not load dashboard. Is the backend reachable?"));
   }, []);
 
   if (error) return <p className="text-crimson">{error}</p>;
