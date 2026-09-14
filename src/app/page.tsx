@@ -22,6 +22,9 @@ export default async function HomePage() {
       <Hero />
       <CategoryShowcase categories={categories} />
       <Reveal>
+        <FindYourScentBanner />
+      </Reveal>
+      <Reveal>
         <ProductSection eyebrow="Extrait de Parfum" title="Featured Products" products={featured} />
       </Reveal>
       {shopTheLook && (
@@ -31,9 +34,6 @@ export default async function HomePage() {
       )}
       <Reveal>
         <ShopReels />
-      </Reveal>
-      <Reveal>
-        <FindYourScentBanner />
       </Reveal>
       <Reveal>
         <ReviewsSection eyebrow="Loved By Our Customers" title="What Our Customers Say" reviews={reviews} />
