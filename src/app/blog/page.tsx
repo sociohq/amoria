@@ -1,51 +1,33 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { listPosts } from "@/lib/posts";
 
 export default async function BlogIndexPage() {
   const posts = await listPosts().catch(() => []);
-  const [featured, ...rest] = posts;
 
   return (
     <div>
-      <section className="relative flex h-[60vh] min-h-[380px] items-end overflow-hidden bg-ink">
-        {featured && (
-          <Image src={featured.heroImage} alt="" fill sizes="100vw" className="object-cover" priority />
-        )}
+      {/* Static hero — introduces the Journal, doesn't preview any one
+          post. Every post (the one dummy story today, more later) is
+          listed as an equal card in the grid below instead. */}
+      <section className="relative flex h-[50vh] min-h-[340px] items-end overflow-hidden bg-ink">
+        <Image src="/categories/inspired-fragrance.png" alt="" fill sizes="100vw" className="object-cover" priority />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         <div className="relative z-10 px-6 pb-16 sm:px-12">
           <p className="label-caps text-gold-light">The Journal</p>
-          {/* Deliberately plain text, not a link to the post — landing on
-              /blog from the nav should always feel like a listing page,
-              even with only one story published, rather than the
-              headline itself acting as a shortcut straight into it. */}
-          <h1 className="mt-3 max-w-3xl font-serif text-4xl leading-tight text-cream sm:text-5xl">
-            {featured ? featured.title : "Stories from Amoria"}
+          <h1 className="mt-3 max-w-2xl font-serif text-4xl leading-tight text-cream sm:text-5xl">
+            Stories from the house of Amoria.
           </h1>
-          {featured && (
-            <>
-              <p className="mt-4 max-w-xl text-cream/85">{featured.excerpt}</p>
-              <Link
-                href={`/blog/${featured.slug}`}
-                className="mt-6 inline-block border border-cream px-8 py-3 label-caps text-cream hover:bg-cream hover:text-ink"
-              >
-                Read The Story
-              </Link>
-            </>
-          )}
+          <p className="mt-4 max-w-xl text-cream/85">Fragrance guides, rituals, and notes from behind the counter.</p>
         </div>
       </section>
 
-      {/* Only the featured post exists yet — no padded, empty section
-          reserving space below the hero for a "more stories" grid that
-          has nothing in it. */}
-      {rest.length === 0 && !featured && (
-        <p className="px-6 py-16 text-center text-ink-soft sm:px-12">No stories yet. Check back soon.</p>
-      )}
-      {rest.length > 0 && (
-        <div className="px-6 py-16 sm:px-12">
+      <div className="px-6 py-16 sm:px-12">
+        {posts.length === 0 ? (
+          <p className="py-16 text-center text-ink-soft">No stories yet. Check back soon.</p>
+        ) : (
           <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-            {rest.map((p) => (
+            {posts.map((p) => (
               <Link key={p.id} href={`/blog/${p.slug}`} className="group block">
                 <div className="relative aspect-[4/5] overflow-hidden bg-cream-dark">
                   <Image
@@ -64,8 +46,8 @@ export default async function BlogIndexPage() {
               </Link>
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
