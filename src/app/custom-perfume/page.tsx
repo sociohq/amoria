@@ -533,7 +533,7 @@ export default function CustomPerfumePage() {
             )}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center gap-2 bg-ink px-8 py-3 label-caps text-cream hover:opacity-90"
+            className="mt-6 inline-flex items-center gap-2 bg-[#25D366] px-8 py-3 label-caps text-white hover:bg-[#1ebe5b]"
           >
             <WhatsAppIcon />
             Chat On WhatsApp
