@@ -14,6 +14,19 @@ export const FRAGRANCE_FAMILIES = [
   "Leathery & Distinctive",
 ] as const;
 export type FragranceFamily = (typeof FRAGRANCE_FAMILIES)[number];
+
+// Real ingredient photography (site owner-provided) for the fragrance
+// family step, replacing the earlier emoji-icon placeholders.
+export const FRAGRANCE_FAMILY_IMAGES: Record<FragranceFamily, string> = {
+  "Fresh & Citrusy": "/families/fresh-citrusy.png",
+  "Green & Aromatic": "/families/green-aromatic.png",
+  "Fruity & Delicious": "/families/fruity-delicious.png",
+  "Floral & Delicate": "/families/floral-delicate.png",
+  "Woody & Profound": "/families/woody-profound.png",
+  "Sweet & Gourmand": "/families/sweet-gourmand.png",
+  "Spicy & Ambery": "/families/spicy-ambery.png",
+  "Leathery & Distinctive": "/families/leathery-distinctive.png",
+};
 export type Concentration = "20" | "25" | "30";
 
 export interface PricingTier {

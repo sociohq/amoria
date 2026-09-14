@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useAuth } from "@/lib/auth-context";
 import { useAuthDrawer } from "@/lib/auth-drawer-context";
 import { ApiError } from "@/lib/api";
 import { formatAed } from "@/lib/money";
-import { fragranceFamilyIcon } from "@/lib/fragrance";
 import {
   FRAGRANCE_FAMILIES,
+  FRAGRANCE_FAMILY_IMAGES,
   FragranceFamily,
   Gender,
   PricingTier,
@@ -63,11 +64,21 @@ function OptionTile({
   );
 }
 
-// A wider, left-aligned tile (icon + label) for the 8-option fragrance
-// family grid — a row of centered OptionTiles would be too cramped for
-// that many options, so this reuses the reference's 2-column layout
-// instead.
-function FamilyTile({ active, onClick, icon, label }: { active: boolean; onClick: () => void; icon: string; label: string }) {
+// A wider, left-aligned tile (ingredient photo + label) for the
+// 8-option fragrance family grid — a row of centered OptionTiles would
+// be too cramped for that many options, so this reuses the reference's
+// 2-column layout instead.
+function FamilyTile({
+  active,
+  onClick,
+  image,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  image: string;
+  label: string;
+}) {
   return (
     <button
       type="button"
@@ -76,8 +87,8 @@ function FamilyTile({ active, onClick, icon, label }: { active: boolean; onClick
         active ? "border-royal bg-royal/5 text-ink" : "border-border text-ink-soft hover:border-ink/30"
       }`}
     >
-      <span className="text-xl" aria-hidden>
-        {icon}
+      <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-cream-dark">
+        <Image src={image} alt="" fill sizes="48px" className="object-cover" />
       </span>
       <span className="label-caps">{label}</span>
     </button>
@@ -271,7 +282,7 @@ export default function CustomPerfumePage() {
                       key={f}
                       active={fragranceFamily === f}
                       onClick={() => setFragranceFamily(f)}
-                      icon={fragranceFamilyIcon(f)}
+                      image={FRAGRANCE_FAMILY_IMAGES[f]}
                       label={f}
                     />
                   ))}
