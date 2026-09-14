@@ -117,6 +117,7 @@ export function ScentFinderChat({ open, onClose }: { open: boolean; onClose: () 
       role="dialog"
       aria-modal="true"
       aria-label="Find your scent"
+      data-lenis-prevent
       className={`fixed bottom-24 right-6 z-50 flex h-[min(600px,80vh)] w-[380px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-border bg-cream shadow-2xl transition-all duration-300 ${
         open ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0"
       }`}
@@ -124,7 +125,8 @@ export function ScentFinderChat({ open, onClose }: { open: boolean; onClose: () 
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border px-5 py-4">
         <p className="label-caps flex items-center gap-2 text-gold">
-          <span aria-hidden>✦</span> Find Your Scent
+          <Image src="/icons/amoria-mark.svg" alt="" aria-hidden width={13} height={13} />
+          Find Your Scent
         </p>
         <button type="button" onClick={onClose} aria-label="Close" className="text-ink-soft transition-colors hover:text-ink">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
@@ -133,8 +135,16 @@ export function ScentFinderChat({ open, onClose }: { open: boolean; onClose: () 
         </button>
       </div>
 
-      {/* Transcript */}
-      <div ref={scrollRef} className="chat-scroll flex-1 space-y-3 overflow-y-auto px-4 py-4">
+      {/* Transcript — data-lenis-prevent stops the site's global Lenis
+          smooth-scroll from hijacking wheel/touch input here and scrolling
+          the page behind this panel instead of the transcript itself;
+          overscroll-contain is the same fix for native scroll chaining once
+          this list hits its own top/bottom. */}
+      <div
+        ref={scrollRef}
+        data-lenis-prevent
+        className="chat-scroll flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4"
+      >
         {messages.map((m) => (
           <ChatBubble key={m.id} message={m} />
         ))}
