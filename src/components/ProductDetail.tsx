@@ -86,7 +86,11 @@ export function ProductDetail({ product }: { product: Product }) {
               <button
                 key={img.id}
                 onClick={() => setActiveImage(i)}
-                className={`relative h-20 w-20 overflow-hidden bg-cream-dark ${i === activeImage ? "ring-2 ring-royal" : ""}`}
+                // A plain opacity fade reads as the selected thumbnail without
+                // a boxed-in ring/frame around it — quieter at this small size.
+                className={`relative h-20 w-20 overflow-hidden bg-cream-dark transition-opacity ${
+                  i === activeImage ? "opacity-100" : "opacity-50 hover:opacity-80"
+                }`}
               >
                 {img.url && (
                   <Image src={img.url} alt={img.altText ?? product.name} fill sizes="80px" className="object-cover" />
