@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Product } from "@/lib/types";
 import { formatAed, percentOff } from "@/lib/money";
-import { fragranceFamilyIcon, genderTag } from "@/lib/fragrance";
+import { fragranceFamilyImage, genderTag } from "@/lib/fragrance";
 import { WishlistButton } from "./WishlistButton";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -36,8 +36,11 @@ export function ProductCard({ product }: { product: Product }) {
             <span className="rounded-full border border-border bg-white/90 px-3 py-1 text-xs text-ink-soft">{gender}</span>
           )}
           {product.fragranceFamily && (
-            <span className="rounded-full border border-border bg-white/90 px-3 py-1 text-xs text-ink-soft">
-              {fragranceFamilyIcon(product.fragranceFamily)} {product.fragranceFamily}
+            <span className="flex items-center gap-1.5 rounded-full border border-border bg-white/90 py-1 pl-1 pr-3 text-xs text-ink-soft">
+              <span className="relative h-4 w-4 shrink-0 overflow-hidden rounded-full">
+                <Image src={fragranceFamilyImage(product.fragranceFamily)} alt="" fill sizes="16px" className="object-cover" />
+              </span>
+              {product.fragranceFamily}
             </span>
           )}
         </div>
