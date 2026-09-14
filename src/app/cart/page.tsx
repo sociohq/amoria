@@ -4,14 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { useCart } from "@/lib/cart-context";
-import { useAuth } from "@/lib/auth-context";
-import { useAuthDrawer } from "@/lib/auth-drawer-context";
 import { formatAed } from "@/lib/money";
 
 export default function CartPage() {
   const { items, subtotal, loading, updateQuantity, removeItem } = useCart();
-  const { user } = useAuth();
-  const { openDrawer: openAuthDrawer } = useAuthDrawer();
   const [busyId, setBusyId] = useState<string | null>(null);
 
   async function withBusy(id: string, fn: () => Promise<void>) {
@@ -91,19 +87,14 @@ export default function CartPage() {
             <span>Subtotal</span>
             <span>{formatAed(subtotal)}</span>
           </div>
+          {/* No login required to buy — checkout collects a guest email
+              and verifies it via OTP after payment (see /checkout and
+              guestAccount.service.ts on the backend), so this always
+              goes straight there regardless of auth state. */}
           <p className="text-xs text-ink-soft">Shipping and any coupon are applied at checkout.</p>
-          {user ? (
-            <Link href="/checkout" className="block bg-royal py-3 text-center label-caps text-cream hover:opacity-90">
-              Proceed to Checkout
-            </Link>
-          ) : (
-            <button
-              onClick={() => openAuthDrawer("login")}
-              className="block w-full bg-royal py-3 text-center label-caps text-cream hover:opacity-90"
-            >
-              Sign in to Checkout
-            </button>
-          )}
+          <Link href="/checkout" className="block bg-royal py-3 text-center label-caps text-cream hover:opacity-90">
+            Proceed to Checkout
+          </Link>
         </div>
       </div>
     </div>
