@@ -1,8 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --color-cream: #f6f4ee;
-  --color-cream-dark: #ece7db;
+  /* Lightened and de-saturated from the original #f6f4ee/#ece7db/#e2dccb —
+     user feedback that the page background read as "too much beige".
+     Same warm family, just a lighter, quieter version of it rather than a
+     literal white (which would fight the gold/royal accents that were
+     tuned against a warm base). */
+  --color-cream: #f9f8f5;
+  --color-cream-dark: #f1efe7;
   --color-ink: #1c1a17;
   --color-ink-soft: #4a453e;
   --color-gold: #b08d57;
@@ -14,7 +19,7 @@
   --color-royal: #6f5a38;
   --color-royal-light: #a4895f;
   --color-crimson: #a3271e;
-  --color-border: #e2dccb;
+  --color-border: #eae6da;
 }
 
 @theme inline {
