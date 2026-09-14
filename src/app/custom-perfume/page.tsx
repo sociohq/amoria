@@ -391,6 +391,39 @@ export default function CustomPerfumePage() {
           </form>
         )}
       </div>
+
+      {/* Below the wizard regardless of step — the site owner's WhatsApp
+          concierge offer: every custom blend is filmed while it's made,
+          and that video is sent over WhatsApp on request rather than
+          posted anywhere public. */}
+      <div className="mx-auto mt-16 max-w-2xl border border-border bg-cream-dark/40 p-8 text-center">
+        <p className="label-caps text-gold">Watch Yours Come To Life</p>
+        <h2 className="mt-2 font-serif text-2xl text-ink">Join Our WhatsApp For Your Perfume&apos;s Video</h2>
+        <p className="mx-auto mt-3 max-w-md text-sm text-ink-soft">
+          Every custom blend is hand-crafted, and we film the process. Message us on WhatsApp and we&apos;ll send
+          you the video of your own perfume being made.
+        </p>
+        <a
+          href={`https://wa.me/971507550447?text=${encodeURIComponent(
+            "Hi! I'd love a video of how my custom Amoria perfume was made."
+          )}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-6 inline-flex items-center gap-2 bg-ink px-8 py-3 label-caps text-cream hover:opacity-90"
+        >
+          <WhatsAppIcon />
+          Chat On WhatsApp
+        </a>
+      </div>
     </div>
+  );
+}
+
+function WhatsAppIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+      <path d="M12.04 0C5.408 0 .04 5.373.04 12c0 2.115.552 4.104 1.518 5.828L0 24l6.335-1.653A11.94 11.94 0 0012.04 24C18.672 24 24 18.627 24 12S18.672 0 12.04 0zm0 21.833a9.79 9.79 0 01-4.994-1.363l-.358-.213-3.75.98.999-3.652-.233-.375A9.767 9.767 0 012.24 12c0-5.428 4.416-9.833 9.8-9.833 5.383 0 9.799 4.405 9.799 9.833 0 5.428-4.416 9.833-9.799 9.833z" />
+    </svg>
   );
 }
