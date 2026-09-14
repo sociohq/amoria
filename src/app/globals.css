@@ -41,6 +41,13 @@ body {
   color: var(--color-ink);
 }
 
+/* Every Cormorant heading site-wide (font-serif is the only utility that
+   applies it) gets tighter tracking — one rule here instead of adding a
+   tracking class to each of the ~65 individual usages. */
+.font-serif {
+  letter-spacing: -2px;
+}
+
 /* Small-caps letter-spaced section labels, matching the reference product
    page's "SCENT PYRAMID" / "PERFUMER'S NOTE" accordion headers. */
 .label-caps {
