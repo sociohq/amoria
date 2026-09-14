@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import { ParallaxHero } from "@/components/ParallaxHero";
+import { OurStores } from "@/components/OurStores";
 
 const VALUES = [
   "Extrait De Parfum Only",
@@ -113,31 +114,9 @@ export default function OurStoryPage() {
         </Reveal>
       </section>
 
-      {/* Visit the boutique */}
-      <section className="relative flex min-h-[420px] items-center overflow-hidden">
-        <Image
-          src="/categories/womens-perfume.png"
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover object-top"
-        />
-        <div className="pointer-events-none absolute inset-0 bg-black/60" />
-        <div className="relative z-10 mx-auto max-w-lg px-6 text-center text-cream sm:px-12">
-          <p className="label-caps text-gold-light">Visit Us</p>
-          <h2 className="mt-3 font-serif text-3xl sm:text-4xl">Visit The Boutique</h2>
-          <p className="mt-4 text-cream/85">
-            You&apos;ll find Amoria at Icon Residency 2, Shop 7, opposite the ADNOC service station on Al Muwaihat
-            3, Ajman.
-          </p>
-          <Link
-            href="/contact"
-            className="mt-8 inline-block border border-cream px-8 py-3 label-caps text-cream hover:bg-cream hover:text-ink"
-          >
-            Get In Touch
-          </Link>
-        </div>
-      </section>
+      {/* Visit Us — the same section used at the bottom of the homepage,
+          rather than a one-off panel duplicating what it already says. */}
+      <OurStores />
 
       {/* Closing */}
       <section className="bg-ink px-6 py-20 text-center sm:px-12">
