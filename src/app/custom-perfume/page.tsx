@@ -26,13 +26,48 @@ const STEPS = [
   { n: 5, label: "Review & Pay" },
 ] as const;
 
-// Pictorial icons rather than text alone — one at a time (not "not
-// particular" as a literal third gender, but a neutral/either-gender
-// person for "For Everyone").
-const GENDER_OPTIONS: { value: Gender; label: string; icon: string }[] = [
-  { value: "him", label: "For Him", icon: "👨" },
-  { value: "her", label: "For Her", icon: "👩" },
-  { value: "unisex", label: "For Everyone", icon: "🧑" },
+// Minimal line-art symbols (matching the header's thin stroke-icon
+// style) rather than emoji, which render inconsistently across
+// platforms and read as childish against the rest of the site.
+function MarsIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="9" cy="15" r="6" />
+      <line x1="13.5" y1="10.5" x2="19" y2="5" />
+      <polyline points="14 5 19 5 19 10" />
+    </svg>
+  );
+}
+
+function VenusIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="9" r="6" />
+      <line x1="12" y1="15" x2="12" y2="21" />
+      <line x1="9" y1="18" x2="15" y2="18" />
+    </svg>
+  );
+}
+
+// The combined Mars + Venus glyph — a single circle radiating both
+// symbols — reads as "either/both" for the neutral "For Everyone"
+// option, rather than a literal third gender.
+function UnisexIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="5" />
+      <line x1="15.5" y1="8.5" x2="19" y2="5" />
+      <polyline points="14.5 5 19 5 19 9.5" />
+      <line x1="12" y1="17" x2="12" y2="21" />
+      <line x1="9.5" y1="19" x2="14.5" y2="19" />
+    </svg>
+  );
+}
+
+const GENDER_OPTIONS: { value: Gender; label: string; Icon: () => React.JSX.Element }[] = [
+  { value: "him", label: "For Him", Icon: MarsIcon },
+  { value: "her", label: "For Her", Icon: VenusIcon },
+  { value: "unisex", label: "For Everyone", Icon: UnisexIcon },
 ];
 
 const inputClass =
@@ -249,8 +284,8 @@ export default function CustomPerfumePage() {
                 <div className="flex gap-4">
                   {GENDER_OPTIONS.map((o) => (
                     <OptionTile key={o.value} active={gender === o.value} onClick={() => setGender(o.value)}>
-                      <span className="block text-2xl" aria-hidden>
-                        {o.icon}
+                      <span className="flex justify-center" aria-hidden>
+                        <o.Icon />
                       </span>
                       <span className="label-caps mt-2 block">{o.label}</span>
                     </OptionTile>
