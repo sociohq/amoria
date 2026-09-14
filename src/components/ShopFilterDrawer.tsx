@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Category } from "@/lib/types";
+import { PriceRangeSlider } from "./PriceRangeSlider";
 
 interface ShopFilterDrawerProps {
   categories: Category[];
@@ -10,6 +11,9 @@ interface ShopFilterDrawerProps {
   currentSort: string;
   currentMinPrice?: string;
   currentMaxPrice?: string;
+  // The actual min/max price across the catalog — the slider's draggable
+  // bounds, so they always match what's really for sale.
+  priceBounds: { min: number; max: number };
 }
 
 // Mirrors the header mega menu's grouping (see Header.tsx) so "Filter"
@@ -26,51 +30,61 @@ export function ShopFilterDrawer({
   currentSort,
   currentMinPrice,
   currentMaxPrice,
+  priceBounds,
 }: ShopFilterDrawerProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [category, setCategory] = useState(currentCategory ?? "");
-  const [minPrice, setMinPrice] = useState(currentMinPrice ?? "");
-  const [maxPrice, setMaxPrice] = useState(currentMaxPrice ?? "");
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    currentMinPrice ? Number(currentMinPrice) : priceBounds.min,
+    currentMaxPrice ? Number(currentMaxPrice) : priceBounds.max,
+  ]);
 
   const groups = GROUP_ORDER.map((group) => ({
     group,
     items: categories.filter((c) => c.menuGroup === group),
   })).filter((g) => g.items.length > 0);
 
-  // Reflects what's actually applied to the page right now — shown on the
-  // trigger even while the drawer is closed, independent of whatever's
-  // being drafted inside it.
-  const activeCount = [currentCategory, currentMinPrice, currentMaxPrice].filter(Boolean).length;
+  // Only counts as an active filter once it's actually narrower than the
+  // full catalog range — otherwise every visit would show "1 active"
+  // just from the slider defaulting to its own bounds.
+  const priceIsFiltered =
+    (currentMinPrice !== undefined && Number(currentMinPrice) > priceBounds.min) ||
+    (currentMaxPrice !== undefined && Number(currentMaxPrice) < priceBounds.max);
+  const activeCount = [currentCategory, priceIsFiltered ? "price" : undefined].filter(Boolean).length;
 
   function openDrawer() {
     // Re-sync the draft with whatever's currently applied — the URL may
     // have changed (Back button, a sort link) since this last opened.
     setCategory(currentCategory ?? "");
-    setMinPrice(currentMinPrice ?? "");
-    setMaxPrice(currentMaxPrice ?? "");
+    setPriceRange([
+      currentMinPrice ? Number(currentMinPrice) : priceBounds.min,
+      currentMaxPrice ? Number(currentMaxPrice) : priceBounds.max,
+    ]);
     setOpen(true);
   }
 
-  function buildUrl(overrides: { category?: string; minPrice?: string; maxPrice?: string }) {
+  function buildUrl(overrides: { category?: string; priceRange?: [number, number] }) {
     const params = new URLSearchParams();
     if (overrides.category) params.set("category", overrides.category);
     if (currentSort !== "newest") params.set("sort", currentSort);
-    if (overrides.minPrice) params.set("minPrice", overrides.minPrice);
-    if (overrides.maxPrice) params.set("maxPrice", overrides.maxPrice);
+    if (overrides.priceRange) {
+      const [lo, hi] = overrides.priceRange;
+      if (lo > priceBounds.min) params.set("minPrice", String(lo));
+      if (hi < priceBounds.max) params.set("maxPrice", String(hi));
+    }
     const qs = params.toString();
     return qs ? `/shop?${qs}` : "/shop";
   }
 
   function apply() {
-    router.push(buildUrl({ category, minPrice, maxPrice }));
+    router.push(buildUrl({ category, priceRange }));
     setOpen(false);
   }
 
   function clearAll() {
     setCategory("");
-    setMinPrice("");
-    setMaxPrice("");
+    setPriceRange([priceBounds.min, priceBounds.max]);
     router.push(buildUrl({}));
     setOpen(false);
   }
@@ -143,30 +157,21 @@ export function ShopFilterDrawer({
             </div>
           ))}
 
-          <div>
-            <h3 className="label-caps text-ink-soft">Price (AED)</h3>
-            <div className="mt-3 flex items-center gap-3">
-              <input
-                type="number"
-                min={0}
-                inputMode="numeric"
-                placeholder="Min"
-                value={minPrice}
-                onChange={(e) => setMinPrice(e.target.value)}
-                className="w-full border border-border bg-white px-4 py-3 text-sm outline-none focus:border-emerald"
-              />
-              <span className="text-ink-soft">—</span>
-              <input
-                type="number"
-                min={0}
-                inputMode="numeric"
-                placeholder="Max"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-full border border-border bg-white px-4 py-3 text-sm outline-none focus:border-emerald"
-              />
+          {priceBounds.max > priceBounds.min && (
+            <div>
+              <h3 className="label-caps text-ink-soft">Price (AED)</h3>
+              <div className="mt-4 px-2">
+                <PriceRangeSlider
+                  min={priceBounds.min}
+                  max={priceBounds.max}
+                  value={priceRange}
+                  onChange={setPriceRange}
+                  step={5}
+                  formatValue={(n) => `AED ${n}`}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="space-y-3 border-t border-border px-8 py-7">

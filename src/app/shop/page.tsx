@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { listProducts, listCategories } from "@/lib/products";
+import { listProducts, listCategories, getPriceRange } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { ShopFilterDrawer } from "@/components/ShopFilterDrawer";
 
@@ -21,12 +21,13 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   const minPrice = params.minPrice ? Number(params.minPrice) : undefined;
   const maxPrice = params.maxPrice ? Number(params.maxPrice) : undefined;
 
-  const [{ products, totalPages }, categories] = await Promise.all([
+  const [{ products, totalPages }, categories, priceBounds] = await Promise.all([
     listProducts({ category, sort, page, minPrice, maxPrice, limit: 12 }).catch(() => ({
       products: [],
       totalPages: 1,
     })),
     listCategories().catch(() => []),
+    getPriceRange().catch(() => ({ min: 0, max: 0 })),
   ]);
 
   function withParam(key: string, value: string) {
@@ -62,6 +63,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
             currentSort={sort}
             currentMinPrice={params.minPrice}
             currentMaxPrice={params.maxPrice}
+            priceBounds={priceBounds}
           />
         </div>
       </div>

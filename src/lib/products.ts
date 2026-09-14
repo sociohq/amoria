@@ -40,3 +40,10 @@ export async function listCategories(): Promise<Category[]> {
   const { categories } = await apiFetch<{ categories: Category[] }>("/api/categories");
   return categories;
 }
+
+// Bounds for the shop page's price-range slider — always the actual
+// min/max across what's for sale, rather than a guessed, hardcoded range
+// that drifts as the catalog changes.
+export async function getPriceRange(): Promise<{ min: number; max: number }> {
+  return apiFetch<{ min: number; max: number }>("/api/products/price-range");
+}
