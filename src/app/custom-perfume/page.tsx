@@ -144,59 +144,62 @@ export default function CustomPerfumePage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-24 sm:px-12">
-      <div className="text-center">
-        <p className="label-caps text-gold">Your Story. Your Scent.</p>
-        <h1 className="mt-2 font-serif text-4xl text-ink sm:text-5xl">Create Your Own Perfume</h1>
-        <p className="mx-auto mt-3 max-w-lg text-sm text-ink-soft">
-          Personal, meaningful, and uniquely yours. Tell us a little about you and we&apos;ll craft a fragrance to
-          match.
-        </p>
-      </div>
-
-      {/* A curved panel sitting inline under the heading — not a popup —
-          so the interactive customization flow (and the WhatsApp offer
-          below it) reads as visually distinct from the marketing copy
-          above, without leaving the page. */}
-      <div className="mx-auto mt-12 max-w-2xl overflow-hidden rounded-[2rem] border border-border bg-white shadow-xl">
-        <div className="p-6 sm:p-10">
-          {/* Step indicator — circles + connectors only, always one line
-              (labels alongside each circle didn't fit the panel's fixed
-              width without wrapping); the current step's name is shown
-              as its own caption underneath instead. */}
-          <div className="flex items-center justify-center">
-            {STEPS.map((s, i) => (
-              <div key={s.n} className="flex items-center">
-                <button
-                  type="button"
-                  onClick={() => s.n < step && setStep(s.n)}
-                  disabled={s.n >= step}
-                  aria-label={s.label}
-                  aria-current={step === s.n ? "step" : undefined}
-                  className="disabled:cursor-default"
-                >
-                  <span
-                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs ${
-                      step === s.n
-                        ? "bg-ink text-cream"
-                        : step > s.n
-                          ? "bg-royal text-cream"
-                          : "bg-cream-dark text-ink-soft"
-                    }`}
-                  >
-                    {s.n}
-                  </span>
-                </button>
-                {i < STEPS.length - 1 && <span className="mx-1.5 text-border sm:mx-3">›</span>}
-              </div>
-            ))}
+    <div className="mx-auto max-w-5xl px-6 py-24 sm:px-12">
+      {/* A curved panel split in two: the marketing heading top-aligned on
+          the left, the interactive customization flow (plus the WhatsApp
+          offer, spanning the full width below both) on the right — not a
+          popup, and not stacked above the form either. */}
+      <div className="mx-auto overflow-hidden rounded-[2rem] border border-border bg-white shadow-xl">
+        <div className="md:grid md:grid-cols-2">
+          {/* Left: heading */}
+          <div className="border-b border-border p-6 sm:p-10 md:border-b-0 md:border-r">
+            <p className="label-caps text-gold">Your Story. Your Scent.</p>
+            <h1 className="mt-2 font-serif text-4xl text-ink">Create Your Own Perfume</h1>
+            <p className="mt-3 max-w-sm text-sm text-ink-soft">
+              Personal, meaningful, and uniquely yours. Tell us a little about you and we&apos;ll craft a fragrance
+              to match.
+            </p>
           </div>
-          <p className="label-caps mt-3 text-center text-ink-soft">
-            Step {step} of {STEPS.length} — {STEPS[step - 1].label}
-          </p>
 
-          <div className="mx-auto mt-10 max-w-xl">
-            {step === 1 && (
+          {/* Right: the wizard */}
+          <div className="p-6 sm:p-10">
+            {/* Step indicator — circles + connectors only, always one line
+                (labels alongside each circle didn't fit without wrapping);
+                the current step's name is shown as its own caption
+                underneath instead. */}
+            <div className="flex items-center justify-center">
+              {STEPS.map((s, i) => (
+                <div key={s.n} className="flex items-center">
+                  <button
+                    type="button"
+                    onClick={() => s.n < step && setStep(s.n)}
+                    disabled={s.n >= step}
+                    aria-label={s.label}
+                    aria-current={step === s.n ? "step" : undefined}
+                    className="disabled:cursor-default"
+                  >
+                    <span
+                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs ${
+                        step === s.n
+                          ? "bg-ink text-cream"
+                          : step > s.n
+                            ? "bg-royal text-cream"
+                            : "bg-cream-dark text-ink-soft"
+                      }`}
+                    >
+                      {s.n}
+                    </span>
+                  </button>
+                  {i < STEPS.length - 1 && <span className="mx-1.5 text-border sm:mx-3">›</span>}
+                </div>
+              ))}
+            </div>
+            <p className="label-caps mt-3 text-center text-ink-soft">
+              Step {step} of {STEPS.length} — {STEPS[step - 1].label}
+            </p>
+
+            <div className="mt-10">
+              {step === 1 && (
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -444,7 +447,8 @@ export default function CustomPerfumePage() {
               </form>
             )}
           </div>
-        </div>
+          </div>
+          </div>
 
         {/* Below every step, inside the same panel — the site owner's
             WhatsApp concierge offer: every custom blend is filmed while
