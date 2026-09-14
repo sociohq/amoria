@@ -92,13 +92,13 @@ export function ShopTheLook({ section }: { section: ShopTheLookSection }) {
           {hotspots.length > 1 && <ArrowButton direction="left" onClick={() => go(-1)} />}
 
           <div className="flex-1 text-center">
-            <div className="relative mx-auto h-40 w-40 overflow-hidden bg-cream-dark">
+            <div className="relative mx-auto h-64 w-64">
               {product.images[0]?.url && (
                 <Image
                   src={product.images[0].url}
                   alt={product.name}
                   fill
-                  sizes="160px"
+                  sizes="256px"
                   className="object-contain"
                 />
               )}
