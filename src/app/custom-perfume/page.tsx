@@ -155,18 +155,22 @@ export default function CustomPerfumePage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-24 sm:px-12">
-      {/* A curved panel split in two: the marketing heading top-aligned on
-          the left, the interactive customization flow (plus the WhatsApp
-          offer, spanning the full width below both) on the right — not a
-          popup, and not stacked above the form either. The form side gets
-          more of the width (7:10 rather than an even split) since Step 5's
-          full contact/address form needs the room to lay fields out side
-          by side instead of one long stack that forces the whole panel to
-          scroll. */}
-      <div className="mx-auto overflow-hidden rounded-[2rem] border border-border bg-white shadow-xl">
+    <div className="px-6 py-24 sm:px-12">
+      {/* A curved panel split in two: the marketing heading and the
+          vertical step tracker top-aligned on the left, the interactive
+          customization flow (plus the WhatsApp offer, spanning the full
+          width below both) on the right — not a popup, and not stacked
+          above the form either. The panel runs edge to edge between the
+          page's own side margins (matching the header's px-6/sm:px-12)
+          rather than being centered with its own max-width, so it reads
+          as part of the page rather than a floating card. The form side
+          still gets more of the width (7:10 rather than an even split)
+          since Step 5's full contact/address form needs the room to lay
+          fields out side by side instead of one long stack that forces
+          the whole panel to scroll. */}
+      <div className="overflow-hidden rounded-[2rem] border border-border bg-white shadow-xl">
         <div className="md:grid md:grid-cols-[7fr_10fr]">
-          {/* Left: heading */}
+          {/* Left: heading + step tracker */}
           <div className="border-b border-border p-6 sm:p-10 md:border-b-0 md:border-r">
             <p className="label-caps text-gold">Your Story. Your Scent.</p>
             <h1 className="mt-2 font-serif text-4xl text-ink">Create Your Own Perfume</h1>
@@ -174,46 +178,45 @@ export default function CustomPerfumePage() {
               Personal, meaningful, and uniquely yours. Tell us a little about you and we&apos;ll craft a fragrance
               to match.
             </p>
+
+            {/* Vertical step tracker — moved here from atop the form so the
+                form column can stay focused on just the current step. */}
+            <ol className="mt-10 max-w-xs">
+              {STEPS.map((s, i) => {
+                const done = step > s.n;
+                const current = step === s.n;
+                const isLast = i === STEPS.length - 1;
+                return (
+                  <li key={s.n} className="relative flex gap-4 pb-8 last:pb-0">
+                    {!isLast && (
+                      <span
+                        aria-hidden
+                        className={`absolute left-4 top-8 h-[calc(100%-2rem)] w-px -translate-x-1/2 ${
+                          done ? "bg-royal" : "bg-border"
+                        }`}
+                      />
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => s.n < step && setStep(s.n)}
+                      disabled={s.n >= step}
+                      aria-current={current ? "step" : undefined}
+                      className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs disabled:cursor-default ${
+                        current ? "bg-ink text-cream" : done ? "bg-royal text-cream" : "bg-cream-dark text-ink-soft"
+                      }`}
+                    >
+                      {done ? "✓" : s.n}
+                    </button>
+                    <p className={`label-caps pt-1.5 ${current ? "text-ink" : "text-ink-soft"}`}>{s.label}</p>
+                  </li>
+                );
+              })}
+            </ol>
           </div>
 
           {/* Right: the wizard */}
           <div className="p-6 sm:p-10">
-            {/* Step indicator — circles + connectors only, always one line
-                (labels alongside each circle didn't fit without wrapping);
-                the current step's name is shown as its own caption
-                underneath instead. */}
-            <div className="flex items-center justify-center">
-              {STEPS.map((s, i) => (
-                <div key={s.n} className="flex items-center">
-                  <button
-                    type="button"
-                    onClick={() => s.n < step && setStep(s.n)}
-                    disabled={s.n >= step}
-                    aria-label={s.label}
-                    aria-current={step === s.n ? "step" : undefined}
-                    className="disabled:cursor-default"
-                  >
-                    <span
-                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs ${
-                        step === s.n
-                          ? "bg-ink text-cream"
-                          : step > s.n
-                            ? "bg-royal text-cream"
-                            : "bg-cream-dark text-ink-soft"
-                      }`}
-                    >
-                      {s.n}
-                    </span>
-                  </button>
-                  {i < STEPS.length - 1 && <span className="mx-1.5 text-border sm:mx-3">›</span>}
-                </div>
-              ))}
-            </div>
-            <p className="label-caps mt-3 text-center text-ink-soft">
-              Step {step} of {STEPS.length} — {STEPS[step - 1].label}
-            </p>
-
-            <div className="mt-6">
+            <div>
               {step === 1 && (
               <form
                 onSubmit={(e) => {
