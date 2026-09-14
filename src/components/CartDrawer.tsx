@@ -54,7 +54,14 @@ export function CartDrawer() {
           </div>
         ) : (
           <>
-            <div className="flex-1 overflow-y-auto px-8">
+            {/* data-lenis-prevent stops the site's global Lenis smooth-scroll
+                from hijacking wheel/touch input here and scrolling the page
+                behind the drawer instead of this item list; overscroll-contain
+                is the same fix for native scroll chaining once the list hits
+                its own top/bottom. themed-scroll swaps the bulky default OS
+                scrollbar for a slim, on-brand one (same class the Find Your
+                Scent chat panel uses). */}
+            <div data-lenis-prevent className="themed-scroll flex-1 overflow-y-auto overscroll-contain px-8">
               {items.map((item) => (
                 <div key={item.id} className="flex gap-5 border-b border-border py-7">
                   <div className="relative h-28 w-28 shrink-0 overflow-hidden bg-cream-dark">

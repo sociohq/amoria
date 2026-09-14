@@ -249,21 +249,22 @@ body {
   }
 }
 
-/* Thin, on-brand scrollbar for the chat transcript, in place of the bulky
-   default OS scrollbar — a slim gold-tinted thumb rather than hiding
-   scrollability entirely (unlike .no-scrollbar, used elsewhere for rows
-   that have their own arrow-button navigation). */
-.chat-scroll {
+/* Thin, on-brand scrollbar for any internally-scrolling panel (the Find
+   Your Scent chat transcript, the cart drawer's item list, ...), in place
+   of the bulky default OS scrollbar — a slim gold-tinted thumb rather than
+   hiding scrollability entirely (unlike .no-scrollbar, used elsewhere for
+   rows that have their own arrow-button navigation). */
+.themed-scroll {
   scrollbar-width: thin;
   scrollbar-color: var(--color-gold-light) transparent;
 }
-.chat-scroll::-webkit-scrollbar {
+.themed-scroll::-webkit-scrollbar {
   width: 6px;
 }
-.chat-scroll::-webkit-scrollbar-track {
+.themed-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
-.chat-scroll::-webkit-scrollbar-thumb {
+.themed-scroll::-webkit-scrollbar-thumb {
   background-color: var(--color-gold-light);
   border-radius: 9999px;
 }

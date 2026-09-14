@@ -143,7 +143,7 @@ export function ScentFinderChat({ open, onClose }: { open: boolean; onClose: () 
       <div
         ref={scrollRef}
         data-lenis-prevent
-        className="chat-scroll flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4"
+        className="themed-scroll flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4"
       >
         {messages.map((m) => (
           <ChatBubble key={m.id} message={m} />
