@@ -88,7 +88,6 @@ export default function CustomPerfumePage() {
   const { user, loading: authLoading } = useAuth();
   const { openDrawer } = useAuthDrawer();
 
-  const [modalOpen, setModalOpen] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
 
   const [customerName, setCustomerName] = useState("");
@@ -145,58 +144,22 @@ export default function CustomPerfumePage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-24 text-center sm:px-12">
-      <p className="label-caps text-gold">Your Story. Your Scent.</p>
-      <h1 className="mt-2 font-serif text-4xl text-ink sm:text-5xl">Create Your Own Perfume</h1>
-      <p className="mx-auto mt-3 max-w-lg text-sm text-ink-soft">
-        Personal, meaningful, and uniquely yours. Tell us a little about you and we&apos;ll craft a fragrance to
-        match.
-      </p>
-      <button
-        type="button"
-        onClick={() => setModalOpen(true)}
-        className="mt-8 inline-block bg-ink px-10 py-3 label-caps text-cream hover:opacity-90"
-      >
-        Begin Customization →
-      </button>
+    <div className="mx-auto max-w-3xl px-6 py-24 sm:px-12">
+      <div className="text-center">
+        <p className="label-caps text-gold">Your Story. Your Scent.</p>
+        <h1 className="mt-2 font-serif text-4xl text-ink sm:text-5xl">Create Your Own Perfume</h1>
+        <p className="mx-auto mt-3 max-w-lg text-sm text-ink-soft">
+          Personal, meaningful, and uniquely yours. Tell us a little about you and we&apos;ll craft a fragrance to
+          match.
+        </p>
+      </div>
 
-      {/* Backdrop */}
-      <div
-        onClick={() => setModalOpen(false)}
-        className={`fixed inset-0 z-50 bg-ink/50 transition-opacity duration-300 ${
-          modalOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
-        }`}
-      />
-
-      {/* The process modal — every step, plus the WhatsApp offer below
-          them, lives here so it reads as one distinct "customization"
-          window, separate from the marketing heading above. Stays
-          mounted (visibility toggled via classes) so progress survives
-          closing and reopening it. */}
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label="Create Your Own Perfume"
-        data-lenis-prevent
-        className={`fixed left-1/2 top-1/2 z-50 max-h-[88vh] w-[92vw] max-w-2xl -translate-x-1/2 overflow-y-auto bg-white text-left shadow-2xl transition-all duration-300 ${
-          modalOpen ? "-translate-y-1/2 opacity-100" : "pointer-events-none -translate-y-[45%] opacity-0"
-        }`}
-      >
-        <div className="flex items-center justify-between border-b border-border px-6 py-4">
-          <p className="label-caps text-ink">Create Your Own Perfume</p>
-          <button
-            type="button"
-            onClick={() => setModalOpen(false)}
-            aria-label="Close"
-            className="text-ink-soft transition-colors hover:text-ink"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
-              <path d="M6 6l12 12M18 6 6 18" strokeLinecap="round" />
-            </svg>
-          </button>
-        </div>
-
-        <div className="p-6 sm:p-8">
+      {/* A curved panel sitting inline under the heading — not a popup —
+          so the interactive customization flow (and the WhatsApp offer
+          below it) reads as visually distinct from the marketing copy
+          above, without leaving the page. */}
+      <div className="mx-auto mt-12 max-w-2xl overflow-hidden rounded-[2rem] border border-border bg-white shadow-xl">
+        <div className="p-6 sm:p-10">
           {/* Step indicator */}
           <div className="flex flex-wrap items-center justify-center gap-y-3">
             {STEPS.map((s, i) => (
@@ -478,7 +441,7 @@ export default function CustomPerfumePage() {
           </div>
         </div>
 
-        {/* Below every step, inside the same modal — the site owner's
+        {/* Below every step, inside the same panel — the site owner's
             WhatsApp concierge offer: every custom blend is filmed while
             it's made, and that video is sent over WhatsApp on request
             rather than posted anywhere public. */}
