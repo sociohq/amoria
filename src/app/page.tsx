@@ -1,8 +1,9 @@
-import { listProducts, listCategories, getShopTheLook, getFeaturedReviews } from "@/lib/products";
+import { listProducts, listCategories, getShopTheLook, getFeaturedReviews, getGenderShowcase } from "@/lib/products";
 import { Hero } from "@/components/Hero";
 import { CategoryShowcase } from "@/components/CategoryShowcase";
 import { ProductSection } from "@/components/ProductSection";
 import { FindYourScentBanner } from "@/components/FindYourScentBanner";
+import { GenderShowcase } from "@/components/GenderShowcase";
 import { ShopReels } from "@/components/ShopReels";
 import { ShopTheLook } from "@/components/ShopTheLook";
 import { ReviewsSection } from "@/components/ReviewsSection";
@@ -10,11 +11,12 @@ import { OurStores } from "@/components/OurStores";
 import { Reveal } from "@/components/Reveal";
 
 export default async function HomePage() {
-  const [{ products: featured }, categories, shopTheLook, reviews] = await Promise.all([
+  const [{ products: featured }, categories, shopTheLook, reviews, genderShowcase] = await Promise.all([
     listProducts({ limit: 8, sort: "newest" }).catch(() => ({ products: [] })),
     listCategories().catch(() => []),
     getShopTheLook().catch(() => null),
     getFeaturedReviews().catch(() => []),
+    getGenderShowcase().catch(() => null),
   ]);
 
   return (
@@ -24,6 +26,7 @@ export default async function HomePage() {
       <Reveal>
         <FindYourScentBanner />
       </Reveal>
+      {genderShowcase && <GenderShowcase section={genderShowcase} />}
       <Reveal>
         <ProductSection eyebrow="Extrait de Parfum" title="Featured Products" products={featured} />
       </Reveal>

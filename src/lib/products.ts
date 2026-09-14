@@ -1,5 +1,5 @@
 import { apiFetch } from "./api";
-import { Product, Category, ShopTheLookSection, Review } from "./types";
+import { Product, Category, ShopTheLookSection, Review, GenderShowcaseSection } from "./types";
 
 export interface ListProductsParams {
   category?: string;
@@ -60,6 +60,13 @@ export async function getShopTheLook(): Promise<ShopTheLookSection | null> {
 export async function getFeaturedReviews(): Promise<Review[]> {
   const { reviews } = await apiFetch<{ reviews: Review[] }>("/api/reviews/featured");
   return reviews;
+}
+
+// Homepage-only "For Him / For Her" tabbed banner — null until an admin
+// activates it (and at least one side has a product to show).
+export async function getGenderShowcase(): Promise<GenderShowcaseSection | null> {
+  const { section } = await apiFetch<{ section: GenderShowcaseSection | null }>("/api/gender-showcase");
+  return section;
 }
 
 // "Recommended for you" on a product page — same fragrance family first,

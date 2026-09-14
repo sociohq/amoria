@@ -102,6 +102,22 @@ export interface ShopTheLookSection {
   hotspots: ShopTheLookHotspot[];
 }
 
+export interface GenderShowcaseSection {
+  id: string;
+  active: boolean;
+  intro: string | null;
+  himEyebrow: string;
+  himHeading: string;
+  himSubheading: string | null;
+  himImage: string | null;
+  herEyebrow: string;
+  herHeading: string;
+  herSubheading: string | null;
+  herImage: string | null;
+  him: Product[];
+  her: Product[];
+}
+
 export interface WishlistItem {
   id: string;
   productId: string;

@@ -13,6 +13,7 @@ import {
   ShopTheLookSection,
   ShopTheLookHotspot,
   Review,
+  GenderShowcaseSection,
 } from "./types";
 
 // ---------- Dashboard ----------
@@ -184,6 +185,31 @@ export const updateHotspot = (id: string, data: Partial<HotspotInput>) =>
   });
 export const deleteHotspot = (id: string) =>
   apiFetch<void>(`/api/shop-the-look/admin/hotspots/${id}`, { method: "DELETE" });
+
+// ---------- Gender Showcase (homepage "For Him / For Her" banner) ----------
+export interface GenderShowcaseSectionInput {
+  active?: boolean;
+  intro?: string;
+  himEyebrow?: string;
+  himHeading?: string;
+  himSubheading?: string;
+  herEyebrow?: string;
+  herHeading?: string;
+  herSubheading?: string;
+}
+
+export const getGenderShowcaseAdmin = () =>
+  apiFetch<{ section: GenderShowcaseSection | null }>("/api/gender-showcase/admin");
+export const upsertGenderShowcaseSection = (data: GenderShowcaseSectionInput) =>
+  apiFetch<{ section: GenderShowcaseSection }>("/api/gender-showcase/admin", {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+export const uploadGenderShowcaseImage = (side: "him" | "her", file: File) => {
+  const formData = new FormData();
+  formData.append("image", file);
+  return apiUpload<{ section: GenderShowcaseSection }>(`/api/gender-showcase/admin/upload/${side}`, formData);
+};
 
 // ---------- Reviews ----------
 export interface ReviewInput {
