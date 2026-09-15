@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { GenderShowcaseSection as GenderShowcaseSectionType, Product } from "@/lib/types";
@@ -8,24 +8,23 @@ import { FeaturedProductCard } from "./FeaturedProductCard";
 
 type Side = "him" | "her";
 
-// Homepage-only "For Him / For Her" tabbed banner: a background photo per
-// side, heading copy that crossfades with it, and a horizontally
-// scrolling row of that side's products (the same FeaturedProductCard
-// used in the "Featured Products" section — no bespoke card here). Both
-// sides are always mounted and stacked (opacity + a slight drift) rather
-// than swapped in React — a true crossfade with nothing to remount,
-// which is what makes the tab switch feel instant and smooth instead of
-// a flash-then-pop.
+// Homepage-only "For Him / For Her" banner.
 //
-// The site owner's actual background photos are bright, mostly-white
-// editorial shots — unlike a dark moody banner, this reads with dark ink
-// text on a light scrim rather than cream-on-dark.
+// Earlier versions repeated a full eyebrow/heading/subheading/CTA block
+// per tab on top of the photo — between that, the tab toggle, and a
+// product row, it read as three separate things stacked on top of each
+// other. Simplified to one job per element: the intro line is the
+// section's only heading (it doesn't change with the tab), the toggle
+// switches the photo and products, and the products speak for
+// themselves — no repeated copy block, no per-card badges competing
+// with the photo.
 export function GenderShowcase({ section }: { section: GenderShowcaseSectionType }) {
   const [side, setSide] = useState<Side>("him");
   const isHim = side === "him";
 
   return (
-    <section className="relative isolate min-h-[720px] overflow-hidden bg-cream-dark sm:min-h-[680px]">
+    <section className="relative isolate min-h-[760px] overflow-hidden bg-cream-dark">
+      {/* Background photo — crossfades between sides, full-bleed. */}
       {(["him", "her"] as const).map((s) => {
         const image = s === "him" ? section.himImage : section.herImage;
         const visible = side === s;
@@ -34,7 +33,7 @@ export function GenderShowcase({ section }: { section: GenderShowcaseSectionType
             key={s}
             aria-hidden={!visible}
             className={`absolute inset-0 transition-opacity duration-[900ms] ease-out ${
-              visible ? "opacity-100" : "pointer-events-none opacity-0"
+              visible ? "opacity-100" : "opacity-0"
             }`}
           >
             {image ? (
@@ -42,26 +41,25 @@ export function GenderShowcase({ section }: { section: GenderShowcaseSectionType
             ) : (
               <div className="h-full w-full bg-cream-dark" />
             )}
-            {/* A light, even wash rather than a dark gradient — these
-                photos are already bright, so the scrim just guarantees
-                the dark ink text reads cleanly without crushing the
-                photo underneath it. */}
-            <div className="absolute inset-0 bg-cream/35" />
           </div>
         );
       })}
+      {/* One even, light wash for the whole photo — reads as part of the
+          image rather than a box drawn over it, and keeps every layer of
+          text legible regardless of what's directly behind it. */}
+      <div className="absolute inset-0 bg-gradient-to-b from-cream/20 via-cream/45 to-cream/70" />
 
-      <div className="relative z-10 flex flex-col items-center px-6 pt-20 pb-16 sm:px-12">
+      <div className="relative z-10 flex min-h-[760px] flex-col items-center px-6 pb-14 pt-16 text-center sm:pt-20">
         {section.intro && (
-          <p className="max-w-xl text-balance text-center font-serif text-lg text-ink sm:text-xl">
+          <h2 className="max-w-2xl text-balance font-serif text-4xl leading-tight text-ink sm:text-5xl">
             {section.intro}
-          </p>
+          </h2>
         )}
 
         {/* Tab toggle — a sliding ink pill behind whichever label is
             active, both the fill and the label colors transitioning
             together so nothing pops. */}
-        <div className="relative mt-8 flex rounded-full border border-ink/15 bg-white/50 p-1 backdrop-blur-sm">
+        <div className="relative mt-9 flex rounded-full border border-ink/15 bg-white/60 p-1 backdrop-blur-sm">
           <span
             aria-hidden
             className={`absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-ink transition-transform duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] ${
@@ -88,61 +86,27 @@ export function GenderShowcase({ section }: { section: GenderShowcaseSectionType
           </button>
         </div>
 
-        <div className="mt-14 w-full max-w-7xl">
-          <div className="grid gap-8 md:grid-cols-[minmax(0,320px)_1fr] md:items-center md:gap-14">
-            {/* Left: heading copy, same crossfade-stack technique as the
-                background so switching tabs never reflows this column. */}
-            <div className="relative min-h-[200px] sm:min-h-[180px]">
-              {(["him", "her"] as const).map((s) => {
-                const visible = side === s;
-                const eyebrow = s === "him" ? section.himEyebrow : section.herEyebrow;
-                const heading = s === "him" ? section.himHeading : section.herHeading;
-                const subheading = s === "him" ? section.himSubheading : section.herSubheading;
-                return (
-                  <div
-                    key={s}
-                    aria-hidden={!visible}
-                    className={`transition-all duration-500 ease-out ${
-                      visible
-                        ? "relative opacity-100 delay-150"
-                        : "pointer-events-none absolute inset-0 -translate-y-2 opacity-0"
-                    }`}
-                  >
-                    <p className="label-caps text-gold">{eyebrow}</p>
-                    <h2 className="mt-3 font-serif text-4xl leading-tight text-ink sm:text-5xl">{heading}</h2>
-                    {subheading && <p className="mt-4 text-sm text-ink-soft">{subheading}</p>}
-                    <Link
-                      href={`/shop?category=for-${s}`}
-                      className="mt-7 inline-flex items-center gap-2 border border-ink px-7 py-3 label-caps text-ink transition-colors duration-300 hover:bg-ink hover:text-cream"
-                    >
-                      Explore All <span aria-hidden>→</span>
-                    </Link>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Right: the product row — also crossfade-stacked so the
-                carousel underneath swaps just as smoothly. */}
-            <div className="relative min-h-[500px] sm:min-h-[520px]">
-              {(["him", "her"] as const).map((s) => (
-                <ProductRow key={s} products={s === "him" ? section.him : section.her} visible={side === s} />
-              ))}
-            </div>
-          </div>
+        {/* Products — the sole payoff below the toggle, crossfaded per
+            side. A single "Explore All" for whichever side is active
+            sits beneath them rather than repeating per-tab copy above. */}
+        <div className="relative mt-12 w-full max-w-4xl flex-1">
+          {(["him", "her"] as const).map((s) => (
+            <ProductRow key={s} products={s === "him" ? section.him : section.her} visible={side === s} />
+          ))}
         </div>
+
+        <Link
+          href={`/shop?category=for-${side}`}
+          className="mt-10 inline-flex items-center gap-2 border border-ink bg-white/70 px-8 py-3 label-caps text-ink backdrop-blur-sm transition-colors duration-300 hover:bg-ink hover:text-cream"
+        >
+          Explore {isHim ? "For Him" : "For Her"} <span aria-hidden>→</span>
+        </Link>
       </div>
     </section>
   );
 }
 
 function ProductRow({ products, visible }: { products: Product[]; visible: boolean }) {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-
-  function scrollBy(dir: 1 | -1) {
-    scrollerRef.current?.scrollBy({ left: dir * 240, behavior: "smooth" });
-  }
-
   return (
     <div
       aria-hidden={!visible}
@@ -151,37 +115,17 @@ function ProductRow({ products, visible }: { products: Product[]; visible: boole
       }`}
     >
       {products.length === 0 ? (
-        <div className="flex h-full min-h-[480px] items-center justify-center border border-dashed border-ink/20 text-sm text-ink-soft">
+        <div className="flex min-h-[320px] items-center justify-center border border-dashed border-ink/25 bg-white/40 text-sm text-ink-soft backdrop-blur-sm">
           No products yet
         </div>
       ) : (
-        <>
-          <div className="mb-3 flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => scrollBy(-1)}
-              aria-label="Scroll left"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-ink/25 text-ink transition-colors hover:bg-ink hover:text-cream"
-            >
-              ‹
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollBy(1)}
-              aria-label="Scroll right"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-ink/25 text-ink transition-colors hover:bg-ink hover:text-cream"
-            >
-              ›
-            </button>
-          </div>
-          <div ref={scrollerRef} className="themed-scroll flex gap-6 overflow-x-auto pb-2">
-            {products.map((p) => (
-              <div key={p.id} className="w-[calc(50%-12px)] shrink-0 sm:w-[calc(33.333%-16px)] md:w-72 lg:w-80">
-                <FeaturedProductCard product={p} />
-              </div>
-            ))}
-          </div>
-        </>
+        <div className="flex flex-wrap justify-center gap-6 sm:gap-8">
+          {products.slice(0, 3).map((p) => (
+            <div key={p.id} className="w-[calc(50%-12px)] sm:w-56">
+              <FeaturedProductCard product={p} />
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
