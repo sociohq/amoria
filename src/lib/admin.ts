@@ -193,9 +193,11 @@ export interface GenderShowcaseSectionInput {
   himEyebrow?: string;
   himHeading?: string;
   himSubheading?: string;
+  himImage?: string; // URL or local path — set directly, or via uploadGenderShowcaseImage
   herEyebrow?: string;
   herHeading?: string;
   herSubheading?: string;
+  herImage?: string;
 }
 
 export const getGenderShowcaseAdmin = () =>
