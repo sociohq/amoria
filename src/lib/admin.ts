@@ -143,6 +143,11 @@ export const updateOrderStatus = (id: string, status: string) =>
 export const getSettings = () => apiFetch<{ settings: Settings }>("/api/admin/settings");
 export const updateSettings = (data: Partial<Settings>) =>
   apiFetch<{ settings: Settings }>("/api/admin/settings", { method: "PATCH", body: JSON.stringify(data) });
+export const uploadNewsletterPopupImage = (file: File) => {
+  const formData = new FormData();
+  formData.append("image", file);
+  return apiUpload<{ settings: Settings }>("/api/admin/settings/newsletter-image", formData);
+};
 
 // ---------- Reels ("Shop by Reels" video carousel) ----------
 export interface ReelInput {

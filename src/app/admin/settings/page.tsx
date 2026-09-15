@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getSettings, updateSettings } from "@/lib/admin";
+import Image from "next/image";
+import { getSettings, updateSettings, uploadNewsletterPopupImage } from "@/lib/admin";
 import { Settings } from "@/lib/types";
 import { ApiError } from "@/lib/api";
 import { PageHeader, Card, Button, Label, inputClass } from "@/components/admin/ui";
@@ -12,9 +13,27 @@ export default function AdminSettingsPage() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
   useEffect(() => {
     getSettings().then(({ settings }) => setSettings(settings));
   }, []);
+
+  async function handleUploadImage() {
+    if (!imageFile) return;
+    setUploadingImage(true);
+    setError(null);
+    try {
+      const { settings: updated } = await uploadNewsletterPopupImage(imageFile);
+      setSettings(updated);
+      setImageFile(null);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Upload failed");
+    } finally {
+      setUploadingImage(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -160,12 +179,31 @@ export default function AdminSettingsPage() {
             />
           </div>
           <div>
-            <Label>Image Path or URL</Label>
-            <input
-              value={settings.newsletterPopupImage}
-              onChange={(e) => setSettings({ ...settings, newsletterPopupImage: e.target.value })}
-              className={inputClass}
-            />
+            <Label>Image</Label>
+            <div className="flex items-center gap-4">
+              <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-cream-dark">
+                {settings.newsletterPopupImage && (
+                  <Image src={settings.newsletterPopupImage} alt="" fill sizes="80px" className="object-cover" />
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
+                  className="text-sm"
+                />
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleUploadImage}
+                  disabled={!imageFile || uploadingImage}
+                >
+                  {uploadingImage ? "Uploading…" : "Replace"}
+                </Button>
+              </div>
+            </div>
           </div>
         </Card>
 
