@@ -31,9 +31,16 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen bg-cream-dark">
+    // h-screen + overflow-hidden (not min-h-screen) caps this at exactly
+    // the viewport — otherwise a tall page grows the whole document and
+    // the browser scrolls it natively, dragging the sidebar along with
+    // it instead of leaving it fixed while just <main> scrolls. min-h-0
+    // on the flex column is the usual flexbox gotcha: without it a flex
+    // child can't actually be constrained smaller than its content, so
+    // <main>'s own overflow-y-auto would never kick in.
+    <div className="flex h-screen overflow-hidden bg-cream-dark">
       <AdminSidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <AdminTopbar />
         <main className="flex-1 overflow-y-auto p-8">{children}</main>
       </div>
