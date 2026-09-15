@@ -53,7 +53,10 @@ export function ProductCard({ product }: { product: Product }) {
           className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-white/90 text-ink-soft transition-colors hover:text-crimson"
         />
       </div>
-      <div className="mt-3 space-y-1">
+      {/* text-left guards against an ancestor's text-center — a plain <p>
+          responds to inherited text-align, but the price row below is a
+          flex container and doesn't, so the two would visibly disagree. */}
+      <div className="mt-3 space-y-1 text-left">
         <p className="font-serif text-xl text-ink">{product.name}</p>
         {product.scentAccords.length > 0 && (
           <p className="text-xs text-ink-soft">{product.scentAccords.join(" · ")}</p>

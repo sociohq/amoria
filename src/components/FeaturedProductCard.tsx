@@ -116,7 +116,13 @@ export function FeaturedProductCard({ product }: { product: Product }) {
         )}
       </div>
 
-      <div className="mt-3">
+      {/* text-left overrides an ancestor's text-center (e.g. GenderShowcase's
+          section wrapper, needed for its own heading/tab toggle) — without
+          it, the name (a plain <p>, which text-align does affect) centers
+          while the price row (a flex container, which text-align does not
+          affect — flex items follow justify-content instead) stays left,
+          so the two visibly disagree. */}
+      <div className="mt-3 text-left">
         <Link href={`/product/${product.slug}`}>
           <p className="font-serif text-xl text-ink hover:text-royal">{product.name}</p>
         </Link>
