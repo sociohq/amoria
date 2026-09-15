@@ -46,10 +46,22 @@ function ReviewCard({ review }: { review: Review }) {
 export function ReviewsSection({ eyebrow, title, reviews }: { eyebrow: string; title: string; reviews: Review[] }) {
   if (reviews.length === 0) return null;
 
-  const track = [...reviews, ...reviews];
-  // Slower with more reviews so each card gets roughly the same amount of
+  // The seamless loop works by rendering one "half" of content twice back
+  // to back and animating from -50% to 0% — but that only looks
+  // continuous if a single half is already wider than the viewport. A
+  // product with only 1-2 reviews (common — most products have just the
+  // one dummy review) made a half far narrower than the section, so the
+  // track visibly ran out partway across, leaving a dead gap of plain
+  // background instead of a loop. Repeating the review list enough times
+  // per half (rather than exactly once) keeps a half comfortably wider
+  // than any real viewport regardless of how few reviews exist.
+  const MIN_CARDS_PER_HALF = 6;
+  const copies = Math.max(1, Math.ceil(MIN_CARDS_PER_HALF / reviews.length));
+  const half = Array.from({ length: copies }, () => reviews).flat();
+  const track = [...half, ...half];
+  // Slower with more cards so each one gets roughly the same amount of
   // screen time regardless of how many there are.
-  const durationSeconds = reviews.length * 6;
+  const durationSeconds = half.length * 6;
 
   return (
     <section className="py-16">
