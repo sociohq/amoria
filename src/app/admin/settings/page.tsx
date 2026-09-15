@@ -206,6 +206,51 @@ export default function AdminSettingsPage() {
           </div>
         </Card>
 
+        <Card className="space-y-4 p-6">
+          <div>
+            <p className="text-sm font-medium text-ink">Social Media</p>
+            <p className="mt-1 text-sm text-ink-soft">
+              Shown as icons on the left of the header logo row and in the footer. Leave blank to hide an icon.
+            </p>
+          </div>
+          <div>
+            <Label>Instagram URL</Label>
+            <input
+              placeholder="https://instagram.com/amoria"
+              value={settings.instagramUrl ?? ""}
+              onChange={(e) => setSettings({ ...settings, instagramUrl: e.target.value })}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <Label>Facebook URL</Label>
+            <input
+              placeholder="https://facebook.com/amoria"
+              value={settings.facebookUrl ?? ""}
+              onChange={(e) => setSettings({ ...settings, facebookUrl: e.target.value })}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <Label>TikTok URL</Label>
+            <input
+              placeholder="https://tiktok.com/@amoria"
+              value={settings.tiktokUrl ?? ""}
+              onChange={(e) => setSettings({ ...settings, tiktokUrl: e.target.value })}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <Label>X (Twitter) URL</Label>
+            <input
+              placeholder="https://x.com/amoria"
+              value={settings.twitterUrl ?? ""}
+              onChange={(e) => setSettings({ ...settings, twitterUrl: e.target.value })}
+              className={inputClass}
+            />
+          </div>
+        </Card>
+
         {error && <p className="text-sm text-crimson">{error}</p>}
         {saved && <p className="text-sm text-royal">Saved.</p>}
         <Button type="submit" disabled={submitting}>

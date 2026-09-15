@@ -15,6 +15,7 @@ import {
   Review,
   GenderShowcaseSection,
   GenderShowcaseItem,
+  ContactSubmission,
 } from "./types";
 
 // ---------- Dashboard ----------
@@ -268,6 +269,12 @@ export const uploadReviewImage = (id: string, file: File) => {
   formData.append("image", file);
   return apiUpload<{ review: Review }>(`/api/reviews/admin/${id}/upload`, formData);
 };
+
+// ---------- Contact Submissions ----------
+export const listContactSubmissionsAdmin = () =>
+  apiFetch<{ submissions: ContactSubmission[] }>("/api/contact");
+export const deleteContactSubmission = (id: string) =>
+  apiFetch<void>(`/api/contact/${id}`, { method: "DELETE" });
 
 // ---------- Blog Posts ----------
 export interface PostInput {

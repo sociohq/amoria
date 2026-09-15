@@ -1,8 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { subscribeToNewsletter } from "@/lib/newsletter";
+import { getPublicSettings, PublicSettings } from "@/lib/settings";
+import { SocialLinks } from "./SocialIcons";
 import { ApiError } from "@/lib/api";
 
 const SHOP_LINKS = [
@@ -48,6 +50,15 @@ function FooterColumn({ title, links }: { title: string; links: { label: string;
 export function Footer() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [settings, setSettings] = useState<PublicSettings | null>(null);
+
+  useEffect(() => {
+    getPublicSettings()
+      .then(setSettings)
+      .catch(() => {
+        // No social links, no icons — never block the footer over this.
+      });
+  }, []);
 
   async function handleSubscribe(e: React.FormEvent) {
     e.preventDefault();
@@ -99,20 +110,14 @@ export function Footer() {
               </button>
             </form>
           )}
-          <div className="mt-6 flex gap-4">
-            <a href="#" aria-label="Instagram" className="text-cream hover:text-gold-light">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <rect x="3" y="3" width="18" height="18" rx="5" />
-                <circle cx="12" cy="12" r="4" />
-                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-              </svg>
-            </a>
-            <a href="#" aria-label="X" className="text-cream hover:text-gold-light">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18.9 2H22l-7.6 8.7L23 22h-6.9l-5.4-6.8L4.6 22H1.5l8.1-9.3L1 2h7.1l4.9 6.2L18.9 2zm-1.2 18h1.9L7.3 4H5.3l12.4 16z" />
-              </svg>
-            </a>
-          </div>
+          <SocialLinks
+            className="mt-6"
+            linkClassName="text-cream hover:text-gold-light"
+            instagramUrl={settings?.instagramUrl}
+            facebookUrl={settings?.facebookUrl}
+            tiktokUrl={settings?.tiktokUrl}
+            twitterUrl={settings?.twitterUrl}
+          />
         </div>
       </div>
 

@@ -8,6 +8,8 @@ import { useAuth } from "@/lib/auth-context";
 import { useAuthDrawer } from "@/lib/auth-drawer-context";
 import { useCart } from "@/lib/cart-context";
 import { Category } from "@/lib/types";
+import { getPublicSettings, PublicSettings } from "@/lib/settings";
+import { SocialLinks } from "./SocialIcons";
 import { MegaMenu } from "./MegaMenu";
 
 const SOLID_THRESHOLD_PX = 60;
@@ -18,6 +20,7 @@ export function Header({ categories }: { categories: Category[] }) {
   const { itemCount, openDrawer } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [settings, setSettings] = useState<PublicSettings | null>(null);
   const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
   // A thin underline that slides to whichever nav item is hovered,
@@ -67,6 +70,14 @@ export function Header({ categories }: { categories: Category[] }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    getPublicSettings()
+      .then(setSettings)
+      .catch(() => {
+        // No social links, no icons — never block the header over this.
+      });
+  }, []);
+
   const barClasses = `relative flex items-center justify-center px-6 py-3 border-b transition-colors duration-300 ${
     transparent ? "border-white/25 bg-transparent" : "border-border bg-white"
   }`;
@@ -109,6 +120,15 @@ export function Header({ categories }: { categories: Category[] }) {
 
       {/* Logo row */}
       <div className={barClasses}>
+        <div className={`absolute inset-y-0 left-6 hidden items-center sm:flex ${transparent ? "text-cream" : "text-ink"}`}>
+          <SocialLinks
+            instagramUrl={settings?.instagramUrl}
+            facebookUrl={settings?.facebookUrl}
+            tiktokUrl={settings?.tiktokUrl}
+            twitterUrl={settings?.twitterUrl}
+          />
+        </div>
+
         <Link href="/">
           {transparent ? (
             <Image src="/logo.png" alt="Amoria" width={130} height={36} className="h-8 w-auto invert" priority />
@@ -229,6 +249,13 @@ export function Header({ categories }: { categories: Category[] }) {
         >
           Journal
         </Link>
+        <Link
+          href="/contact"
+          onMouseEnter={trackUnderline}
+          className={`relative text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
+        >
+          Contact Us
+        </Link>
       </nav>
 
       {menuOpen && (
@@ -263,6 +290,9 @@ export function Header({ categories }: { categories: Category[] }) {
           </Link>
           <Link href="/blog" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
             Journal
+          </Link>
+          <Link href="/contact" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
+            Contact Us
           </Link>
           <Link href="/wishlist" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
             Wishlist

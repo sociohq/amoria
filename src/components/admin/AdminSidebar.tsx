@@ -24,6 +24,7 @@ const GenderIcon = () => <Icon><circle cx="9" cy="15" r="5" /><path d="M13.5 10.
 const ReviewsIcon = () => <Icon><path d="m12 3 2.6 5.6 6.1.6-4.5 4.2 1.3 6-5.5-3.1L6.5 19.4l1.3-6-4.5-4.2 6.1-.6L12 3Z" /></Icon>;
 const BlogIcon = () => <Icon><path d="M4 5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Z" /><path d="M14 3v5h5" /><path d="M8 13h8M8 17h5" /></Icon>;
 const OrdersIcon = () => <Icon><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></Icon>;
+const ContactIcon = () => <Icon><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></Icon>;
 const SettingsIcon = () => <Icon><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.6 1Z" /></Icon>;
 const StoreIcon = () => <Icon><path d="M3 9V5a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v4" /><path d="M3 9a2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0" /><path d="M5 9v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9" /></Icon>;
 const SignOutIcon = () => <Icon><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="M16 17l5-5-5-5" /><path d="M21 12H9" /></Icon>;
@@ -58,6 +59,7 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
     label: "Store",
     items: [
       { href: "/admin/orders", label: "Orders", icon: OrdersIcon },
+      { href: "/admin/contact", label: "Contact", icon: ContactIcon },
       { href: "/admin/settings", label: "Settings", icon: SettingsIcon },
     ],
   },

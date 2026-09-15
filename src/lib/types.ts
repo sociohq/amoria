@@ -221,6 +221,20 @@ export interface Settings {
   newsletterPopupSubtext: string;
   newsletterPopupButtonText: string;
   newsletterPopupImage: string;
+  instagramUrl: string | null;
+  facebookUrl: string | null;
+  tiktokUrl: string | null;
+  twitterUrl: string | null;
+}
+
+export interface ContactSubmission {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  subject: string | null;
+  message: string;
+  createdAt: string;
 }
 
 export interface DashboardSummary {
