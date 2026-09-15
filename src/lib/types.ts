@@ -117,6 +117,15 @@ export interface ShopTheLookSection {
   hotspots: ShopTheLookHotspot[];
 }
 
+export interface GenderShowcaseItem {
+  id: string;
+  sectionId: string;
+  productId: string;
+  side: "him" | "her";
+  position: number;
+  product: Product;
+}
+
 export interface GenderShowcaseSection {
   id: string;
   active: boolean;
@@ -129,8 +138,13 @@ export interface GenderShowcaseSection {
   herHeading: string;
   herSubheading: string | null;
   herImage: string | null;
+  // Public fetch (storefront): flattened, active-only product lists.
   him: Product[];
   her: Product[];
+  // Admin fetch only: the raw per-side assignments (own id, so a specific
+  // row can be removed/reordered — a product can legitimately be
+  // assigned to both sides).
+  items?: GenderShowcaseItem[];
 }
 
 export interface WishlistItem {

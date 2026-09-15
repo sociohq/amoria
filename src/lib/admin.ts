@@ -14,6 +14,7 @@ import {
   ShopTheLookHotspot,
   Review,
   GenderShowcaseSection,
+  GenderShowcaseItem,
 } from "./types";
 
 // ---------- Dashboard ----------
@@ -222,6 +223,24 @@ export const uploadGenderShowcaseImage = (side: "him" | "her", file: File) => {
   formData.append("image", file);
   return apiUpload<{ section: GenderShowcaseSection }>(`/api/gender-showcase/admin/upload/${side}`, formData);
 };
+
+export interface GenderShowcaseItemInput {
+  productId: string;
+  side: "him" | "her";
+  position?: number;
+}
+export const addGenderShowcaseItem = (data: GenderShowcaseItemInput) =>
+  apiFetch<{ item: GenderShowcaseItem }>("/api/gender-showcase/admin/items", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+export const updateGenderShowcaseItem = (id: string, data: Partial<GenderShowcaseItemInput>) =>
+  apiFetch<{ item: GenderShowcaseItem }>(`/api/gender-showcase/admin/items/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+export const deleteGenderShowcaseItem = (id: string) =>
+  apiFetch<void>(`/api/gender-showcase/admin/items/${id}`, { method: "DELETE" });
 
 // ---------- Reviews ----------
 export interface ReviewInput {
