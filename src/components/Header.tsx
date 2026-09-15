@@ -229,13 +229,6 @@ export function Header({ categories }: { categories: Category[] }) {
           Custom Perfume
         </Link>
         <Link
-          href="/gift-cards"
-          onMouseEnter={trackUnderline}
-          className={`relative text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
-        >
-          Gift Cards
-        </Link>
-        <Link
           href="/our-story"
           onMouseEnter={trackUnderline}
           className={`relative text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
@@ -281,9 +274,6 @@ export function Header({ categories }: { categories: Category[] }) {
           </Link>
           <Link href="/custom-perfume" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
             Custom Perfume
-          </Link>
-          <Link href="/gift-cards" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
-            Gift Cards
           </Link>
           <Link href="/our-story" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
             Our Story
