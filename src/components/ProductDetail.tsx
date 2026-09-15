@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Product } from "@/lib/types";
 import { formatAed, percentOff } from "@/lib/money";
-import { formatConcentration, deliveryEstimate } from "@/lib/format";
+import { formatConcentration, deliveryEstimate, productInfoSections } from "@/lib/format";
 import { StarRating } from "./StarRating";
 import { Accordion } from "./Accordion";
 import { useCart } from "@/lib/cart-context";
@@ -22,9 +22,14 @@ export function ProductDetail({ product }: { product: Product }) {
 
   const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
   const off = percentOff(variant?.price ?? product.price, product.compareAtPrice);
-  const images = product.images.length > 0 ? product.images : [{ id: "placeholder", url: "", altText: null, position: 0 }];
+  // The dedicated thumbnail (if set) leads the gallery on the product's
+  // own page too — it's still the main shot of the product, just no
+  // longer required to also be gallery image #1 for admin purposes.
+  const galleryImages = product.thumbnailImage
+    ? [{ id: "thumbnail", url: product.thumbnailImage, altText: product.name, position: -1 }, ...product.images]
+    : product.images;
+  const images = galleryImages.length > 0 ? galleryImages : [{ id: "placeholder", url: "", altText: null, position: 0 }];
   const category = product.categories[0]?.name;
-  const isScentCapable = product.productType === "PERFUME" || product.productType === "HAIR_CARE";
   const fragranceDetails = [
     product.fragranceFamily && { label: "Fragrance Family", value: product.fragranceFamily },
     product.season && { label: "Season", value: product.season },
@@ -45,7 +50,7 @@ export function ProductDetail({ product }: { product: Product }) {
         productSlug: product.slug,
         variantSize: variant.size,
         price: variant.price,
-        image: product.images[0]?.url ?? null,
+        image: product.thumbnailImage ?? product.images[0]?.url ?? null,
         quantity,
       });
     } finally {
@@ -80,9 +85,9 @@ export function ProductDetail({ product }: { product: Product }) {
             </div>
           )}
         </div>
-        {product.images.length > 1 && (
+        {images.length > 1 && (
           <div className="mt-4 flex gap-3">
-            {product.images.map((img, i) => (
+            {images.map((img, i) => (
               <button
                 key={img.id}
                 onClick={() => setActiveImage(i)}
@@ -221,20 +226,11 @@ export function ProductDetail({ product }: { product: Product }) {
               </dl>
             </Accordion>
           )}
-          <Accordion title="Sizes and Refills">
-            <p>Available in {product.variants.map((v) => v.size).join(", ")}. Refills coming soon.</p>
-          </Accordion>
-          {isScentCapable && (
-            <Accordion title="How, When & Where to Apply Fragrances">
-              <p>
-                Apply to pulse points (wrists, neck, and behind the ears) right after showering, when skin is
-                warm and slightly damp for the longest-lasting effect.
-              </p>
+          {productInfoSections(product).map((section) => (
+            <Accordion key={section.heading} title={section.heading}>
+              <p className="whitespace-pre-line">{section.content}</p>
             </Accordion>
-          )}
-          <Accordion title="Shipping, Returns and Questions">
-            <p>Free shipping on orders above AED 99. Unopened items can be returned within 14 days of delivery.</p>
-          </Accordion>
+          ))}
         </div>
 
         <p className="mt-6 flex items-center gap-2 text-sm text-royal">

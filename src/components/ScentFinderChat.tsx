@@ -215,15 +215,14 @@ function ChatBubble({ message }: { message: Message }) {
 function ResultCard({ product }: { product: Product }) {
   const variant = product.variants[0];
   const price = variant?.price ?? product.price;
+  const imageUrl = product.thumbnailImage ?? product.images[0]?.url;
   return (
     <Link
       href={`/product/${product.slug}`}
       className="flex items-center gap-3 rounded-xl bg-cream-dark p-2.5 transition-colors hover:bg-border"
     >
       <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-white">
-        {product.images[0]?.url && (
-          <Image src={product.images[0].url} alt={product.name} fill sizes="56px" className="object-cover" />
-        )}
+        {imageUrl && <Image src={imageUrl} alt={product.name} fill sizes="56px" className="object-cover" />}
       </div>
       <div className="min-w-0 flex-1">
         <p className="truncate font-serif text-base text-ink">{product.name}</p>

@@ -30,7 +30,7 @@ export default function WishlistPage() {
         productSlug: product.slug,
         variantSize: variant.size,
         price: variant.price,
-        image: product.images[0]?.url ?? null,
+        image: product.thumbnailImage ?? product.images[0]?.url ?? null,
       });
     } finally {
       setAddingId(null);
@@ -105,14 +105,14 @@ export default function WishlistPage() {
       <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
         {items.map((item) => {
           const { product } = item;
-          const image = product.images[0];
+          const imageUrl = product.thumbnailImage ?? product.images[0]?.url;
           const variant = product.variants[0];
           return (
             <div key={item.id}>
               <Link href={`/product/${product.slug}`} className="relative block aspect-[4/5] overflow-hidden bg-cream-dark">
-                {image ? (
+                {imageUrl ? (
                   <Image
-                    src={image.url}
+                    src={imageUrl}
                     alt={product.name}
                     fill
                     sizes="(min-width: 768px) 25vw, 50vw"

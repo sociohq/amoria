@@ -6,17 +6,20 @@ import { fragranceFamilyImage, genderTag } from "@/lib/fragrance";
 import { WishlistButton } from "./WishlistButton";
 
 export function ProductCard({ product }: { product: Product }) {
-  const image = product.images[0];
+  // The dedicated listing thumbnail wins when set; falls back to the
+  // first gallery image for a product that predates that field.
+  const imageUrl = product.thumbnailImage ?? product.images[0]?.url;
+  const imageAlt = product.thumbnailImage ? product.name : (product.images[0]?.altText ?? product.name);
   const off = percentOff(product.price, product.compareAtPrice);
   const gender = genderTag(product.categories);
 
   return (
     <Link href={`/product/${product.slug}`} className="group block">
       <div className="relative aspect-[4/5] overflow-hidden bg-cream-dark">
-        {image ? (
+        {imageUrl ? (
           <Image
-            src={image.url}
-            alt={image.altText ?? product.name}
+            src={imageUrl}
+            alt={imageAlt}
             fill
             sizes="(min-width: 768px) 25vw, 50vw"
             className="object-cover transition-transform duration-500 group-hover:scale-105"

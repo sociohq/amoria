@@ -63,6 +63,8 @@ export interface ProductInput {
   designHouse?: string;
   yearIntroduced?: number;
   attributes?: Record<string, unknown>;
+  infoSections?: Array<{ heading: string; content: string }>;
+  thumbnailImage?: string;
   price: number;
   compareAtPrice?: number;
   status: "ACTIVE" | "DRAFT";
@@ -98,6 +100,14 @@ export const uploadProductImages = (productId: string, files: File[]) => {
 
 export const removeProductImage = (productId: string, imageId: string) =>
   apiFetch(`/api/products/${productId}/images/${imageId}`, { method: "DELETE" });
+
+// The single listing/card thumbnail — a separate slot from the gallery
+// above, not just "image position 0".
+export const uploadProductThumbnail = (productId: string, file: File) => {
+  const formData = new FormData();
+  formData.append("image", file);
+  return apiUpload<{ thumbnailImage: string }>(`/api/products/${productId}/thumbnail`, formData);
+};
 
 // ---------- Coupons ----------
 export interface CouponInput {

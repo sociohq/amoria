@@ -5,6 +5,8 @@ import { Category, Product, ProductType } from "@/lib/types";
 import { listCategories } from "@/lib/products";
 import { ProductInput } from "@/lib/admin";
 import { Button, inputClass } from "@/components/admin/ui";
+import { InfoSectionsEditor } from "@/components/admin/InfoSectionsEditor";
+import { defaultInfoSections } from "@/lib/format";
 
 const CONCENTRATIONS = ["EAU_DE_TOILETTE", "EAU_DE_PARFUM", "EXTRAIT_DE_PARFUM", "PARFUM"];
 const PRODUCT_TYPES: { value: ProductType; label: string }[] = [
@@ -49,6 +51,18 @@ function toFormValue(p?: Product): ProductFormValue {
     designHouse: p?.designHouse ?? "Amoria Perfume",
     yearIntroduced: p?.yearIntroduced ?? undefined,
     attributesText: p?.attributes ? JSON.stringify(p.attributes, null, 2) : "",
+    // A product with no customized sections yet starts pre-filled with
+    // the same generated defaults the storefront falls back to — an
+    // admin sees the actual current copy ready to tweak, not a blank
+    // editor, per the same reasoning as ShopTheLook/other admin forms.
+    infoSections:
+      p?.infoSections && p.infoSections.length > 0
+        ? p.infoSections
+        : defaultInfoSections({
+            isScentCapable: (p?.productType ?? "PERFUME") === "PERFUME" || (p?.productType ?? "PERFUME") === "HAIR_CARE",
+            sizes: p?.variants.map((v) => v.size).join(", ") ?? "",
+          }),
+    thumbnailImage: p?.thumbnailImage ?? undefined,
     price: p?.price ?? 0,
     compareAtPrice: p?.compareAtPrice ?? undefined,
     status: p?.status ?? "DRAFT",
@@ -117,7 +131,10 @@ export function ProductForm({
     try {
       const { attributesText, ...rest } = value;
       void attributesText;
-      await onSubmit({ ...rest, attributes });
+      // Drop any section row the admin added but never actually filled
+      // in, rather than sending an empty heading/content to the server.
+      const infoSections = (rest.infoSections ?? []).filter((s) => s.heading.trim() && s.content.trim());
+      await onSubmit({ ...rest, infoSections, attributes });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -324,6 +341,15 @@ export function ProductForm({
           </p>
         </div>
       )}
+
+      <div>
+        <label className="mb-1.5 block text-xs font-medium text-ink-soft">Product Page Sections</label>
+        <p className="mb-2 text-xs text-ink-soft">
+          The accordions shown on this product&apos;s page (e.g. &quot;Sizes and Refills&quot;). Pre-filled with
+          sensible defaults — rename a heading or rewrite its content, remove one, or add your own.
+        </p>
+        <InfoSectionsEditor sections={value.infoSections ?? []} onChange={(infoSections) => set("infoSections", infoSections)} />
+      </div>
 
       <div>
         <label className="mb-2 block text-xs font-medium text-ink-soft">Categories</label>

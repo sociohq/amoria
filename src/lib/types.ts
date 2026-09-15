@@ -26,6 +26,11 @@ export interface ProductVariant {
   sku: string;
 }
 
+export interface InfoSection {
+  heading: string;
+  content: string;
+}
+
 export interface Product {
   id: string;
   productType: ProductType;
@@ -46,6 +51,16 @@ export interface Product {
   designHouse: string | null;
   yearIntroduced: number | null;
   attributes: Record<string, unknown> | null;
+  // The single listing/card thumbnail — separate from `images` (the
+  // detail-page gallery) so a specific shot can represent the product in
+  // grids without also having to be the gallery's first entry. Null on
+  // a product that predates this field; the storefront falls back to
+  // images[0] in that case.
+  thumbnailImage: string | null;
+  // Admin-editable accordion sections on the product page (heading +
+  // body, e.g. "Sizes and Refills"). Null/empty falls back to generated
+  // defaults — see productInfoSections() in lib/format.ts.
+  infoSections: InfoSection[] | null;
   price: number; // AED
   compareAtPrice: number | null; // AED
   avgRating: number;

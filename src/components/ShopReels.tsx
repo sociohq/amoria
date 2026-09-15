@@ -15,7 +15,7 @@ function ReelCard({ reel }: { reel: Reel }) {
   const { addItem } = useCart();
   const { product } = reel;
   const variant = product.variants[0];
-  const image = product.images[0];
+  const imageUrl = product.thumbnailImage ?? product.images[0]?.url;
 
   function toggleMute() {
     const v = videoRef.current;
@@ -35,7 +35,7 @@ function ReelCard({ reel }: { reel: Reel }) {
         productSlug: product.slug,
         variantSize: variant.size,
         price: variant.price,
-        image: image?.url ?? null,
+        image: imageUrl ?? null,
       });
     } finally {
       setAdding(false);
@@ -67,7 +67,7 @@ function ReelCard({ reel }: { reel: Reel }) {
 
       <div className="mt-3 flex items-center gap-3">
         <Link href={`/product/${product.slug}`} className="relative h-12 w-12 shrink-0 overflow-hidden bg-cream-dark">
-          {image && <Image src={image.url} alt={product.name} fill sizes="48px" className="object-cover" />}
+          {imageUrl && <Image src={imageUrl} alt={product.name} fill sizes="48px" className="object-cover" />}
         </Link>
         <div className="min-w-0 flex-1">
           <Link href={`/product/${product.slug}`} className="block truncate text-sm text-ink hover:text-royal">

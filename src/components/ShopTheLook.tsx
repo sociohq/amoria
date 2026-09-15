@@ -48,6 +48,7 @@ export function ShopTheLook({ section }: { section: ShopTheLookSection }) {
   const variant = product.variants[0];
   const price = variant?.price ?? product.price;
   const off = percentOff(price, product.compareAtPrice);
+  const imageUrl = product.thumbnailImage ?? product.images[0]?.url;
 
   function goTo(index: number) {
     if (index === activeIndex) return;
@@ -111,15 +112,7 @@ export function ShopTheLook({ section }: { section: ShopTheLookSection }) {
             }`}
           >
             <div className="relative mx-auto h-64 w-64">
-              {product.images[0]?.url && (
-                <Image
-                  src={product.images[0].url}
-                  alt={product.name}
-                  fill
-                  sizes="256px"
-                  className="object-contain"
-                />
-              )}
+              {imageUrl && <Image src={imageUrl} alt={product.name} fill sizes="256px" className="object-contain" />}
             </div>
             <h3 className="mt-4 font-serif text-2xl text-ink">{product.name}</h3>
             {product.scentAccords.length > 0 && (

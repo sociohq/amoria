@@ -8,6 +8,7 @@ import { Product } from "@/lib/types";
 import { ProductForm, ProductFormSubmitValue } from "@/components/admin/ProductForm";
 import { ImageManager } from "@/components/admin/ImageManager";
 import { VariantManager } from "@/components/admin/VariantManager";
+import { ThumbnailManager } from "@/components/admin/ThumbnailManager";
 import { PageHeader, Button } from "@/components/admin/ui";
 
 export default function EditProductPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -26,10 +27,12 @@ export default function EditProductPage({ params }: { params: Promise<{ slug: st
     if (value.categoryIds.length === 0) {
       throw new Error("Assign at least one category");
     }
-    // Variants aren't part of the update payload — VariantManager below
-    // manages them individually against their own endpoints.
-    const { variants, ...rest } = value;
+    // Variants and the thumbnail aren't part of this update payload —
+    // VariantManager and ThumbnailManager below manage them individually
+    // against their own endpoints.
+    const { variants, thumbnailImage, ...rest } = value;
     void variants;
+    void thumbnailImage;
     const { product: updated } = await updateProduct(product.id, rest);
     if (updated.slug !== slug) {
       router.push(`/admin/products/${updated.slug}`);
@@ -62,7 +65,16 @@ export default function EditProductPage({ params }: { params: Promise<{ slug: st
       <ProductForm product={product} showVariants={false} onSubmit={handleSubmit} submitLabel="Save Changes" />
 
       <div>
-        <h2 className="mb-4 text-base font-semibold text-ink">Images</h2>
+        <h2 className="mb-1 text-base font-semibold text-ink">Thumbnail</h2>
+        <p className="mb-4 text-sm text-ink-soft">
+          The single image shown in product listings and cards — separate from the gallery below.
+        </p>
+        <ThumbnailManager productId={product.id} thumbnailImage={product.thumbnailImage} onChange={refresh} />
+      </div>
+
+      <div>
+        <h2 className="mb-1 text-base font-semibold text-ink">Gallery</h2>
+        <p className="mb-4 text-sm text-ink-soft">Additional photos shown on this product&apos;s own page.</p>
         <ImageManager productId={product.id} images={product.images} onChange={refresh} />
       </div>
 

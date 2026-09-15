@@ -14,7 +14,10 @@ export function FeaturedProductCard({ product }: { product: Product }) {
   const [variantId, setVariantId] = useState(product.variants[0]?.id);
   const [adding, setAdding] = useState(false);
   const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
-  const image = product.images[0];
+  // The dedicated listing thumbnail wins when set; falls back to the
+  // first gallery image for a product that predates that field.
+  const imageUrl = product.thumbnailImage ?? product.images[0]?.url;
+  const imageAlt = product.thumbnailImage ? product.name : (product.images[0]?.altText ?? product.name);
   const off = percentOff(variant?.price ?? product.price, product.compareAtPrice);
   const gender = genderTag(product.categories);
 
@@ -29,7 +32,7 @@ export function FeaturedProductCard({ product }: { product: Product }) {
         productSlug: product.slug,
         variantSize: variant.size,
         price: variant.price,
-        image: image?.url ?? null,
+        image: imageUrl ?? null,
       });
     } finally {
       setAdding(false);
@@ -40,10 +43,10 @@ export function FeaturedProductCard({ product }: { product: Product }) {
     <div className="group w-full shrink-0">
       <div className="relative aspect-[4/5] overflow-hidden bg-cream-dark">
         <Link href={`/product/${product.slug}`} className="absolute inset-0">
-          {image ? (
+          {imageUrl ? (
             <Image
-              src={image.url}
-              alt={image.altText ?? product.name}
+              src={imageUrl}
+              alt={imageAlt}
               fill
               sizes="(min-width: 768px) 25vw, 50vw"
               className="object-cover transition-transform duration-500 group-hover:scale-105"
