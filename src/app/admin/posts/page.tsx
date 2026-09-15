@@ -5,6 +5,7 @@ import Link from "next/link";
 import { listPostsAdmin, deletePost } from "@/lib/admin";
 import { Post } from "@/lib/types";
 import { ApiError } from "@/lib/api";
+import { PageHeader, Card, Button, Table, TableHead, Badge } from "@/components/admin/ui";
 
 export default function AdminPostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -30,46 +31,58 @@ export default function AdminPostsPage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-serif text-2xl text-ink">Blog Posts</h1>
-        <Link href="/admin/posts/new" className="bg-ink px-5 py-2 label-caps text-cream hover:opacity-90">
-          New Post
-        </Link>
-      </div>
+      <PageHeader
+        title="Blog Posts"
+        action={
+          <Link href="/admin/posts/new">
+            <Button>New Post</Button>
+          </Link>
+        }
+      />
       {error && <p className="mb-4 text-sm text-crimson">{error}</p>}
 
-      <table className="w-full max-w-3xl border-collapse text-sm">
-        <thead>
-          <tr className="border-b border-border text-left text-ink-soft">
-            <th className="py-2">Title</th>
-            <th className="py-2">Status</th>
-            <th className="py-2" />
-          </tr>
-        </thead>
-        <tbody>
-          {posts.map((p) => (
-            <tr key={p.id} className="border-b border-border">
-              <td className="py-2 text-ink">{p.title}</td>
-              <td className="py-2 text-ink-soft">{p.status === "PUBLISHED" ? "Published" : "Draft"}</td>
-              <td className="py-2 text-right">
-                <Link href={`/admin/posts/${p.id}`} className="mr-4 text-royal hover:underline">
-                  Edit
-                </Link>
-                <button onClick={() => handleDelete(p.id)} className="text-crimson hover:underline">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-          {posts.length === 0 && (
+      <Card>
+        <Table>
+          <TableHead>
             <tr>
-              <td colSpan={3} className="py-6 text-center text-ink-soft">
-                No posts yet.
-              </td>
+              <th>Title</th>
+              <th>Status</th>
+              <th />
             </tr>
-          )}
-        </tbody>
-      </table>
+          </TableHead>
+          <tbody className="divide-y divide-border">
+            {posts.map((p) => (
+              <tr key={p.id}>
+                <td className="font-medium text-ink">{p.title}</td>
+                <td>
+                  <Badge tone={p.status === "PUBLISHED" ? "success" : "neutral"}>
+                    {p.status === "PUBLISHED" ? "Published" : "Draft"}
+                  </Badge>
+                </td>
+                <td className="text-right">
+                  <div className="flex justify-end gap-2">
+                    <Link href={`/admin/posts/${p.id}`}>
+                      <Button variant="secondary" size="sm">
+                        Edit
+                      </Button>
+                    </Link>
+                    <Button variant="danger" size="sm" onClick={() => handleDelete(p.id)}>
+                      Delete
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+            {posts.length === 0 && (
+              <tr>
+                <td colSpan={3} className="py-10 text-center text-ink-soft">
+                  No posts yet.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+      </Card>
     </div>
   );
 }

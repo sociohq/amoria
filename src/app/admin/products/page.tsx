@@ -5,6 +5,7 @@ import Link from "next/link";
 import { listProducts } from "@/lib/products";
 import { Product } from "@/lib/types";
 import { formatAed } from "@/lib/money";
+import { PageHeader, Card, Button, Table, TableHead, Badge } from "@/components/admin/ui";
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -18,45 +19,61 @@ export default function AdminProductsPage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-serif text-2xl text-ink">Products</h1>
-        <Link href="/admin/products/new" className="bg-royal px-5 py-2 label-caps text-cream hover:opacity-90">
-          + New Product
-        </Link>
-      </div>
+      <PageHeader
+        title="Products"
+        action={
+          <Link href="/admin/products/new">
+            <Button>+ New Product</Button>
+          </Link>
+        }
+      />
 
-      {loading ? (
-        <p className="text-ink-soft">Loading…</p>
-      ) : products.length === 0 ? (
-        <p className="text-ink-soft">No products yet.</p>
-      ) : (
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="border-b border-border text-left text-ink-soft">
-              <th className="py-2">Name</th>
-              <th className="py-2">Status</th>
-              <th className="py-2">Price</th>
-              <th className="py-2">Variants</th>
-              <th className="py-2" />
+      <Card>
+        <Table>
+          <TableHead>
+            <tr>
+              <th>Name</th>
+              <th>Status</th>
+              <th>Price</th>
+              <th>Variants</th>
+              <th />
             </tr>
-          </thead>
-          <tbody>
-            {products.map((p) => (
-              <tr key={p.id} className="border-b border-border">
-                <td className="py-2 text-ink">{p.name}</td>
-                <td className="py-2 text-ink-soft">{p.status}</td>
-                <td className="py-2 text-ink-soft">{formatAed(p.price)}</td>
-                <td className="py-2 text-ink-soft">{p.variants.length}</td>
-                <td className="py-2 text-right">
-                  <Link href={`/admin/products/${p.slug}`} className="text-royal hover:underline">
-                    Edit
-                  </Link>
+          </TableHead>
+          <tbody className="divide-y divide-border">
+            {loading ? (
+              <tr>
+                <td colSpan={5} className="py-10 text-center text-ink-soft">
+                  Loading…
                 </td>
               </tr>
-            ))}
+            ) : products.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="py-10 text-center text-ink-soft">
+                  No products yet.
+                </td>
+              </tr>
+            ) : (
+              products.map((p) => (
+                <tr key={p.id}>
+                  <td className="font-medium text-ink">{p.name}</td>
+                  <td>
+                    <Badge tone={p.status === "ACTIVE" ? "success" : "neutral"}>{p.status}</Badge>
+                  </td>
+                  <td className="text-ink-soft">{formatAed(p.price)}</td>
+                  <td className="text-ink-soft">{p.variants.length}</td>
+                  <td className="text-right">
+                    <Link href={`/admin/products/${p.slug}`}>
+                      <Button variant="secondary" size="sm">
+                        Edit
+                      </Button>
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
-        </table>
-      )}
+        </Table>
+      </Card>
     </div>
   );
 }

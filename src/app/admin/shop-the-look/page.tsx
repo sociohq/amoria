@@ -13,8 +13,7 @@ import {
 import { listProducts } from "@/lib/products";
 import { ShopTheLookSection, Product } from "@/lib/types";
 import { ApiError } from "@/lib/api";
-
-const inputClass = "border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-royal";
+import { PageHeader, Card, Button, Label, Table, TableHead, inputClass } from "@/components/admin/ui";
 
 export default function AdminShopTheLookPage() {
   const [section, setSection] = useState<ShopTheLookSection | null>(null);
@@ -204,21 +203,19 @@ export default function AdminShopTheLookPage() {
   }, [dragId]);
 
   if (loading) {
-    return <p className="text-ink-soft">Loading…</p>;
+    return <p className="text-sm text-ink-soft">Loading…</p>;
   }
 
   return (
     <div>
-      <h1 className="mb-2 font-serif text-2xl text-ink">Shop The Look</h1>
-      <p className="mb-6 max-w-2xl text-sm text-ink-soft">
-        One lifestyle image on the homepage with clickable hotspot dots pinned to it, each tied to a real product.
-        Click anywhere on the image to place a new hotspot, drag an existing dot to reposition it, or reassign /
-        remove one from the list below.
-      </p>
+      <PageHeader
+        title="Shop The Look"
+        description="One lifestyle image on the homepage with clickable hotspot dots pinned to it, each tied to a real product. Click anywhere on the image to place a new hotspot, drag an existing dot to reposition it, or reassign / remove one from the list below."
+      />
       {error && <p className="mb-4 text-sm text-crimson">{error}</p>}
 
-      <div className="mb-8 border border-border p-5">
-        <p className="label-caps mb-3 text-ink-soft">Banner Image</p>
+      <Card className="mb-6 p-5">
+        <p className="mb-3 text-sm font-medium text-ink">Banner Image</p>
         <div className="flex items-center gap-3">
           <input
             type="file"
@@ -226,26 +223,22 @@ export default function AdminShopTheLookPage() {
             onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
             className="text-sm"
           />
-          <button
-            onClick={handleUploadImage}
-            disabled={!imageFile || uploadingImage}
-            className="border border-ink px-4 py-2 label-caps text-ink hover:bg-ink hover:text-cream disabled:opacity-50"
-          >
+          <Button variant="secondary" onClick={handleUploadImage} disabled={!imageFile || uploadingImage}>
             {uploadingImage ? "Uploading…" : section?.image ? "Replace" : "Upload"}
-          </button>
+          </Button>
         </div>
-      </div>
+      </Card>
 
       {section && (
         <>
-          <form onSubmit={saveMeta} className="mb-8 flex max-w-2xl flex-wrap items-end gap-3 border border-border p-5">
+          <Card as="form" onSubmit={saveMeta} className="mb-6 flex max-w-2xl flex-wrap items-end gap-3 p-5">
             <div className="flex-1" style={{ minWidth: 200 }}>
-              <label className="label-caps mb-1 block text-ink-soft">Title</label>
-              <input value={title} onChange={(e) => setTitle(e.target.value)} className={`${inputClass} w-full`} />
+              <Label>Title</Label>
+              <input value={title} onChange={(e) => setTitle(e.target.value)} className={inputClass} />
             </div>
             <div className="flex-1" style={{ minWidth: 200 }}>
-              <label className="label-caps mb-1 block text-ink-soft">Subtitle</label>
-              <input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} className={`${inputClass} w-full`} />
+              <Label>Subtitle</Label>
+              <input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} className={inputClass} />
             </div>
             <label className="flex items-center gap-2 pb-2 text-sm text-ink">
               <input
@@ -256,13 +249,10 @@ export default function AdminShopTheLookPage() {
               />
               Active
             </label>
-            <button
-              disabled={savingMeta}
-              className="bg-ink px-5 py-2 label-caps text-cream hover:opacity-90 disabled:opacity-50"
-            >
+            <Button type="submit" disabled={savingMeta}>
               Save
-            </button>
-          </form>
+            </Button>
+          </Card>
 
           {section.image && (
             <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
@@ -297,14 +287,14 @@ export default function AdminShopTheLookPage() {
                 </div>
 
                 {pending && (
-                  <div className="mt-3 flex max-w-md flex-wrap items-center gap-2 border border-border bg-cream-dark/40 p-3">
+                  <div className="mt-3 flex max-w-md flex-wrap items-center gap-2 rounded-lg border border-border bg-cream-dark/40 p-3">
                     <p className="text-xs text-ink-soft">
                       New hotspot at {pending.x}%, {pending.y}% —
                     </p>
                     <select
                       value={pendingProductId}
                       onChange={(e) => setPendingProductId(e.target.value)}
-                      className={inputClass}
+                      className={`${inputClass} w-auto py-1.5 text-xs`}
                     >
                       {products.map((p) => (
                         <option key={p.id} value={p.id}>
@@ -312,13 +302,9 @@ export default function AdminShopTheLookPage() {
                         </option>
                       ))}
                     </select>
-                    <button
-                      onClick={confirmAddHotspot}
-                      disabled={addingHotspot}
-                      className="bg-ink px-4 py-2 label-caps text-cream hover:opacity-90 disabled:opacity-50"
-                    >
+                    <Button size="sm" onClick={confirmAddHotspot} disabled={addingHotspot}>
                       Add Hotspot
-                    </button>
+                    </Button>
                     <button onClick={() => setPending(null)} className="text-sm text-ink-soft underline hover:text-royal">
                       Cancel
                     </button>
@@ -326,58 +312,60 @@ export default function AdminShopTheLookPage() {
                 )}
               </div>
 
-              <table className="h-fit w-full border-collapse text-sm">
-                <thead>
-                  <tr className="border-b border-border text-left text-ink-soft">
-                    <th className="py-2">#</th>
-                    <th className="py-2">Product</th>
-                    <th className="py-2" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {section.hotspots.map((h, i) => (
-                    <tr
-                      key={h.id}
-                      onMouseEnter={() => setSelectedHotspotId(h.id)}
-                      className={`border-b border-border ${selectedHotspotId === h.id ? "bg-cream-dark/50" : ""}`}
-                    >
-                      <td className="py-2">
-                        <input
-                          type="number"
-                          defaultValue={h.position}
-                          onBlur={(e) => savePosition(h.id, Number(e.target.value))}
-                          className="w-12 border border-border bg-cream px-2 py-1 text-xs outline-none focus:border-royal"
-                        />
-                      </td>
-                      <td className="py-2">
-                        <select
-                          value={h.productId}
-                          onChange={(e) => handleReassign(h.id, e.target.value)}
-                          className={inputClass}
-                        >
-                          {products.map((p) => (
-                            <option key={p.id} value={p.id}>
-                              {p.name}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td className="py-2 text-right">
-                        <button onClick={() => handleDeleteHotspot(h.id)} className="text-crimson hover:underline">
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                  {section.hotspots.length === 0 && (
+              <Card className="h-fit">
+                <Table>
+                  <TableHead>
                     <tr>
-                      <td colSpan={3} className="py-6 text-center text-ink-soft">
-                        Click the image to add your first hotspot.
-                      </td>
+                      <th>#</th>
+                      <th>Product</th>
+                      <th />
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </TableHead>
+                  <tbody className="divide-y divide-border">
+                    {section.hotspots.map((h, i) => (
+                      <tr
+                        key={h.id}
+                        onMouseEnter={() => setSelectedHotspotId(h.id)}
+                        className={selectedHotspotId === h.id ? "bg-cream-dark/50" : ""}
+                      >
+                        <td>
+                          <input
+                            type="number"
+                            defaultValue={h.position}
+                            onBlur={(e) => savePosition(h.id, Number(e.target.value))}
+                            className={`${inputClass} w-14 py-1.5 text-xs`}
+                          />
+                        </td>
+                        <td>
+                          <select
+                            value={h.productId}
+                            onChange={(e) => handleReassign(h.id, e.target.value)}
+                            className={`${inputClass} w-auto py-1.5 text-xs`}
+                          >
+                            {products.map((p) => (
+                              <option key={p.id} value={p.id}>
+                                {p.name}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="text-right">
+                          <Button variant="danger" size="sm" onClick={() => handleDeleteHotspot(h.id)}>
+                            Delete
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                    {section.hotspots.length === 0 && (
+                      <tr>
+                        <td colSpan={3} className="py-10 text-center text-ink-soft">
+                          Click the image to add your first hotspot.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
+              </Card>
             </div>
           )}
         </>

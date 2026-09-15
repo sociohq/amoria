@@ -5,6 +5,7 @@ import { use } from "react";
 import { getPostAdmin } from "@/lib/admin";
 import { Post } from "@/lib/types";
 import { PostForm } from "@/components/admin/PostForm";
+import { PageHeader } from "@/components/admin/ui";
 
 export default function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -18,11 +19,11 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
   }, [id]);
 
   if (error) return <p className="text-sm text-crimson">{error}</p>;
-  if (!post) return <p className="text-ink-soft">Loading…</p>;
+  if (!post) return <p className="text-sm text-ink-soft">Loading…</p>;
 
   return (
     <div>
-      <h1 className="mb-6 font-serif text-2xl text-ink">Edit Post</h1>
+      <PageHeader title="Edit Post" />
       <PostForm post={post} />
     </div>
   );

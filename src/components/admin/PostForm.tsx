@@ -7,8 +7,7 @@ import { listProducts } from "@/lib/products";
 import { Post, Product, BlogBlock } from "@/lib/types";
 import { ApiError } from "@/lib/api";
 import { PostBlockEditor } from "./PostBlockEditor";
-
-const inputClass = "w-full border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-royal";
+import { Button, inputClass } from "@/components/admin/ui";
 
 const EMPTY: PostInput = {
   title: "",
@@ -69,7 +68,7 @@ export function PostForm({ post }: { post?: Post }) {
   return (
     <form onSubmit={handleSubmit} className="max-w-3xl space-y-6">
       <div>
-        <label className="label-caps mb-1 block text-ink-soft">Title</label>
+        <label className="mb-1.5 block text-xs font-medium text-ink-soft">Title</label>
         <input
           required
           value={draft.title}
@@ -78,7 +77,7 @@ export function PostForm({ post }: { post?: Post }) {
         />
       </div>
       <div>
-        <label className="label-caps mb-1 block text-ink-soft">Slug (optional, derived from title)</label>
+        <label className="mb-1.5 block text-xs font-medium text-ink-soft">Slug (optional, derived from title)</label>
         <input
           value={draft.slug ?? ""}
           onChange={(e) => setDraft({ ...draft, slug: e.target.value })}
@@ -86,7 +85,7 @@ export function PostForm({ post }: { post?: Post }) {
         />
       </div>
       <div>
-        <label className="label-caps mb-1 block text-ink-soft">Excerpt</label>
+        <label className="mb-1.5 block text-xs font-medium text-ink-soft">Excerpt</label>
         <textarea
           required
           rows={2}
@@ -96,7 +95,7 @@ export function PostForm({ post }: { post?: Post }) {
         />
       </div>
       <div>
-        <label className="label-caps mb-1 block text-ink-soft">Hero Image URL</label>
+        <label className="mb-1.5 block text-xs font-medium text-ink-soft">Hero Image URL</label>
         <input
           required
           value={draft.heroImage}
@@ -105,7 +104,7 @@ export function PostForm({ post }: { post?: Post }) {
         />
       </div>
       <div>
-        <label className="label-caps mb-1 block text-ink-soft">Hero Eyebrow (optional)</label>
+        <label className="mb-1.5 block text-xs font-medium text-ink-soft">Hero Eyebrow (optional)</label>
         <input
           value={draft.heroEyebrow}
           onChange={(e) => setDraft({ ...draft, heroEyebrow: e.target.value })}
@@ -113,7 +112,7 @@ export function PostForm({ post }: { post?: Post }) {
         />
       </div>
       <div>
-        <label className="label-caps mb-1 block text-ink-soft">Status</label>
+        <label className="mb-1.5 block text-xs font-medium text-ink-soft">Status</label>
         <select
           value={draft.status}
           onChange={(e) => setDraft({ ...draft, status: e.target.value as "DRAFT" | "PUBLISHED" })}
@@ -125,14 +124,14 @@ export function PostForm({ post }: { post?: Post }) {
       </div>
 
       <div>
-        <h2 className="mb-3 font-serif text-xl text-ink">Content</h2>
+        <h2 className="mb-3 text-base font-semibold text-ink">Content</h2>
         <PostBlockEditor blocks={draft.content} onChange={setContent} products={products} />
       </div>
 
       {error && <p className="text-sm text-crimson">{error}</p>}
-      <button disabled={submitting} className="bg-ink px-6 py-3 label-caps text-cream hover:opacity-90 disabled:opacity-50">
+      <Button type="submit" disabled={submitting}>
         {submitting ? "Saving…" : post ? "Save Changes" : "Create Post"}
-      </button>
+      </Button>
     </form>
   );
 }

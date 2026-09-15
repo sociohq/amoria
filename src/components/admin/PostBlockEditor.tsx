@@ -1,8 +1,7 @@
 "use client";
 
 import { Product, BlogBlock } from "@/lib/types";
-
-const inputClass = "w-full border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-royal";
+import { inputClass } from "@/components/admin/ui";
 
 const BLOCK_DEFAULTS: Record<BlogBlock["type"], BlogBlock> = {
   heading: { type: "heading", text: "" },
@@ -45,9 +44,9 @@ export function PostBlockEditor({
   return (
     <div className="space-y-4">
       {blocks.map((b, i) => (
-        <div key={i} className="border border-border p-4">
+        <div key={i} className="rounded-lg border border-border bg-white p-4">
           <div className="mb-3 flex items-center justify-between">
-            <span className="label-caps text-ink-soft">{b.type}</span>
+            <span className="text-xs font-medium uppercase tracking-wide text-ink-soft">{b.type}</span>
             <div className="flex items-center gap-3 text-xs">
               <button type="button" onClick={() => moveBlock(i, -1)} disabled={i === 0} className="text-ink-soft hover:text-ink disabled:opacity-30">
                 ↑
@@ -131,7 +130,7 @@ export function PostBlockEditor({
             key={t}
             type="button"
             onClick={() => addBlock(t)}
-            className="border border-border px-3 py-1.5 text-xs text-ink-soft hover:border-royal hover:text-royal"
+            className="rounded-md border border-border px-3 py-1.5 text-xs text-ink-soft transition-colors hover:border-ink/30 hover:text-ink"
           >
             + {t}
           </button>

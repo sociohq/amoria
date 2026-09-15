@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getDashboard } from "@/lib/admin";
 import { DashboardSummary } from "@/lib/types";
 import { formatAed } from "@/lib/money";
+import { Card, Button } from "@/components/admin/ui";
 
 function Icon({ children }: { children: React.ReactNode }) {
   return (
@@ -43,13 +44,13 @@ function StatCard({
   }[tone];
 
   const content = (
-    <div className="flex items-start justify-between rounded-xl border border-border bg-white p-5 transition-shadow hover:shadow-sm">
+    <Card className="flex items-start justify-between p-5 transition-shadow hover:shadow-sm">
       <div>
         <p className="text-sm text-ink-soft">{label}</p>
-        <p className="mt-2 text-2xl font-medium text-ink">{value}</p>
+        <p className="mt-2 text-2xl font-medium tabular-nums text-ink">{value}</p>
       </div>
       <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${toneClasses}`}>{icon}</div>
-    </div>
+    </Card>
   );
 
   return href ? <Link href={href}>{content}</Link> : content;
@@ -90,8 +91,8 @@ export default function AdminDashboardPage() {
         />
       </div>
 
-      <div className="rounded-xl border border-border bg-white p-6">
-        <p className="label-caps text-ink-soft">Quick Links</p>
+      <Card className="p-6">
+        <p className="text-xs font-medium uppercase tracking-wide text-ink-soft">Quick Links</p>
         <div className="mt-4 flex flex-wrap gap-3">
           {[
             { href: "/admin/products/new", label: "Add a Product" },
@@ -99,16 +100,14 @@ export default function AdminDashboardPage() {
             { href: "/admin/gender-showcase", label: "Edit For Him / For Her" },
             { href: "/admin/posts/new", label: "Write a Blog Post" },
           ].map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="border border-ink px-4 py-2 text-sm text-ink transition-colors hover:bg-ink hover:text-cream"
-            >
-              {l.label}
+            <Link key={l.href} href={l.href}>
+              <Button variant="secondary" size="sm">
+                {l.label}
+              </Button>
             </Link>
           ))}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

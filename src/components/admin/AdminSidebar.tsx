@@ -5,13 +5,11 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 
 // A real, minimal icon set for the sidebar — same thin-stroke language
-// used across the storefront (viewBox 0 0 24 24, stroke currentColor,
-// strokeWidth 1.5) rather than an icon library, so the dashboard still
-// feels like it belongs to the same product even though its layout is
-// completely different from the storefront.
+// used across the storefront, just a size down (16px, was 18px) so a
+// full 12-item nav fits one viewport with no internal scrollbar.
 function Icon({ children }: { children: React.ReactNode }) {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
       {children}
     </svg>
   );
@@ -74,19 +72,26 @@ export function AdminSidebar() {
   const { user, logout } = useAuth();
 
   return (
-    <aside className="flex h-screen w-64 shrink-0 flex-col bg-ink text-cream">
-      <div className="flex items-center gap-2 border-b border-cream/10 px-6 py-6">
-        <span className="font-serif text-xl text-cream">Amoria</span>
-        <span className="label-caps rounded-full border border-gold/40 px-2 py-0.5 text-[10px] text-gold">Admin</span>
+    // h-screen + no overflow anywhere in this tree by design: every
+    // section below is sized to fit one viewport (12 nav items across 4
+    // groups) rather than scrolling internally, per the compact-sidebar
+    // brief — text stays at a legible 13px floor while padding/gaps do
+    // the actual space-saving.
+    <aside className="flex h-screen w-60 shrink-0 flex-col bg-ink text-cream">
+      <div className="flex items-center gap-2 border-b border-cream/10 px-5 py-4">
+        <span className="font-serif text-lg text-cream">Amoria</span>
+        <span className="rounded-full border border-gold/40 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-widest text-gold">
+          Admin
+        </span>
       </div>
 
-      <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-5">
+      <nav className="flex-1 space-y-4 px-2.5 py-4">
         {SECTIONS.map((section) => (
           <div key={section.label}>
-            <p className="mb-2 px-3 text-[10px] font-medium uppercase tracking-widest text-cream/35">
+            <p className="mb-1 px-2.5 text-[10px] font-medium uppercase tracking-widest text-cream/35">
               {section.label}
             </p>
-            <div className="space-y-0.5">
+            <div className="space-y-px">
               {section.items.map((item) => {
                 const active = item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href);
                 const ItemIcon = item.icon;
@@ -94,7 +99,7 @@ export function AdminSidebar() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
+                    className={`flex items-center gap-2.5 rounded-md px-2.5 py-[7px] text-[13px] leading-tight transition-colors ${
                       active ? "bg-cream/10 text-cream" : "text-cream/60 hover:bg-cream/5 hover:text-cream"
                     }`}
                   >
@@ -110,30 +115,30 @@ export function AdminSidebar() {
         ))}
       </nav>
 
-      <div className="space-y-0.5 border-t border-cream/10 p-3">
+      <div className="border-t border-cream/10 p-2.5">
         <Link
           href="/"
-          className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-cream/60 transition-colors hover:bg-cream/5 hover:text-cream"
+          className="flex items-center gap-2.5 rounded-md px-2.5 py-[7px] text-[13px] text-cream/60 transition-colors hover:bg-cream/5 hover:text-cream"
         >
           <StoreIcon />
           View Store
         </Link>
-        <button
-          onClick={() => logout()}
-          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm text-cream/60 transition-colors hover:bg-cream/5 hover:text-cream"
-        >
-          <SignOutIcon />
-          Sign Out
-        </button>
         {user && (
-          <div className="mt-2 flex items-center gap-2.5 px-3 pt-2">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gold/20 text-xs font-medium text-gold">
+          <div className="mt-1 flex items-center gap-2.5 rounded-md px-2.5 py-1.5">
+            <div className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-gold/20 text-[10px] font-medium text-gold">
               {user.name.charAt(0).toUpperCase()}
             </div>
-            <div className="min-w-0">
-              <p className="truncate text-xs font-medium text-cream">{user.name}</p>
-              <p className="truncate text-[11px] text-cream/40">{user.email}</p>
-            </div>
+            <p className="min-w-0 flex-1 truncate text-xs font-medium text-cream" title={user.email}>
+              {user.name}
+            </p>
+            <button
+              onClick={() => logout()}
+              title="Sign out"
+              aria-label="Sign out"
+              className="shrink-0 text-cream/45 transition-colors hover:text-cream"
+            >
+              <SignOutIcon />
+            </button>
           </div>
         )}
       </div>

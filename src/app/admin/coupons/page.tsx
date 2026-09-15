@@ -5,6 +5,7 @@ import { listCoupons, createCoupon, deleteCoupon, CouponInput } from "@/lib/admi
 import { Coupon } from "@/lib/types";
 import { formatAed } from "@/lib/money";
 import { ApiError } from "@/lib/api";
+import { PageHeader, Card, Button, Table, TableHead, inputClass } from "@/components/admin/ui";
 
 const EMPTY: CouponInput = { code: "", type: "PERCENTAGE", value: 10 };
 
@@ -40,13 +41,11 @@ export default function AdminCouponsPage() {
     refresh();
   }
 
-  const inputClass = "border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-royal";
-
   return (
     <div>
-      <h1 className="mb-6 font-serif text-2xl text-ink">Coupons</h1>
+      <PageHeader title="Coupons" />
 
-      <form onSubmit={handleCreate} className="mb-8 grid max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4">
+      <form onSubmit={handleCreate} className="mb-6 grid max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4">
         <input
           required
           placeholder="CODE"
@@ -88,41 +87,43 @@ export default function AdminCouponsPage() {
           className={inputClass}
         />
         <input type="date" value={draft.expiresAt ?? ""} onChange={(e) => setDraft({ ...draft, expiresAt: e.target.value || undefined })} className={inputClass} />
-        <button disabled={submitting} className="bg-ink px-4 py-2 label-caps text-cream hover:opacity-90 disabled:opacity-50">
+        <Button type="submit" disabled={submitting}>
           Create
-        </button>
+        </Button>
       </form>
       {error && <p className="mb-4 text-sm text-crimson">{error}</p>}
 
-      <table className="w-full max-w-3xl border-collapse text-sm">
-        <thead>
-          <tr className="border-b border-border text-left text-ink-soft">
-            <th className="py-2">Code</th>
-            <th className="py-2">Discount</th>
-            <th className="py-2">Used</th>
-            <th className="py-2">Active</th>
-            <th className="py-2" />
-          </tr>
-        </thead>
-        <tbody>
-          {coupons.map((c) => (
-            <tr key={c.id} className="border-b border-border">
-              <td className="py-2 text-ink">{c.code}</td>
-              <td className="py-2 text-ink-soft">{c.type === "PERCENTAGE" ? `${c.value}%` : formatAed(c.value)}</td>
-              <td className="py-2 text-ink-soft">
-                {c.usedCount}
-                {c.maxUsage ? ` / ${c.maxUsage}` : ""}
-              </td>
-              <td className="py-2 text-ink-soft">{c.active ? "Yes" : "No"}</td>
-              <td className="py-2 text-right">
-                <button onClick={() => handleDelete(c.id)} className="text-crimson hover:underline">
-                  Delete
-                </button>
-              </td>
+      <Card>
+        <Table>
+          <TableHead>
+            <tr>
+              <th>Code</th>
+              <th>Discount</th>
+              <th>Used</th>
+              <th>Active</th>
+              <th />
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </TableHead>
+          <tbody className="divide-y divide-border">
+            {coupons.map((c) => (
+              <tr key={c.id}>
+                <td className="text-ink">{c.code}</td>
+                <td className="text-ink-soft">{c.type === "PERCENTAGE" ? `${c.value}%` : formatAed(c.value)}</td>
+                <td className="text-ink-soft">
+                  {c.usedCount}
+                  {c.maxUsage ? ` / ${c.maxUsage}` : ""}
+                </td>
+                <td className="text-ink-soft">{c.active ? "Yes" : "No"}</td>
+                <td className="text-right">
+                  <Button variant="danger" size="sm" onClick={() => handleDelete(c.id)}>
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </Card>
     </div>
   );
 }

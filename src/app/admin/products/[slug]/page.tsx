@@ -8,6 +8,7 @@ import { Product } from "@/lib/types";
 import { ProductForm, ProductFormSubmitValue } from "@/components/admin/ProductForm";
 import { ImageManager } from "@/components/admin/ImageManager";
 import { VariantManager } from "@/components/admin/VariantManager";
+import { PageHeader, Button } from "@/components/admin/ui";
 
 export default function EditProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -44,27 +45,29 @@ export default function EditProductPage({ params }: { params: Promise<{ slug: st
     router.push("/admin/products");
   }
 
-  if (product === undefined) return <p className="text-ink-soft">Loading…</p>;
-  if (product === null) return <p className="text-crimson">Product not found.</p>;
+  if (product === undefined) return <p className="text-sm text-ink-soft">Loading…</p>;
+  if (product === null) return <p className="text-sm text-crimson">Product not found.</p>;
 
   return (
-    <div className="space-y-12">
-      <div className="flex items-center justify-between">
-        <h1 className="font-serif text-2xl text-ink">Edit: {product.name}</h1>
-        <button onClick={handleDelete} className="text-sm text-crimson hover:underline">
-          Delete Product
-        </button>
-      </div>
+    <div className="space-y-10">
+      <PageHeader
+        title={`Edit: ${product.name}`}
+        action={
+          <Button variant="danger" onClick={handleDelete}>
+            Delete Product
+          </Button>
+        }
+      />
 
       <ProductForm product={product} showVariants={false} onSubmit={handleSubmit} submitLabel="Save Changes" />
 
       <div>
-        <h2 className="mb-4 font-serif text-xl text-ink">Images</h2>
+        <h2 className="mb-4 text-base font-semibold text-ink">Images</h2>
         <ImageManager productId={product.id} images={product.images} onChange={refresh} />
       </div>
 
       <div>
-        <h2 className="mb-4 font-serif text-xl text-ink">Variants</h2>
+        <h2 className="mb-4 text-base font-semibold text-ink">Variants</h2>
         <VariantManager productId={product.id} variants={product.variants} onChange={refresh} />
       </div>
     </div>

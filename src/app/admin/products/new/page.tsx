@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { ProductForm, ProductFormSubmitValue } from "@/components/admin/ProductForm";
 import { createProduct } from "@/lib/admin";
+import { PageHeader } from "@/components/admin/ui";
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function NewProductPage() {
 
   return (
     <div>
-      <h1 className="mb-6 font-serif text-2xl text-ink">New Product</h1>
+      <PageHeader title="New Product" />
       <ProductForm onSubmit={handleSubmit} submitLabel="Create Product" />
     </div>
   );

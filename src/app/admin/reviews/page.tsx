@@ -12,6 +12,7 @@ import {
 import { listProducts } from "@/lib/products";
 import { Review, Product } from "@/lib/types";
 import { ApiError } from "@/lib/api";
+import { PageHeader, Card, Button, Table, TableHead, inputClass } from "@/components/admin/ui";
 
 export default function AdminReviewsPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -104,18 +105,20 @@ export default function AdminReviewsPage() {
     }
   }
 
-  const inputClass = "border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-royal";
-
   return (
     <div>
-      <h1 className="mb-6 font-serif text-2xl text-ink">Reviews</h1>
-      <p className="mb-6 max-w-2xl text-sm text-ink-soft">
-        Customer testimonials — attach one to a product to show it on that product&apos;s page (and fold it into the
-        star rating shown there), and/or mark it <strong className="text-ink">Featured</strong> to also show it on
-        the homepage. Leave Product unset for a homepage-only testimonial.
-      </p>
+      <PageHeader
+        title="Reviews"
+        description={
+          <>
+            Customer testimonials — attach one to a product to show it on that product&apos;s page (and fold it into
+            the star rating shown there), and/or mark it <strong className="text-ink">Featured</strong> to also show
+            it on the homepage. Leave Product unset for a homepage-only testimonial.
+          </>
+        }
+      />
 
-      <form onSubmit={handleCreate} className="mb-8 max-w-2xl space-y-3 border border-border p-4">
+      <form onSubmit={handleCreate} className="mb-6 max-w-2xl space-y-3 rounded-xl border border-border bg-white p-4">
         <div className="flex flex-wrap gap-2">
           <input
             required
@@ -169,87 +172,86 @@ export default function AdminReviewsPage() {
             />
             Featured on homepage
           </label>
-          <button
-            disabled={submitting}
-            className="ml-auto bg-ink px-5 py-2 label-caps text-cream hover:opacity-90 disabled:opacity-50"
-          >
+          <Button type="submit" disabled={submitting} className="ml-auto">
             Add Review
-          </button>
+          </Button>
         </div>
       </form>
       {error && <p className="mb-4 text-sm text-crimson">{error}</p>}
 
-      <table className="w-full max-w-4xl border-collapse text-sm">
-        <thead>
-          <tr className="border-b border-border text-left text-ink-soft">
-            <th className="py-2">Photo</th>
-            <th className="py-2">Customer</th>
-            <th className="py-2">Rating</th>
-            <th className="py-2">Product</th>
-            <th className="py-2">Featured</th>
-            <th className="py-2" />
-          </tr>
-        </thead>
-        <tbody>
-          {reviews.map((r) => (
-            <tr key={r.id} className="border-b border-border align-top">
-              <td className="py-3">
-                <div className="relative h-12 w-12 overflow-hidden rounded-full bg-cream-dark">
-                  {r.customerImage && (
-                    <Image src={r.customerImage} alt={r.customerName} fill sizes="48px" className="object-cover" />
-                  )}
-                </div>
-                <input
-                  ref={(el) => {
-                    fileInputs.current[r.id] = el;
-                  }}
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  className="hidden"
-                  onChange={(e) => handleImageChange(r.id, e.target.files?.[0])}
-                />
-                <button
-                  type="button"
-                  onClick={() => fileInputs.current[r.id]?.click()}
-                  disabled={uploadingId === r.id}
-                  className="mt-1 block text-xs text-ink-soft underline underline-offset-2 hover:text-royal disabled:opacity-50"
-                >
-                  {uploadingId === r.id ? "Uploading…" : r.customerImage ? "Change" : "Upload"}
-                </button>
-              </td>
-              <td className="max-w-[220px] py-3 text-ink">
-                {r.customerName}
-                {r.location && <span className="text-ink-soft">, {r.location}</span>}
-                <p className="mt-1 max-w-[220px] truncate text-xs text-ink-soft" title={r.reviewText}>
-                  {r.reviewText}
-                </p>
-              </td>
-              <td className="py-3 text-ink">{r.rating} ★</td>
-              <td className="py-3 text-ink-soft">{r.product?.name ?? "—"}</td>
-              <td className="py-3 text-center">
-                <input
-                  type="checkbox"
-                  checked={r.featured}
-                  onChange={(e) => toggleFeatured(r.id, e.target.checked)}
-                  style={{ accentColor: "var(--color-ink)" }}
-                />
-              </td>
-              <td className="py-3 text-right">
-                <button onClick={() => handleDelete(r.id)} className="text-crimson hover:underline">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-          {reviews.length === 0 && (
+      <Card>
+        <Table>
+          <TableHead>
             <tr>
-              <td colSpan={6} className="py-6 text-center text-ink-soft">
-                No reviews yet.
-              </td>
+              <th>Photo</th>
+              <th>Customer</th>
+              <th>Rating</th>
+              <th>Product</th>
+              <th>Featured</th>
+              <th />
             </tr>
-          )}
-        </tbody>
-      </table>
+          </TableHead>
+          <tbody className="divide-y divide-border">
+            {reviews.map((r) => (
+              <tr key={r.id} className="align-top">
+                <td>
+                  <div className="relative h-12 w-12 overflow-hidden rounded-full bg-cream-dark">
+                    {r.customerImage && (
+                      <Image src={r.customerImage} alt={r.customerName} fill sizes="48px" className="object-cover" />
+                    )}
+                  </div>
+                  <input
+                    ref={(el) => {
+                      fileInputs.current[r.id] = el;
+                    }}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    onChange={(e) => handleImageChange(r.id, e.target.files?.[0])}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputs.current[r.id]?.click()}
+                    disabled={uploadingId === r.id}
+                    className="mt-1 block text-xs text-ink-soft underline underline-offset-2 hover:text-royal disabled:opacity-50"
+                  >
+                    {uploadingId === r.id ? "Uploading…" : r.customerImage ? "Change" : "Upload"}
+                  </button>
+                </td>
+                <td className="max-w-[220px] text-ink">
+                  {r.customerName}
+                  {r.location && <span className="text-ink-soft">, {r.location}</span>}
+                  <p className="mt-1 max-w-[220px] truncate text-xs text-ink-soft" title={r.reviewText}>
+                    {r.reviewText}
+                  </p>
+                </td>
+                <td className="text-ink">{r.rating} ★</td>
+                <td className="text-ink-soft">{r.product?.name ?? "—"}</td>
+                <td className="text-center">
+                  <input
+                    type="checkbox"
+                    checked={r.featured}
+                    onChange={(e) => toggleFeatured(r.id, e.target.checked)}
+                    style={{ accentColor: "var(--color-ink)" }}
+                  />
+                </td>
+                <td className="text-right">
+                  <Button variant="danger" size="sm" onClick={() => handleDelete(r.id)}>
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            ))}
+            {reviews.length === 0 && (
+              <tr>
+                <td colSpan={6} className="py-10 text-center text-ink-soft">
+                  No reviews yet.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+      </Card>
     </div>
   );
 }

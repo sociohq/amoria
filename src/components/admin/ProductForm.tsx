@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Category, Product, ProductType } from "@/lib/types";
 import { listCategories } from "@/lib/products";
 import { ProductInput } from "@/lib/admin";
+import { Button, inputClass } from "@/components/admin/ui";
 
 const CONCENTRATIONS = ["EAU_DE_TOILETTE", "EAU_DE_PARFUM", "EXTRAIT_DE_PARFUM", "PARFUM"];
 const PRODUCT_TYPES: { value: ProductType; label: string }[] = [
@@ -124,13 +125,12 @@ export function ProductForm({
     }
   }
 
-  const inputClass = "w-full border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-royal";
   const scentCapable = SCENT_CAPABLE_TYPES.includes(value.productType);
 
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl space-y-5">
       <div>
-        <label className="label-caps mb-1 block text-ink-soft">Product Type</label>
+        <label className="mb-1.5 block text-xs font-medium text-ink-soft">Product Type</label>
         <select value={value.productType} onChange={(e) => set("productType", e.target.value as ProductType)} className={inputClass}>
           {PRODUCT_TYPES.map((t) => (
             <option key={t.value} value={t.value}>
@@ -141,12 +141,12 @@ export function ProductForm({
       </div>
 
       <div>
-        <label className="label-caps mb-1 block text-ink-soft">Name</label>
+        <label className="mb-1.5 block text-xs font-medium text-ink-soft">Name</label>
         <input required value={value.name} onChange={(e) => set("name", e.target.value)} className={inputClass} />
       </div>
 
       <div>
-        <label className="label-caps mb-1 block text-ink-soft">Short Description</label>
+        <label className="mb-1.5 block text-xs font-medium text-ink-soft">Short Description</label>
         <input
           required
           value={value.shortDescription}
@@ -156,7 +156,7 @@ export function ProductForm({
       </div>
 
       <div>
-        <label className="label-caps mb-1 block text-ink-soft">Full Description</label>
+        <label className="mb-1.5 block text-xs font-medium text-ink-soft">Full Description</label>
         <textarea
           required
           rows={4}
@@ -168,14 +168,14 @@ export function ProductForm({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="label-caps mb-1 block text-ink-soft">Status</label>
+          <label className="mb-1.5 block text-xs font-medium text-ink-soft">Status</label>
           <select value={value.status} onChange={(e) => set("status", e.target.value as "ACTIVE" | "DRAFT")} className={inputClass}>
             <option value="DRAFT">Draft</option>
             <option value="ACTIVE">Active</option>
           </select>
         </div>
         <div>
-          <label className="label-caps mb-1 block text-ink-soft">Price (AED)</label>
+          <label className="mb-1.5 block text-xs font-medium text-ink-soft">Price (AED)</label>
           <input
             required
             type="number"
@@ -189,7 +189,7 @@ export function ProductForm({
       </div>
 
       <div>
-        <label className="label-caps mb-1 block text-ink-soft">Compare-at Price (optional)</label>
+        <label className="mb-1.5 block text-xs font-medium text-ink-soft">Compare-at Price (optional)</label>
         <input
           type="number"
           min="0"
@@ -201,12 +201,12 @@ export function ProductForm({
       </div>
 
       {scentCapable && (
-        <div className="space-y-5 border border-border bg-cream-dark/40 p-4">
-          <p className="label-caps text-ink-soft">Scent Details</p>
+        <div className="space-y-5 rounded-lg border border-border bg-cream-dark/40 p-4">
+          <p className="text-sm font-medium text-ink">Scent Details</p>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="label-caps mb-1 block text-ink-soft">Concentration</label>
+              <label className="mb-1.5 block text-xs font-medium text-ink-soft">Concentration</label>
               <select
                 value={value.concentrationType}
                 onChange={(e) => set("concentrationType", e.target.value)}
@@ -220,7 +220,7 @@ export function ProductForm({
               </select>
             </div>
             <div>
-              <label className="label-caps mb-1 block text-ink-soft">Fragrance Family</label>
+              <label className="mb-1.5 block text-xs font-medium text-ink-soft">Fragrance Family</label>
               <input
                 placeholder="Oriental Floral"
                 value={value.fragranceFamily}
@@ -231,7 +231,7 @@ export function ProductForm({
           </div>
 
           <div>
-            <label className="label-caps mb-1 block text-ink-soft">Scent Accords (comma-separated)</label>
+            <label className="mb-1.5 block text-xs font-medium text-ink-soft">Scent Accords (comma-separated)</label>
             <input
               placeholder="Rose, Oud, Amber"
               value={listToText(value.scentAccords)}
@@ -242,21 +242,21 @@ export function ProductForm({
 
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="label-caps mb-1 block text-ink-soft">Top Notes</label>
+              <label className="mb-1.5 block text-xs font-medium text-ink-soft">Top Notes</label>
               <input value={listToText(value.topNotes)} onChange={(e) => set("topNotes", textToList(e.target.value))} className={inputClass} />
             </div>
             <div>
-              <label className="label-caps mb-1 block text-ink-soft">Heart Notes</label>
+              <label className="mb-1.5 block text-xs font-medium text-ink-soft">Heart Notes</label>
               <input value={listToText(value.heartNotes)} onChange={(e) => set("heartNotes", textToList(e.target.value))} className={inputClass} />
             </div>
             <div>
-              <label className="label-caps mb-1 block text-ink-soft">Base Notes</label>
+              <label className="mb-1.5 block text-xs font-medium text-ink-soft">Base Notes</label>
               <input value={listToText(value.baseNotes)} onChange={(e) => set("baseNotes", textToList(e.target.value))} className={inputClass} />
             </div>
           </div>
 
           <div>
-            <label className="label-caps mb-1 block text-ink-soft">Perfumer&apos;s Note (optional)</label>
+            <label className="mb-1.5 block text-xs font-medium text-ink-soft">Perfumer&apos;s Note (optional)</label>
             <textarea
               rows={3}
               value={value.perfumerNote}
@@ -267,11 +267,11 @@ export function ProductForm({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="label-caps mb-1 block text-ink-soft">Season</label>
+              <label className="mb-1.5 block text-xs font-medium text-ink-soft">Season</label>
               <input placeholder="Any season" value={value.season} onChange={(e) => set("season", e.target.value)} className={inputClass} />
             </div>
             <div>
-              <label className="label-caps mb-1 block text-ink-soft">Sillage</label>
+              <label className="mb-1.5 block text-xs font-medium text-ink-soft">Sillage</label>
               <input
                 placeholder="Moderate"
                 value={value.scentSillage}
@@ -283,7 +283,7 @@ export function ProductForm({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="label-caps mb-1 block text-ink-soft">Longevity</label>
+              <label className="mb-1.5 block text-xs font-medium text-ink-soft">Longevity</label>
               <input
                 placeholder="12+ Hours"
                 value={value.scentLongevity}
@@ -292,7 +292,7 @@ export function ProductForm({
               />
             </div>
             <div>
-              <label className="label-caps mb-1 block text-ink-soft">Year Introduced</label>
+              <label className="mb-1.5 block text-xs font-medium text-ink-soft">Year Introduced</label>
               <input
                 type="number"
                 value={value.yearIntroduced ?? ""}
@@ -303,7 +303,7 @@ export function ProductForm({
           </div>
 
           <div>
-            <label className="label-caps mb-1 block text-ink-soft">Design House</label>
+            <label className="mb-1.5 block text-xs font-medium text-ink-soft">Design House</label>
             <input value={value.designHouse} onChange={(e) => set("designHouse", e.target.value)} className={inputClass} />
           </div>
         </div>
@@ -311,7 +311,7 @@ export function ProductForm({
 
       {!scentCapable && (
         <div>
-          <label className="label-caps mb-1 block text-ink-soft">Custom Attributes (optional JSON)</label>
+          <label className="mb-1.5 block text-xs font-medium text-ink-soft">Custom Attributes (optional JSON)</label>
           <textarea
             rows={3}
             placeholder='{"material": "Brass", "burnTimeMinutes": 45}'
@@ -326,7 +326,7 @@ export function ProductForm({
       )}
 
       <div>
-        <label className="label-caps mb-2 block text-ink-soft">Categories</label>
+        <label className="mb-2 block text-xs font-medium text-ink-soft">Categories</label>
         <div className="flex flex-wrap gap-3">
           {categories.map((c) => (
             <label key={c.id} className="flex items-center gap-2 text-sm text-ink">
@@ -339,7 +339,7 @@ export function ProductForm({
 
       {showVariants && (
         <div>
-          <label className="label-caps mb-2 block text-ink-soft">Variants</label>
+          <label className="mb-2 block text-xs font-medium text-ink-soft">Variants</label>
           <div className="space-y-2">
             {value.variants.map((v, i) => (
               <div key={i} className="grid grid-cols-4 gap-2">
@@ -373,9 +373,9 @@ export function ProductForm({
       )}
 
       {error && <p className="text-sm text-crimson">{error}</p>}
-      <button disabled={submitting} className="bg-royal px-6 py-3 label-caps text-cream hover:opacity-90 disabled:opacity-50">
+      <Button type="submit" disabled={submitting}>
         {submitting ? "Saving…" : submitLabel}
-      </button>
+      </Button>
     </form>
   );
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { ProductImage } from "@/lib/types";
 import { uploadProductImages, removeProductImage } from "@/lib/admin";
+import { Button } from "@/components/admin/ui";
 
 export function ImageManager({
   productId,
@@ -46,11 +47,11 @@ export function ImageManager({
     <div>
       <div className="flex flex-wrap gap-3">
         {images.map((img) => (
-          <div key={img.id} className="group relative h-24 w-24 overflow-hidden bg-cream-dark">
+          <div key={img.id} className="group relative h-24 w-24 overflow-hidden rounded-lg bg-cream-dark">
             <Image src={img.url} alt={img.altText ?? ""} fill sizes="96px" className="object-cover" />
             <button
               onClick={() => handleRemove(img.id)}
-              className="absolute right-1 top-1 hidden h-5 w-5 items-center justify-center bg-crimson text-xs text-cream group-hover:flex"
+              className="absolute right-1 top-1 hidden h-5 w-5 items-center justify-center rounded-full bg-crimson text-xs text-cream group-hover:flex"
             >
               ×
             </button>
@@ -60,13 +61,9 @@ export function ImageManager({
 
       <div className="mt-4 flex items-center gap-3">
         <input type="file" multiple accept="image/png,image/jpeg,image/webp" onChange={(e) => setFiles(e.target.files)} className="text-sm" />
-        <button
-          onClick={handleUpload}
-          disabled={!files || uploading}
-          className="border border-ink px-4 py-2 label-caps text-ink hover:bg-ink hover:text-cream disabled:opacity-50"
-        >
+        <Button variant="secondary" size="sm" onClick={handleUpload} disabled={!files || uploading}>
           {uploading ? "Uploading…" : "Upload"}
-        </button>
+        </Button>
       </div>
       {error && <p className="mt-2 text-sm text-crimson">{error}</p>}
     </div>
