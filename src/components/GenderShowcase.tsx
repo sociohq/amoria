@@ -51,15 +51,16 @@ export function GenderShowcase({ section }: { section: GenderShowcaseSectionType
 
       <div className="relative z-10 flex min-h-[760px] flex-col items-center px-6 pb-14 pt-16 text-center sm:pt-20">
         {section.intro && (
-          <h2 className="max-w-2xl text-balance font-serif text-4xl leading-tight text-ink sm:text-5xl">
+          <h2 className="max-w-xl text-balance font-serif text-2xl leading-snug text-ink sm:text-3xl">
             {section.intro}
           </h2>
         )}
 
         {/* Tab toggle — a sliding ink pill behind whichever label is
             active, both the fill and the label colors transitioning
-            together so nothing pops. */}
-        <div className="relative mt-9 flex rounded-full border border-ink/15 bg-white/60 p-1 backdrop-blur-sm">
+            together so nothing pops. Kept compact — this is a small
+            switch, not another headline. */}
+        <div className="relative mt-7 flex rounded-full border border-ink/15 bg-white/60 p-1 backdrop-blur-sm">
           <span
             aria-hidden
             className={`absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-ink transition-transform duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] ${
@@ -69,7 +70,7 @@ export function GenderShowcase({ section }: { section: GenderShowcaseSectionType
           <button
             type="button"
             onClick={() => setSide("him")}
-            className={`relative z-10 w-32 py-2.5 label-caps transition-colors duration-500 sm:w-40 ${
+            className={`relative z-10 w-24 py-2 label-caps transition-colors duration-500 sm:w-28 ${
               isHim ? "text-cream" : "text-ink/60 hover:text-ink"
             }`}
           >
@@ -78,7 +79,7 @@ export function GenderShowcase({ section }: { section: GenderShowcaseSectionType
           <button
             type="button"
             onClick={() => setSide("her")}
-            className={`relative z-10 w-32 py-2.5 label-caps transition-colors duration-500 sm:w-40 ${
+            className={`relative z-10 w-24 py-2 label-caps transition-colors duration-500 sm:w-28 ${
               !isHim ? "text-cream" : "text-ink/60 hover:text-ink"
             }`}
           >
@@ -88,8 +89,11 @@ export function GenderShowcase({ section }: { section: GenderShowcaseSectionType
 
         {/* Products — the sole payoff below the toggle, crossfaded per
             side. A single "Explore All" for whichever side is active
-            sits beneath them rather than repeating per-tab copy above. */}
-        <div className="relative mt-12 w-full max-w-4xl flex-1">
+            sits beneath them rather than repeating per-tab copy above.
+            No max-width here (same as the "Featured Products" section
+            below it) so the shared sizing formula on each card lands at
+            the same actual pixel size, not a smaller one. */}
+        <div className="relative mt-12 w-full flex-1">
           {(["him", "her"] as const).map((s) => (
             <ProductRow key={s} products={s === "him" ? section.him : section.her} visible={side === s} />
           ))}
@@ -119,9 +123,9 @@ function ProductRow({ products, visible }: { products: Product[]; visible: boole
           No products yet
         </div>
       ) : (
-        <div className="flex flex-wrap justify-center gap-6 sm:gap-8">
+        <div className="flex flex-wrap justify-center gap-6">
           {products.slice(0, 3).map((p) => (
-            <div key={p.id} className="w-[calc(50%-12px)] sm:w-56">
+            <div key={p.id} className="w-[calc(50%-12px)] shrink-0 sm:w-[calc(33.333%-16px)] md:w-[calc(25%-18px)]">
               <FeaturedProductCard product={p} />
             </div>
           ))}
