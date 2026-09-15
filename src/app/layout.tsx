@@ -2,18 +2,6 @@ import type { Metadata } from "next";
 import { Cormorant, Jost } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
-import { AuthDrawerProvider } from "@/lib/auth-drawer-context";
-import { CartProvider } from "@/lib/cart-context";
-import { WishlistProvider } from "@/lib/wishlist-context";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { CartDrawer } from "@/components/CartDrawer";
-import { AuthDrawer } from "@/components/AuthDrawer";
-import { NewsletterPopup } from "@/components/NewsletterPopup";
-import { AuroraMark } from "@/components/AuroraMark";
-import { PageLoader } from "@/components/PageLoader";
-import { SmoothScroll } from "@/components/SmoothScroll";
-import { listCategories } from "@/lib/products";
 
 const cormorant = Cormorant({
   subsets: ["latin"],
@@ -35,32 +23,17 @@ export const metadata: Metadata = {
   description: "Fragrances for men, women, and unisex, crafted for the moments that matter.",
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // Resilient to the backend/DB being unavailable — the header should
-  // never take the whole site down over a categories fetch.
-  const categories = await listCategories().catch(() => []);
-
+// The true root: fonts, metadata, and AuthProvider only (the admin route
+// guard needs auth state too, so that stays shared) — every other
+// provider and every piece of storefront chrome (header, footer, cart/
+// auth drawers, newsletter popup, smooth-scroll) now lives in
+// (storefront)/layout.tsx instead, since /admin is a sibling segment
+// that needs none of it and a completely different shell of its own.
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={`${cormorant.variable} ${jost.variable} font-sans antialiased`}>
-        <SmoothScroll>
-          <PageLoader />
-          <AuthProvider>
-            <AuthDrawerProvider>
-              <CartProvider>
-                <WishlistProvider>
-                  <Header categories={categories} />
-                  <main className="min-h-screen">{children}</main>
-                  <Footer />
-                  <CartDrawer />
-                  <AuthDrawer />
-                  <NewsletterPopup />
-                  <AuroraMark />
-                </WishlistProvider>
-              </CartProvider>
-            </AuthDrawerProvider>
-          </AuthProvider>
-        </SmoothScroll>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
