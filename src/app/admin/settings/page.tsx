@@ -5,7 +5,7 @@ import Image from "next/image";
 import { getSettings, updateSettings, uploadNewsletterPopupImage } from "@/lib/admin";
 import { Settings } from "@/lib/types";
 import { ApiError } from "@/lib/api";
-import { PageHeader, Card, Button, Label, inputClass } from "@/components/admin/ui";
+import { PageHeader, Card, Button, Label, FileInput, inputClass } from "@/components/admin/ui";
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<Settings | null>(null);
@@ -186,16 +186,15 @@ export default function AdminSettingsPage() {
                   <Image src={settings.newsletterPopupImage} alt="" fill sizes="80px" className="object-cover" />
                 )}
               </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="file"
+              <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+                <FileInput
+                  key={settings.newsletterPopupImage ?? "none"}
                   accept="image/png,image/jpeg,image/webp"
-                  onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
-                  className="text-sm"
+                  onSelect={(files) => setImageFile(files?.[0] ?? null)}
                 />
                 <Button
                   type="button"
-                  variant="secondary"
+                  variant="primary"
                   size="sm"
                   onClick={handleUploadImage}
                   disabled={!imageFile || uploadingImage}

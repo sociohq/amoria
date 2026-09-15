@@ -13,7 +13,7 @@ import {
 import { listProducts } from "@/lib/products";
 import { ShopTheLookSection, Product } from "@/lib/types";
 import { ApiError } from "@/lib/api";
-import { PageHeader, Card, Button, Label, Table, TableHead, inputClass } from "@/components/admin/ui";
+import { PageHeader, Card, Button, Label, Table, TableHead, FileInput, inputClass } from "@/components/admin/ui";
 
 export default function AdminShopTheLookPage() {
   const [section, setSection] = useState<ShopTheLookSection | null>(null);
@@ -216,14 +216,13 @@ export default function AdminShopTheLookPage() {
 
       <Card className="mb-6 p-5">
         <p className="mb-3 text-sm font-medium text-ink">Banner Image</p>
-        <div className="flex items-center gap-3">
-          <input
-            type="file"
+        <div className="flex flex-wrap items-center gap-3">
+          <FileInput
+            key={section?.image ?? "none"}
             accept="image/png,image/jpeg,image/webp"
-            onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
-            className="text-sm"
+            onSelect={(files) => setImageFile(files?.[0] ?? null)}
           />
-          <Button variant="secondary" onClick={handleUploadImage} disabled={!imageFile || uploadingImage}>
+          <Button variant="primary" onClick={handleUploadImage} disabled={!imageFile || uploadingImage}>
             {uploadingImage ? "Uploading…" : section?.image ? "Replace" : "Upload"}
           </Button>
         </div>

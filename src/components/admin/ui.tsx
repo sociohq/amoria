@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useId, useState } from "react";
 
 // Shared visual language for every admin page — a dashboard should read
 // as one tool, not ten differently-styled forms. Storefront conventions
@@ -73,6 +73,57 @@ export function Button({
 
 export function Label({ children }: { children: ReactNode }) {
   return <label className="mb-1.5 block text-xs font-medium text-ink-soft">{children}</label>;
+}
+
+// The bare `<input type="file">` renders inconsistently across browsers
+// (an unstyled OS button plus filename text that's easy to miss, or to
+// mistake for a disabled control). This wraps it as a clearly-clickable
+// button with the selected filename shown as its own visible text —
+// pass a `key` that changes after a successful upload (e.g. the current
+// image URL) to clear the native input and this label together.
+export function FileInput({
+  accept,
+  multiple,
+  onSelect,
+  className = "",
+}: {
+  accept?: string;
+  multiple?: boolean;
+  onSelect: (files: FileList | null) => void;
+  className?: string;
+}) {
+  const id = useId();
+  const [label, setLabel] = useState("No file selected");
+
+  return (
+    <label
+      htmlFor={id}
+      className={`flex min-w-0 cursor-pointer items-center gap-2 rounded-md border border-border bg-white px-3 py-2 text-sm text-ink transition-colors hover:bg-cream-dark/60 ${className}`}
+    >
+      <span className="shrink-0 rounded bg-cream-dark px-2 py-0.5 text-xs font-medium text-ink">
+        {multiple ? "Choose Files" : "Choose File"}
+      </span>
+      <span className="truncate text-ink-soft">{label}</span>
+      <input
+        id={id}
+        type="file"
+        accept={accept}
+        multiple={multiple}
+        className="sr-only"
+        onChange={(e) => {
+          const files = e.target.files;
+          setLabel(
+            !files || files.length === 0
+              ? "No file selected"
+              : files.length === 1
+                ? files[0].name
+                : `${files.length} files selected`
+          );
+          onSelect(files);
+        }}
+      />
+    </label>
+  );
 }
 
 // Consistent table chrome (muted header row, hairline row dividers,

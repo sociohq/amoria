@@ -14,7 +14,7 @@ import {
 import { listProducts } from "@/lib/products";
 import { GenderShowcaseSection, GenderShowcaseItem, Product } from "@/lib/types";
 import { ApiError } from "@/lib/api";
-import { PageHeader, Card, Button, Table, TableHead, Badge, Label, inputClass } from "@/components/admin/ui";
+import { PageHeader, Card, Button, Table, TableHead, Badge, Label, FileInput, inputClass } from "@/components/admin/ui";
 
 type Side = "him" | "her";
 
@@ -228,14 +228,14 @@ export default function AdminGenderShowcasePage() {
                   <Image src={image} alt="" fill sizes="320px" className="object-cover" />
                 </div>
               )}
-              <div className="flex items-center gap-2">
-                <input
-                  type="file"
+              <div className="flex flex-wrap items-center gap-2">
+                <FileInput
+                  key={`${side}-${image ?? "none"}`}
                   accept="image/png,image/jpeg,image/webp"
-                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                  className="min-w-0 flex-1 text-xs"
+                  onSelect={(files) => setFile(files?.[0] ?? null)}
+                  className="flex-1"
                 />
-                <Button variant="secondary" size="sm" onClick={() => handleUpload(side)} disabled={!file || uploading === side}>
+                <Button variant="primary" size="sm" onClick={() => handleUpload(side)} disabled={!file || uploading === side}>
                   {uploading === side ? "Uploading…" : image ? "Replace" : "Upload"}
                 </Button>
               </div>

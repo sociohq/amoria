@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { ProductImage } from "@/lib/types";
 import { uploadProductImages, removeProductImage } from "@/lib/admin";
-import { Button } from "@/components/admin/ui";
+import { Button, FileInput } from "@/components/admin/ui";
 
 export function ImageManager({
   productId,
@@ -59,9 +59,14 @@ export function ImageManager({
         ))}
       </div>
 
-      <div className="mt-4 flex items-center gap-3">
-        <input type="file" multiple accept="image/png,image/jpeg,image/webp" onChange={(e) => setFiles(e.target.files)} className="text-sm" />
-        <Button variant="secondary" size="sm" onClick={handleUpload} disabled={!files || uploading}>
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <FileInput
+          key={images.length}
+          multiple
+          accept="image/png,image/jpeg,image/webp"
+          onSelect={(f) => setFiles(f)}
+        />
+        <Button variant="primary" size="sm" onClick={handleUpload} disabled={!files || uploading}>
           {uploading ? "Uploading…" : "Upload"}
         </Button>
       </div>

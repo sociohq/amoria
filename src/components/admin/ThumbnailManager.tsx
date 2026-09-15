@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { uploadProductThumbnail } from "@/lib/admin";
-import { Button } from "@/components/admin/ui";
+import { Button, FileInput } from "@/components/admin/ui";
 
 // The one listing/card image — deliberately its own upload slot,
 // separate from the gallery managed by ImageManager below it, so an
@@ -49,14 +49,13 @@ export function ThumbnailManager({
             </span>
           )}
         </div>
-        <div className="flex items-center gap-3">
-          <input
-            type="file"
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
+          <FileInput
+            key={thumbnailImage ?? "none"}
             accept="image/png,image/jpeg,image/webp"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="text-sm"
+            onSelect={(files) => setFile(files?.[0] ?? null)}
           />
-          <Button variant="secondary" size="sm" onClick={handleUpload} disabled={!file || uploading}>
+          <Button variant="primary" size="sm" onClick={handleUpload} disabled={!file || uploading}>
             {uploading ? "Uploading…" : thumbnailImage ? "Replace" : "Upload"}
           </Button>
         </div>
