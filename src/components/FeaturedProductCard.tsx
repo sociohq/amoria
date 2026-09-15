@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Product } from "@/lib/types";
@@ -11,6 +11,15 @@ import { WishlistButton } from "./WishlistButton";
 
 export function FeaturedProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
+  // The same product can render in more than one FeaturedProductCard at
+  // once (e.g. GenderShowcase keeps both the "him" and "her" rows mounted
+  // for the crossfade, and the same product can also appear in Featured
+  // Products/Shop The Look on the same page) — a radio group's `name`
+  // groups natively by the browser across the WHOLE page, not per React
+  // instance, so keying it on product.id alone let separate cards'
+  // radios fight over the same native group. useId() scopes it to this
+  // specific card instance instead.
+  const instanceId = useId();
   const [variantId, setVariantId] = useState(product.variants[0]?.id);
   const [adding, setAdding] = useState(false);
   const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
@@ -94,7 +103,7 @@ export function FeaturedProductCard({ product }: { product: Product }) {
                   >
                     <input
                       type="radio"
-                      name={`variant-${product.id}`}
+                      name={`variant-${instanceId}`}
                       checked={v.id === variantId}
                       onChange={() => setVariantId(v.id)}
                       disabled={v.stock === 0}
