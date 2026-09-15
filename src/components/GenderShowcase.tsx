@@ -18,10 +18,8 @@ type Side = "him" | "her";
 // a flash-then-pop.
 //
 // The site owner's actual background photos are bright, mostly-white
-// editorial shots with the model posed in the left third and the rest
-// left deliberately blank — so, unlike a dark moody banner, this reads
-// with dark ink text on a light scrim, and the copy/products are pushed
-// right to sit on that blank space rather than over the model.
+// editorial shots — unlike a dark moody banner, this reads with dark ink
+// text on a light scrim rather than cream-on-dark.
 export function GenderShowcase({ section }: { section: GenderShowcaseSectionType }) {
   const [side, setSide] = useState<Side>("him");
   const isHim = side === "him";
@@ -90,12 +88,8 @@ export function GenderShowcase({ section }: { section: GenderShowcaseSectionType
           </button>
         </div>
 
-        {/* Pushed toward the right (the blank two-thirds of the source
-            photos) via ml-auto on a capped-width inner block, rather than
-            centered, so the copy and product row never sit over the
-            model on the left. */}
-        <div className="mt-14 w-full md:pl-[44%] lg:pl-[42%]">
-          <div className="grid gap-8 md:max-w-3xl md:grid-cols-[minmax(0,300px)_1fr] md:items-center md:gap-10">
+        <div className="mt-14 w-full max-w-7xl">
+          <div className="grid gap-8 md:grid-cols-[minmax(0,320px)_1fr] md:items-center md:gap-14">
             {/* Left: heading copy, same crossfade-stack technique as the
                 background so switching tabs never reflows this column. */}
             <div className="relative min-h-[200px] sm:min-h-[180px]">
@@ -130,7 +124,7 @@ export function GenderShowcase({ section }: { section: GenderShowcaseSectionType
 
             {/* Right: the product row — also crossfade-stacked so the
                 carousel underneath swaps just as smoothly. */}
-            <div className="relative min-h-[420px] sm:min-h-[440px]">
+            <div className="relative min-h-[500px] sm:min-h-[520px]">
               {(["him", "her"] as const).map((s) => (
                 <ProductRow key={s} products={s === "him" ? section.him : section.her} visible={side === s} />
               ))}
@@ -157,7 +151,7 @@ function ProductRow({ products, visible }: { products: Product[]; visible: boole
       }`}
     >
       {products.length === 0 ? (
-        <div className="flex h-full min-h-[380px] items-center justify-center border border-dashed border-ink/20 text-sm text-ink-soft">
+        <div className="flex h-full min-h-[480px] items-center justify-center border border-dashed border-ink/20 text-sm text-ink-soft">
           No products yet
         </div>
       ) : (
@@ -180,14 +174,13 @@ function ProductRow({ products, visible }: { products: Product[]; visible: boole
               ›
             </button>
           </div>
-          <div ref={scrollerRef} className="themed-scroll flex gap-5 overflow-x-auto pb-2">
+          <div ref={scrollerRef} className="themed-scroll flex gap-6 overflow-x-auto pb-2">
             {products.map((p) => (
-              <div key={p.id} className="w-40 shrink-0 sm:w-44">
+              <div key={p.id} className="w-[calc(50%-12px)] shrink-0 sm:w-[calc(33.333%-16px)] md:w-72 lg:w-80">
                 <FeaturedProductCard product={p} />
               </div>
             ))}
           </div>
-          <p className="mt-3 text-right text-xs text-ink-soft">Scroll to explore more ↓</p>
         </>
       )}
     </div>
