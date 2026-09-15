@@ -6,6 +6,7 @@ import { FindYourScentBanner } from "@/components/FindYourScentBanner";
 import { GenderShowcase } from "@/components/GenderShowcase";
 import { ShopReels } from "@/components/ShopReels";
 import { ShopTheLook } from "@/components/ShopTheLook";
+import { StatementBottleBanner } from "@/components/StatementBottleBanner";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { OurStores } from "@/components/OurStores";
 import { Reveal } from "@/components/Reveal";
@@ -29,6 +30,9 @@ export default async function HomePage() {
       {genderShowcase && <GenderShowcase section={genderShowcase} />}
       <Reveal>
         <ProductSection eyebrow="Extrait de Parfum" title="Featured Products" products={featured} />
+      </Reveal>
+      <Reveal>
+        <StatementBottleBanner />
       </Reveal>
       {shopTheLook && (
         <Reveal>

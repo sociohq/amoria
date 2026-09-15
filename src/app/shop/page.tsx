@@ -30,6 +30,12 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     getPriceRange().catch(() => ({ min: 0, max: 0 })),
   ]);
 
+  // The real category name (e.g. "1KG Collection") reads far better than
+  // guessing one from the slug — "1kg-collection" via CSS capitalize()
+  // would render as "1kg-collection" verbatim, since capitalize only
+  // affects space-separated words, not hyphens.
+  const categoryName = category ? categories.find((c) => c.slug === category)?.name ?? category : null;
+
   function withParam(key: string, value: string) {
     const next = new URLSearchParams();
     if (category) next.set("category", category);
@@ -43,7 +49,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   return (
     <div className="px-6 py-12">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-        <h1 className="font-serif text-3xl capitalize text-ink">{category ?? "All Fragrances"}</h1>
+        <h1 className="font-serif text-3xl text-ink">{categoryName ?? "All Fragrances"}</h1>
         <div className="flex items-center gap-6">
           <div className="flex gap-4">
             {SORTS.map((s) => (
