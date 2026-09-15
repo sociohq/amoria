@@ -44,7 +44,7 @@ function ReelCard({ reel }: { reel: Reel }) {
 
   return (
     <div className="w-[220px] shrink-0 snap-start">
-      <div className="relative aspect-[9/16] overflow-hidden bg-cream-dark">
+      <div className="relative aspect-[9/16] overflow-hidden rounded-xl bg-cream-dark">
         <video ref={videoRef} src={reel.videoUrl} autoPlay muted loop playsInline className="h-full w-full object-cover" />
         <button
           onClick={toggleMute}
@@ -65,8 +65,11 @@ function ReelCard({ reel }: { reel: Reel }) {
         </button>
       </div>
 
-      <div className="mt-3 flex items-center gap-3">
-        <Link href={`/product/${product.slug}`} className="relative h-12 w-12 shrink-0 overflow-hidden bg-cream-dark">
+      {/* A separate rounded white strip below the reel, not touching it —
+          the mt-3 gap keeps the two visually distinct rather than reading
+          as one continuous card. */}
+      <div className="mt-3 flex items-center gap-3 rounded-lg bg-white p-3">
+        <Link href={`/product/${product.slug}`} className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-cream-dark">
           {imageUrl && <Image src={imageUrl} alt={product.name} fill sizes="48px" className="object-cover" />}
         </Link>
         <div className="min-w-0 flex-1">
