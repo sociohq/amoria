@@ -407,6 +407,7 @@ export default function CustomPerfumePage() {
                           tone={tone}
                         >
                           <span className={`label-caps block ${TILE_TONES[tone].icon}`}>{t.concentration}%</span>
+                          <span className="mt-1 block text-xs text-ink-soft">{t.size}</span>
                           <span className="mt-1 block text-sm text-ink">{formatAed(t.price)}</span>
                         </OptionTile>
                       );
@@ -450,7 +451,7 @@ export default function CustomPerfumePage() {
                   </div>
                   <p className="mt-1 text-sm text-ink">
                     {checkoutName} · {GENDER_OPTIONS.find((o) => o.value === gender)?.label} · {fragranceFamily} ·{" "}
-                    {concentration}%
+                    {concentration}%{selectedTier ? ` · ${selectedTier.size}` : ""}
                   </p>
                   {selectedTier && (
                     <p className="mt-2 font-serif text-2xl text-ink">{formatAed(selectedTier.price)}</p>

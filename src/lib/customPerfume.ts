@@ -31,6 +31,7 @@ export type Concentration = "20" | "25" | "30";
 
 export interface PricingTier {
   concentration: string; // "20" | "25" | "30"
+  size: string; // "50ml" | "100ml" — fixed per concentration
   price: number; // AED
 }
 
