@@ -217,7 +217,7 @@ export default function CustomPerfumePage() {
                 fill
                 sizes="(min-width: 768px) 41.67vw, 100vw"
                 priority
-                className="object-cover"
+                className="object-contain object-right"
               />
             </div>
             {/* A light scrim over the image so the heading/step text stays
