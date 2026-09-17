@@ -1,6 +1,7 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminTopbar } from "@/components/admin/AdminTopbar";
@@ -13,19 +14,44 @@ import { AdminTopbar } from "@/components/admin/AdminTopbar";
 // newsletter popup, the floating Aurora mark) ever mounts here — this
 // layout owns 100% of what renders around an admin page.
 export default function AdminLayout({ children }: { children: ReactNode }) {
-  const { user, loading } = useAuth();
+  const { user, loading, logout } = useAuth();
+  const pathname = usePathname();
+  const router = useRouter();
+  const isLoginPage = pathname === "/admin/login";
 
-  if (loading) {
+  // The login page is itself a child of this layout (same /admin/*
+  // segment) but must render bare — gating it behind the very auth check
+  // it exists to satisfy would make it unreachable.
+  useEffect(() => {
+    if (!isLoginPage && !loading && !user) {
+      router.replace("/admin/login");
+    }
+  }, [isLoginPage, loading, user, router]);
+
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
+  if (loading || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-cream-dark">
         <p className="text-sm text-ink-soft">Loading…</p>
       </div>
     );
   }
-  if (!user || user.role !== "ADMIN") {
+  if (user.role !== "ADMIN") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-cream-dark px-6 text-center">
-        <p className="text-sm text-ink-soft">You need an admin account to view this page.</p>
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-cream-dark px-6 text-center">
+        <p className="text-sm text-ink-soft">
+          The account you&apos;re signed in with (<strong className="text-ink">{user.email}</strong>) doesn&apos;t
+          have admin access.
+        </p>
+        <button
+          onClick={() => logout().then(() => router.push("/admin/login"))}
+          className="text-sm text-ink underline underline-offset-2 hover:text-royal"
+        >
+          Sign in with a different account
+        </button>
       </div>
     );
   }
