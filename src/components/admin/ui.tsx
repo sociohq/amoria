@@ -1,3 +1,5 @@
+"use client";
+
 import { ReactNode, useId, useState } from "react";
 
 // Shared visual language for every admin page — a dashboard should read

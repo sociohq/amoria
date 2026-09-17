@@ -28,6 +28,28 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     }
   }, [isLoginPage, loading, user, router]);
 
+  // Belt-and-suspenders for the outer document never scrolling here: the
+  // shell below is already `h-screen overflow-hidden` with only <main>
+  // scrolling internally, which should be enough on its own — but on a
+  // page where <main> has a lot to scroll through, Chromium has been
+  // observed growing document.documentElement's own scrollable area by a
+  // few (sometimes a few hundred) pixels anyway, letting the whole shell
+  // — sidebar included — drag upward on scroll despite every element in
+  // the chain measuring exactly viewport-bounded. Forcing it at the root
+  // closes that gap regardless of the exact browser mechanism behind it.
+  useEffect(() => {
+    if (isLoginPage) return;
+    const { documentElement: html, body } = document;
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = body.style.overflow;
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    return () => {
+      html.style.overflow = prevHtmlOverflow;
+      body.style.overflow = prevBodyOverflow;
+    };
+  }, [isLoginPage]);
+
   if (isLoginPage) {
     return <>{children}</>;
   }
