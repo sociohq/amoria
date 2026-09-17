@@ -67,14 +67,11 @@ export function FeaturedProductCard({ product }: { product: Product }) {
           )}
         </Link>
 
-        {/* Gender + fragrance-family tags stay their own group at
-            top-left — separate from the wishlist control on the opposite
-            corner, so an action and metadata don't compete in the same
-            stack. Always visible, above the hover overlay. */}
+        {/* Just the fragrance-family tag on the image — gender already
+            shows as text in the eyebrow below, so it isn't repeated as a
+            second badge here. Separate from the wishlist control on the
+            opposite corner. Always visible, above the hover overlay. */}
         <div className="absolute left-3 top-3 flex flex-col items-start gap-1.5">
-          {gender && (
-            <span className="rounded-full border border-border bg-white/90 px-3 py-1 text-xs text-ink-soft">{gender}</span>
-          )}
           {product.fragranceFamily && (
             <span className="flex items-center gap-1.5 rounded-full border border-border bg-white/90 py-1 pl-1 pr-3 text-xs text-ink-soft">
               <span className="relative h-4 w-4 shrink-0 overflow-hidden rounded-full">

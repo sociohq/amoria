@@ -29,15 +29,12 @@ export function ProductCard({ product }: { product: Product }) {
             <span className="font-serif text-sm tracking-widest">AMORIA</span>
           </div>
         )}
-        {/* Product info (sale, gender, fragrance family) stays as its own
-            group at top-left — separate from the wishlist control on the
-            opposite corner, so an action and metadata don't compete in
-            the same stack. */}
+        {/* Sale badge + fragrance-family tag at top-left — gender already
+            shows as text in the eyebrow below, so it isn't repeated as a
+            second badge here. Separate from the wishlist control on the
+            opposite corner. */}
         <div className="absolute left-3 top-3 flex flex-col items-start gap-1.5">
           {off && <span className="bg-crimson px-2 py-1 text-xs font-medium text-cream">{off}% OFF</span>}
-          {gender && (
-            <span className="rounded-full border border-border bg-white/90 px-3 py-1 text-xs text-ink-soft">{gender}</span>
-          )}
           {product.fragranceFamily && (
             <span className="flex items-center gap-1.5 rounded-full border border-border bg-white/90 py-1 pl-1 pr-3 text-xs text-ink-soft">
               <span className="relative h-4 w-4 shrink-0 overflow-hidden rounded-full">
