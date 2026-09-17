@@ -190,21 +190,7 @@ export default function CustomPerfumePage() {
   }
 
   return (
-    <div className="relative px-6 py-24 sm:px-12">
-      {/* Decorative line-art illustration behind the panel, filling the
-          page's own margins around it — the panel itself stays opaque
-          white so none of the form content sits on top of the image. */}
-      <div className="absolute inset-0 -z-10">
-        <Image
-          src="/banners/custom-perfume-illustration.png"
-          alt=""
-          fill
-          sizes="100vw"
-          priority
-          className="object-cover"
-        />
-      </div>
-
+    <div className="px-6 py-24 sm:px-12">
       {/* A curved panel split in two: the marketing heading and the
           vertical step tracker top-aligned on the left, the interactive
           customization flow (plus the WhatsApp offer, spanning the full
@@ -219,48 +205,67 @@ export default function CustomPerfumePage() {
           the whole panel to scroll. */}
       <div className="overflow-hidden rounded-[2rem] border border-border bg-white shadow-xl">
         <div className="md:grid md:grid-cols-[7fr_10fr]">
-          {/* Left: heading + step tracker */}
-          <div className="border-b border-border p-6 sm:p-10 md:border-b-0 md:border-r">
-            <p className="label-caps text-gold">Your Story. Your Scent.</p>
-            <h1 className="mt-2 font-serif text-4xl text-ink">Create Your Own Perfume</h1>
-            <p className="mt-3 max-w-sm text-sm text-ink-soft">
-              Personal, meaningful, and uniquely yours. Tell us a little about you and we&apos;ll craft a fragrance
-              to match.
-            </p>
+          {/* Left: heading + step tracker, with the line-art illustration
+              as this column's own background (not the whole page) — an
+              absolutely-positioned Image behind the relative-positioned
+              content below, both scoped to just this column. */}
+          <div className="relative overflow-hidden border-b border-border p-6 sm:p-10 md:border-b-0 md:border-r">
+            <div className="absolute inset-0">
+              <Image
+                src="/banners/custom-perfume-illustration.png"
+                alt=""
+                fill
+                sizes="(min-width: 768px) 41.67vw, 100vw"
+                priority
+                className="object-cover"
+              />
+            </div>
+            {/* A light scrim over the image so the heading/step text stays
+                easily readable regardless of what's directly behind it. */}
+            <div className="absolute inset-0 bg-white/70" />
 
-            {/* Vertical step tracker — moved here from atop the form so the
-                form column can stay focused on just the current step. */}
-            <ol className="mt-10 max-w-xs">
-              {STEPS.map((s, i) => {
-                const done = step > s.n;
-                const current = step === s.n;
-                const isLast = i === STEPS.length - 1;
-                return (
-                  <li key={s.n} className="relative flex gap-4 pb-8 last:pb-0">
-                    {!isLast && (
-                      <span
-                        aria-hidden
-                        className={`absolute left-4 top-8 h-[calc(100%-2rem)] w-px -translate-x-1/2 ${
-                          done ? "bg-royal" : "bg-border"
+            <div className="relative">
+              <p className="label-caps text-gold">Your Story. Your Scent.</p>
+              <h1 className="mt-2 font-serif text-4xl text-ink">Create Your Own Perfume</h1>
+              <p className="mt-3 max-w-sm text-sm text-ink-soft">
+                Personal, meaningful, and uniquely yours. Tell us a little about you and we&apos;ll craft a
+                fragrance to match.
+              </p>
+
+              {/* Vertical step tracker — moved here from atop the form so
+                  the form column can stay focused on just the current step. */}
+              <ol className="mt-10 max-w-xs">
+                {STEPS.map((s, i) => {
+                  const done = step > s.n;
+                  const current = step === s.n;
+                  const isLast = i === STEPS.length - 1;
+                  return (
+                    <li key={s.n} className="relative flex gap-4 pb-8 last:pb-0">
+                      {!isLast && (
+                        <span
+                          aria-hidden
+                          className={`absolute left-4 top-8 h-[calc(100%-2rem)] w-px -translate-x-1/2 ${
+                            done ? "bg-royal" : "bg-border"
+                          }`}
+                        />
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => s.n < step && setStep(s.n)}
+                        disabled={s.n >= step}
+                        aria-current={current ? "step" : undefined}
+                        className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs disabled:cursor-default ${
+                          current ? "bg-ink text-cream" : done ? "bg-royal text-cream" : "bg-cream-dark text-ink-soft"
                         }`}
-                      />
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => s.n < step && setStep(s.n)}
-                      disabled={s.n >= step}
-                      aria-current={current ? "step" : undefined}
-                      className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs disabled:cursor-default ${
-                        current ? "bg-ink text-cream" : done ? "bg-royal text-cream" : "bg-cream-dark text-ink-soft"
-                      }`}
-                    >
-                      {done ? "✓" : s.n}
-                    </button>
-                    <p className={`label-caps pt-1.5 ${current ? "text-ink" : "text-ink-soft"}`}>{s.label}</p>
-                  </li>
-                );
-              })}
-            </ol>
+                      >
+                        {done ? "✓" : s.n}
+                      </button>
+                      <p className={`label-caps pt-1.5 ${current ? "text-ink" : "text-ink-soft"}`}>{s.label}</p>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
           </div>
 
           {/* Right: the wizard */}
