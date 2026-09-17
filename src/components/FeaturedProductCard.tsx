@@ -50,7 +50,7 @@ export function FeaturedProductCard({ product }: { product: Product }) {
 
   return (
     <div className="group w-full shrink-0">
-      <div className="relative aspect-[4/5] overflow-hidden bg-cream-dark">
+      <div className="relative aspect-[3/4] overflow-hidden bg-cream-dark">
         <Link href={`/product/${product.slug}`} className="absolute inset-0">
           {imageUrl ? (
             <Image
@@ -131,7 +131,7 @@ export function FeaturedProductCard({ product }: { product: Product }) {
           while the price row (a flex container, which text-align does not
           affect — flex items follow justify-content instead) stays left,
           so the two visibly disagree. */}
-      <div className="mt-3 text-left">
+      <div className="mt-2 text-left">
         {(gender || product.fragranceFamily) && (
           <p className="text-[12px] uppercase tracking-[-0.20px] text-ink-soft/70">
             {[gender, product.fragranceFamily].filter(Boolean).join(" · ")}

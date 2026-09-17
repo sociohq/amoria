@@ -65,13 +65,13 @@ export function ProductSection({
 
       <div
         ref={scrollerRef}
-        className="no-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto overflow-y-hidden scroll-smooth"
+        className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-hidden scroll-smooth"
       >
         {products.map((p, i) => (
           <Reveal
             key={p.id}
             delayMs={(i % 4) * 100}
-            className="w-[calc(50%-12px)] shrink-0 snap-start sm:w-[calc(33.333%-16px)] md:w-[calc(25%-18px)]"
+            className="w-[calc(50%-6px)] shrink-0 snap-start sm:w-[calc(33.333%-8px)] md:w-[calc(25%-9px)]"
           >
             <FeaturedProductCard product={p} />
           </Reveal>

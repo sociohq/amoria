@@ -15,7 +15,7 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <Link href={`/product/${product.slug}`} className="group block">
-      <div className="relative aspect-[4/5] overflow-hidden bg-cream-dark">
+      <div className="relative aspect-[3/4] overflow-hidden bg-cream-dark">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -56,7 +56,7 @@ export function ProductCard({ product }: { product: Product }) {
       {/* text-left guards against an ancestor's text-center — a plain <p>
           responds to inherited text-align, but the price row below is a
           flex container and doesn't, so the two would visibly disagree. */}
-      <div className="mt-3 text-left">
+      <div className="mt-2 text-left">
         {(gender || product.fragranceFamily) && (
           <p className="text-[12px] uppercase tracking-[-0.20px] text-ink-soft/70">
             {[gender, product.fragranceFamily].filter(Boolean).join(" · ")}

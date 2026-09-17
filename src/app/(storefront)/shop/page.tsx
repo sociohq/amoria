@@ -47,7 +47,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   }
 
   return (
-    <div className="px-6 py-12">
+    <div className="px-4 py-12 sm:px-6">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-serif text-3xl text-ink">{categoryName ?? "All Fragrances"}</h1>
         <div className="flex items-center gap-4 sm:gap-6">
@@ -79,7 +79,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
           No products found yet. Check back soon, or ask an admin to add one.
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-x-6 sm:gap-y-10 md:grid-cols-4">
           {products.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
