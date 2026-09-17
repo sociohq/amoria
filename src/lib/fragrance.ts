@@ -32,9 +32,9 @@ export function fragranceFamilyImage(family: string): string {
 }
 
 // The category the header's mega menu groups as "Shop By Gender" doubles as
-// the product's gender tag — trimming the "For " prefix ("For Unisex" ->
-// "Unisex") reads better as a short badge than the full category name.
+// the product's gender tag, shown as-is ("For Him", "For Unisex") in the
+// card's category line beneath the product name.
 export function genderTag(categories: { name: string; menuGroup: string | null }[]): string | null {
   const category = categories.find((c) => c.menuGroup === "Shop By Gender");
-  return category ? category.name.replace(/^For /, "") : null;
+  return category?.name ?? null;
 }

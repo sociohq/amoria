@@ -29,45 +29,40 @@ export function ProductCard({ product }: { product: Product }) {
             <span className="font-serif text-sm tracking-widest">AMORIA</span>
           </div>
         )}
-        {/* Sale badge + fragrance-family tag at top-left — gender already
-            shows as text in the eyebrow below, so it isn't repeated as a
-            second badge here. Separate from the wishlist control on the
-            opposite corner. */}
-        <div className="absolute left-3 top-3 flex flex-col items-start gap-1.5">
-          {off && <span className="bg-crimson px-2 py-1 text-xs font-medium text-cream">{off}% OFF</span>}
-          {product.fragranceFamily && (
-            <span className="flex items-center gap-1.5 rounded-full border border-border bg-white/90 py-1 pl-1 pr-3 text-xs text-ink-soft">
-              <span className="relative h-4 w-4 shrink-0 overflow-hidden rounded-full">
-                <Image src={fragranceFamilyImage(product.fragranceFamily)} alt="" fill sizes="16px" className="object-cover" />
-              </span>
-              {product.fragranceFamily}
-            </span>
-          )}
-        </div>
-
         <WishlistButton
           productId={product.id}
-          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-white/90 text-ink-soft transition-colors hover:text-crimson"
+          className="absolute left-3 top-3 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-white/90 text-ink-soft transition-colors hover:text-crimson"
         />
+
+        {/* Only the fragrance-family tag lives on the image — gender shows
+            as text below instead, and the discount now reads as "X% Off"
+            next to the price rather than a badge here. */}
+        {product.fragranceFamily && (
+          <span className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full border border-border bg-white/90 py-1 pl-1 pr-3 text-xs text-ink-soft">
+            <span className="relative h-4 w-4 shrink-0 overflow-hidden rounded-full">
+              <Image src={fragranceFamilyImage(product.fragranceFamily)} alt="" fill sizes="16px" className="object-cover" />
+            </span>
+            {product.fragranceFamily}
+          </span>
+        )}
       </div>
       {/* text-left guards against an ancestor's text-center — a plain <p>
           responds to inherited text-align, but the price row below is a
           flex container and doesn't, so the two would visibly disagree. */}
       <div className="mt-2 text-left">
-        {(gender || product.fragranceFamily) && (
-          <p className="text-[12px] uppercase tracking-[-0.20px] text-ink-soft/70">
-            {[gender, product.fragranceFamily].filter(Boolean).join(" · ")}
-          </p>
-        )}
-        <p className="mt-0.5 font-serif text-sm text-ink sm:text-2xl">{product.name}</p>
+        <p className="font-serif text-base font-medium tracking-normal text-ink sm:text-2xl sm:font-normal">{product.name}</p>
+        {gender && <p className="mt-0.5 text-[12px] tracking-[-0.11px] text-ink-soft">{gender}</p>}
         {product.scentAccords.length > 0 && (
           <p className="mt-1 text-xs text-ink-soft">{product.scentAccords.join(" · ")}</p>
         )}
         <div className="mt-1.5 flex items-baseline gap-2 sm:mt-3">
-          <span className="text-sm font-semibold text-royal sm:text-lg">{formatAed(product.price)}</span>
+          <span className="text-[12px] font-medium tracking-[-0.11px] text-ink sm:text-lg sm:font-semibold sm:tracking-normal">
+            {formatAed(product.price)}
+          </span>
           {product.compareAtPrice && (
-            <span className="text-xs text-ink-soft line-through">{formatAed(product.compareAtPrice)}</span>
+            <span className="text-[11px] text-ink-soft line-through">{formatAed(product.compareAtPrice)}</span>
           )}
+          {off && <span className="text-[11px] font-medium text-green-600">{off}% Off</span>}
         </div>
       </div>
     </Link>
