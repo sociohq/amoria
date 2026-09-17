@@ -57,6 +57,11 @@ export function ProductCard({ product }: { product: Product }) {
           responds to inherited text-align, but the price row below is a
           flex container and doesn't, so the two would visibly disagree. */}
       <div className="mt-3 space-y-1 text-left">
+        {(gender || product.fragranceFamily) && (
+          <p className="label-caps text-ink-soft/70">
+            {[gender, product.fragranceFamily].filter(Boolean).join(" · ")}
+          </p>
+        )}
         <p className="font-serif text-xl text-ink">{product.name}</p>
         {product.scentAccords.length > 0 && (
           <p className="text-xs text-ink-soft">{product.scentAccords.join(" · ")}</p>

@@ -132,6 +132,11 @@ export function FeaturedProductCard({ product }: { product: Product }) {
           affect — flex items follow justify-content instead) stays left,
           so the two visibly disagree. */}
       <div className="mt-3 text-left">
+        {(gender || product.fragranceFamily) && (
+          <p className="label-caps text-ink-soft/70">
+            {[gender, product.fragranceFamily].filter(Boolean).join(" · ")}
+          </p>
+        )}
         <Link href={`/product/${product.slug}`}>
           <p className="font-serif text-xl text-ink hover:text-royal">{product.name}</p>
         </Link>
