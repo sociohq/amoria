@@ -190,7 +190,21 @@ export default function CustomPerfumePage() {
   }
 
   return (
-    <div className="px-6 py-24 sm:px-12">
+    <div className="relative px-6 py-24 sm:px-12">
+      {/* Decorative line-art illustration behind the panel, filling the
+          page's own margins around it — the panel itself stays opaque
+          white so none of the form content sits on top of the image. */}
+      <div className="absolute inset-0 -z-10">
+        <Image
+          src="/banners/custom-perfume-illustration.png"
+          alt=""
+          fill
+          sizes="100vw"
+          priority
+          className="object-cover"
+        />
+      </div>
+
       {/* A curved panel split in two: the marketing heading and the
           vertical step tracker top-aligned on the left, the interactive
           customization flow (plus the WhatsApp offer, spanning the full
