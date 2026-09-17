@@ -18,6 +18,7 @@ const DashboardIcon = () => <Icon><rect x="3" y="3" width="7" height="9" rx="1" 
 const ProductsIcon = () => <Icon><path d="M21 8 12 3 3 8l9 5 9-5Z" /><path d="M3 8v8l9 5 9-5V8" /><path d="M12 13v8" /></Icon>;
 const CategoriesIcon = () => <Icon><path d="M12 2 2 7l10 5 10-5-10-5Z" /><path d="m2 17 10 5 10-5" /><path d="m2 12 10 5 10-5" /></Icon>;
 const CouponsIcon = () => <Icon><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8Z" /><path d="M9 8v8" strokeDasharray="2 2" /></Icon>;
+const HeroSlidesIcon = () => <Icon><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 15 5-4 4 3 5-5 4 3" /></Icon>;
 const ReelsIcon = () => <Icon><rect x="3" y="4" width="18" height="16" rx="2" /><path d="m10 9 5 3-5 3V9Z" /></Icon>;
 const LookIcon = () => <Icon><rect x="3" y="4" width="18" height="16" rx="2" /><circle cx="9" cy="10" r="2" /><path d="m21 16-5-5-4 4-3-3-6 6" /></Icon>;
 const GenderIcon = () => <Icon><circle cx="9" cy="15" r="5" /><path d="M13.5 10.5 19 5" /><path d="M14 5h5v5" /></Icon>;
@@ -48,6 +49,7 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
   {
     label: "Homepage Content",
     items: [
+      { href: "/admin/hero-slides", label: "Hero Section", icon: HeroSlidesIcon },
       { href: "/admin/reels", label: "Reels", icon: ReelsIcon },
       { href: "/admin/shop-the-look", label: "Shop The Look", icon: LookIcon },
       { href: "/admin/gender-showcase", label: "For Him / For Her", icon: GenderIcon },

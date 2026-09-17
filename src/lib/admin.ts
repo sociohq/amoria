@@ -16,6 +16,7 @@ import {
   GenderShowcaseSection,
   GenderShowcaseItem,
   ContactSubmission,
+  HeroSlide,
 } from "./types";
 
 // ---------- Dashboard ----------
@@ -164,6 +165,29 @@ export const createReel = (data: ReelInput) =>
 export const updateReel = (id: string, data: Partial<ReelInput>) =>
   apiFetch<{ reel: Reel }>(`/api/reels/${id}`, { method: "PATCH", body: JSON.stringify(data) });
 export const deleteReel = (id: string) => apiFetch<void>(`/api/reels/${id}`, { method: "DELETE" });
+
+// ---------- Hero Slides (homepage hero slider) ----------
+export interface HeroSlideInput {
+  heading: string;
+  image?: string;
+  subtext?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  position?: number;
+  active?: boolean;
+}
+
+export const listHeroSlidesAdmin = () => apiFetch<{ slides: HeroSlide[] }>("/api/hero-slides/admin");
+export const createHeroSlide = (data: HeroSlideInput) =>
+  apiFetch<{ slide: HeroSlide }>("/api/hero-slides/admin", { method: "POST", body: JSON.stringify(data) });
+export const updateHeroSlide = (id: string, data: Partial<HeroSlideInput>) =>
+  apiFetch<{ slide: HeroSlide }>(`/api/hero-slides/admin/${id}`, { method: "PATCH", body: JSON.stringify(data) });
+export const deleteHeroSlide = (id: string) => apiFetch<void>(`/api/hero-slides/admin/${id}`, { method: "DELETE" });
+export const uploadHeroSlideImage = (id: string, file: File) => {
+  const formData = new FormData();
+  formData.append("image", file);
+  return apiUpload<{ slide: HeroSlide }>(`/api/hero-slides/admin/${id}/image`, formData);
+};
 
 // ---------- Shop The Look (homepage hotspot banner) ----------
 export interface ShopTheLookSectionInput {

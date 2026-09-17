@@ -1,5 +1,6 @@
 import { listProducts, listCategories, getShopTheLook, getFeaturedReviews, getGenderShowcase } from "@/lib/products";
-import { Hero } from "@/components/Hero";
+import { listHeroSlides } from "@/lib/heroSlides";
+import { HeroSlider } from "@/components/HeroSlider";
 import { CategoryShowcase } from "@/components/CategoryShowcase";
 import { ProductSection } from "@/components/ProductSection";
 import { CustomizePerfumeBanner } from "@/components/CustomizePerfumeBanner";
@@ -12,17 +13,18 @@ import { OurStores } from "@/components/OurStores";
 import { Reveal } from "@/components/Reveal";
 
 export default async function HomePage() {
-  const [{ products: featured }, categories, shopTheLook, reviews, genderShowcase] = await Promise.all([
+  const [{ products: featured }, categories, shopTheLook, reviews, genderShowcase, heroSlides] = await Promise.all([
     listProducts({ limit: 8, sort: "newest" }).catch(() => ({ products: [] })),
     listCategories().catch(() => []),
     getShopTheLook().catch(() => null),
     getFeaturedReviews().catch(() => []),
     getGenderShowcase().catch(() => null),
+    listHeroSlides().catch(() => []),
   ]);
 
   return (
     <div>
-      <Hero />
+      <HeroSlider slides={heroSlides} />
       <CategoryShowcase categories={categories} />
       <Reveal>
         <CustomizePerfumeBanner />

@@ -1,6 +1,17 @@
 export type ConcentrationType = "EAU_DE_TOILETTE" | "EAU_DE_PARFUM" | "EXTRAIT_DE_PARFUM" | "PARFUM";
 export type ProductType = "PERFUME" | "HOME_FRAGRANCE" | "ACCESSORY" | "HAIR_CARE";
 
+export interface HeroSlide {
+  id: string;
+  image: string | null;
+  heading: string;
+  subtext: string | null;
+  ctaText: string | null;
+  ctaLink: string | null;
+  position: number;
+  active: boolean;
+}
+
 export interface Category {
   id: string;
   name: string;
