@@ -56,17 +56,17 @@ export function ProductCard({ product }: { product: Product }) {
       {/* text-left guards against an ancestor's text-center — a plain <p>
           responds to inherited text-align, but the price row below is a
           flex container and doesn't, so the two would visibly disagree. */}
-      <div className="mt-3 space-y-1 text-left">
+      <div className="mt-3 text-left">
         {(gender || product.fragranceFamily) && (
-          <p className="label-caps text-ink-soft/70">
+          <p className="text-[12px] uppercase tracking-[-0.20px] text-ink-soft/70">
             {[gender, product.fragranceFamily].filter(Boolean).join(" · ")}
           </p>
         )}
-        <p className="font-serif text-lg text-ink">{product.name}</p>
+        <p className="mt-0.5 font-serif text-2xl text-ink">{product.name}</p>
         {product.scentAccords.length > 0 && (
-          <p className="text-xs text-ink-soft">{product.scentAccords.join(" · ")}</p>
+          <p className="mt-1 text-xs text-ink-soft">{product.scentAccords.join(" · ")}</p>
         )}
-        <div className="flex items-baseline gap-2">
+        <div className="mt-3 flex items-baseline gap-2">
           <span className="text-lg font-semibold text-royal">{formatAed(product.price)}</span>
           {product.compareAtPrice && (
             <span className="text-xs text-ink-soft line-through">{formatAed(product.compareAtPrice)}</span>
