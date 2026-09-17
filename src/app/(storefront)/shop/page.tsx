@@ -48,21 +48,21 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
   return (
     <div className="px-6 py-12">
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-serif text-3xl text-ink">{categoryName ?? "All Fragrances"}</h1>
-        <div className="flex items-center gap-6">
-          <div className="flex gap-4">
+        <div className="flex items-center gap-4 sm:gap-6">
+          <div className="no-scrollbar flex gap-4 overflow-x-auto">
             {SORTS.map((s) => (
               <Link
                 key={s.value}
                 href={withParam("sort", s.value)}
-                className={`label-caps ${sort === s.value ? "text-royal" : "text-ink-soft hover:text-royal"}`}
+                className={`label-caps shrink-0 whitespace-nowrap ${sort === s.value ? "text-royal" : "text-ink-soft hover:text-royal"}`}
               >
                 {s.label}
               </Link>
             ))}
           </div>
-          <div className="h-4 w-px bg-border" />
+          <div className="h-4 w-px shrink-0 bg-border" />
           <ShopFilterDrawer
             categories={categories}
             currentCategory={category}

@@ -43,7 +43,7 @@ export function CustomizePerfumeBanner() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative aspect-[16/9] w-full overflow-hidden sm:aspect-[21/9]">
+    <section ref={sectionRef} className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[21/9]">
       {/* Anchored to the section's top edge (not centered) and cropped from
           object-top, so the blank wall — not the bottles/beakers — sits
           behind the text, with the extra 12% height below as the

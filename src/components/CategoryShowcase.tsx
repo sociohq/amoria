@@ -25,12 +25,15 @@ export function CategoryShowcase({ categories }: { categories: Category[] }) {
       <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden px-6 pb-2">
         {featured.map((c, i) => (
           <Reveal key={c.id} delayMs={i * 100} className="shrink-0">
-            <Link href={`/shop?category=${c.slug}`} className="group relative block h-[420px] w-[280px] snap-start overflow-hidden">
+            <Link
+              href={`/shop?category=${c.slug}`}
+              className="group relative block h-[320px] w-[calc(50vw-32px)] snap-start overflow-hidden sm:h-[420px] sm:w-[280px]"
+            >
               <Image
                 src={c.image as string}
                 alt={c.name}
                 fill
-                sizes="280px"
+                sizes="(min-width: 640px) 280px, 50vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
