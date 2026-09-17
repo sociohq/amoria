@@ -31,14 +31,14 @@ export function ProductCard({ product }: { product: Product }) {
         )}
         <WishlistButton
           productId={product.id}
-          className="absolute left-3 top-3 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-white/90 text-ink-soft transition-colors hover:text-crimson"
+          className="absolute left-3 top-3 hidden h-8 w-8 items-center justify-center rounded-full border border-border bg-white/90 text-ink-soft transition-colors hover:text-crimson sm:flex"
         />
 
         {/* Only the fragrance-family tag lives on the image — gender shows
             as text below instead, and the discount now reads as "X% Off"
             next to the price rather than a badge here. */}
         {product.fragranceFamily && (
-          <span className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full border border-border bg-white/90 py-1 pl-1 pr-3 text-xs text-ink-soft">
+          <span className="absolute right-3 top-3 hidden items-center gap-1.5 rounded-full border border-border bg-white/90 py-1 pl-1 pr-3 text-xs text-ink-soft sm:flex">
             <span className="relative h-4 w-4 shrink-0 overflow-hidden rounded-full">
               <Image src={fragranceFamilyImage(product.fragranceFamily)} alt="" fill sizes="16px" className="object-cover" />
             </span>
