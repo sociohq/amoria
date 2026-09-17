@@ -62,12 +62,12 @@ export function ProductCard({ product }: { product: Product }) {
             {[gender, product.fragranceFamily].filter(Boolean).join(" · ")}
           </p>
         )}
-        <p className="font-serif text-xl text-ink">{product.name}</p>
+        <p className="font-serif text-lg text-ink">{product.name}</p>
         {product.scentAccords.length > 0 && (
           <p className="text-xs text-ink-soft">{product.scentAccords.join(" · ")}</p>
         )}
         <div className="flex items-baseline gap-2">
-          <span className="text-sm font-medium text-ink">{formatAed(product.price)}</span>
+          <span className="text-lg font-semibold text-royal">{formatAed(product.price)}</span>
           {product.compareAtPrice && (
             <span className="text-xs text-ink-soft line-through">{formatAed(product.compareAtPrice)}</span>
           )}
