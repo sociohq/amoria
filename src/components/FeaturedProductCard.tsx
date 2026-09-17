@@ -138,13 +138,13 @@ export function FeaturedProductCard({ product }: { product: Product }) {
           </p>
         )}
         <Link href={`/product/${product.slug}`}>
-          <p className="mt-0.5 font-serif text-lg text-ink hover:text-royal sm:text-2xl">{product.name}</p>
+          <p className="mt-0.5 font-serif text-sm text-ink hover:text-royal sm:text-2xl">{product.name}</p>
         </Link>
         {product.scentAccords.length > 0 && (
           <p className="mt-1 text-xs text-ink-soft">{product.scentAccords.join(" · ")}</p>
         )}
-        <div className="mt-3 flex items-baseline gap-2">
-          <span className="text-base font-semibold text-royal sm:text-lg">{formatAed(variant?.price ?? product.price)}</span>
+        <div className="mt-1.5 flex items-baseline gap-2 sm:mt-3">
+          <span className="text-sm font-semibold text-royal sm:text-lg">{formatAed(variant?.price ?? product.price)}</span>
           {product.compareAtPrice && (
             <span className="text-xs text-ink-soft line-through">{formatAed(product.compareAtPrice)}</span>
           )}
