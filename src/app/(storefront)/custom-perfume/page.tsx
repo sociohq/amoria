@@ -64,10 +64,26 @@ function UnisexIcon() {
   );
 }
 
-const GENDER_OPTIONS: { value: Gender; label: string; Icon: () => React.JSX.Element }[] = [
-  { value: "him", label: "For Him", Icon: MarsIcon },
-  { value: "her", label: "For Her", Icon: VenusIcon },
-  { value: "unisex", label: "For Everyone", Icon: UnisexIcon },
+// A little color per option instead of one flat royal tone everywhere —
+// each tile gets its own accent (still drawn from the site's existing
+// palette, nothing new introduced) so the step reads as more alive
+// before you've even clicked anything, not just once something's active.
+const TILE_TONES = {
+  royal: { active: "border-royal bg-royal/5 text-ink", icon: "text-royal" },
+  crimson: { active: "border-crimson bg-crimson/5 text-ink", icon: "text-crimson" },
+  gold: { active: "border-gold bg-gold/10 text-ink", icon: "text-gold" },
+} as const;
+type TileTone = keyof typeof TILE_TONES;
+
+// Same idea for the concentration tiers — cooler to bolder as the
+// percentage (and richness) goes up, echoing the "richer, longer-lasting"
+// copy right above them instead of three identical black-and-white tiles.
+const CONCENTRATION_TONES: Record<string, TileTone> = { "20": "royal", "25": "gold", "30": "crimson" };
+
+const GENDER_OPTIONS: { value: Gender; label: string; Icon: () => React.JSX.Element; tone: TileTone }[] = [
+  { value: "him", label: "For Him", Icon: MarsIcon, tone: "royal" },
+  { value: "her", label: "For Her", Icon: VenusIcon, tone: "crimson" },
+  { value: "unisex", label: "For Everyone", Icon: UnisexIcon, tone: "gold" },
 ];
 
 const inputClass =
@@ -80,18 +96,21 @@ const inputClass =
 function OptionTile({
   active,
   onClick,
+  tone = "royal",
   children,
 }: {
   active: boolean;
   onClick: () => void;
+  tone?: TileTone;
   children: React.ReactNode;
 }) {
+  const t = TILE_TONES[tone];
   return (
     <button
       type="button"
       onClick={onClick}
       className={`flex-1 border px-4 py-6 text-center transition-colors ${
-        active ? "border-royal bg-royal/5 text-ink" : "border-border text-ink-soft hover:border-ink/30"
+        active ? t.active : `border-border text-ink-soft hover:border-ink/30`
       }`}
     >
       {children}
@@ -302,8 +321,8 @@ export default function CustomPerfumePage() {
                 <h2 className="font-serif text-2xl text-ink">Who is this fragrance for?</h2>
                 <div className="flex gap-4">
                   {GENDER_OPTIONS.map((o) => (
-                    <OptionTile key={o.value} active={gender === o.value} onClick={() => setGender(o.value)}>
-                      <span className="flex justify-center" aria-hidden>
+                    <OptionTile key={o.value} active={gender === o.value} onClick={() => setGender(o.value)} tone={o.tone}>
+                      <span className={`flex justify-center ${TILE_TONES[o.tone].icon}`} aria-hidden>
                         <o.Icon />
                       </span>
                       <span className="label-caps mt-2 block">{o.label}</span>
@@ -378,16 +397,20 @@ export default function CustomPerfumePage() {
                   <p className="text-sm text-ink-soft">Loading pricing…</p>
                 ) : (
                   <div className="flex flex-col gap-3 sm:flex-row">
-                    {tiers.map((t) => (
-                      <OptionTile
-                        key={t.concentration}
-                        active={concentration === t.concentration}
-                        onClick={() => setConcentration(t.concentration)}
-                      >
-                        <span className="label-caps block">{t.concentration}%</span>
-                        <span className="mt-1 block text-sm text-ink">{formatAed(t.price)}</span>
-                      </OptionTile>
-                    ))}
+                    {tiers.map((t) => {
+                      const tone = CONCENTRATION_TONES[t.concentration] ?? "royal";
+                      return (
+                        <OptionTile
+                          key={t.concentration}
+                          active={concentration === t.concentration}
+                          onClick={() => setConcentration(t.concentration)}
+                          tone={tone}
+                        >
+                          <span className={`label-caps block ${TILE_TONES[tone].icon}`}>{t.concentration}%</span>
+                          <span className="mt-1 block text-sm text-ink">{formatAed(t.price)}</span>
+                        </OptionTile>
+                      );
+                    })}
                   </div>
                 )}
                 <div className="flex gap-3">
