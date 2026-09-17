@@ -2,7 +2,7 @@ import { listProducts, listCategories, getShopTheLook, getFeaturedReviews, getGe
 import { Hero } from "@/components/Hero";
 import { CategoryShowcase } from "@/components/CategoryShowcase";
 import { ProductSection } from "@/components/ProductSection";
-import { FindYourScentBanner } from "@/components/FindYourScentBanner";
+import { CustomizePerfumeBanner } from "@/components/CustomizePerfumeBanner";
 import { GenderShowcase } from "@/components/GenderShowcase";
 import { ShopReels } from "@/components/ShopReels";
 import { ShopTheLook } from "@/components/ShopTheLook";
@@ -25,7 +25,7 @@ export default async function HomePage() {
       <Hero />
       <CategoryShowcase categories={categories} />
       <Reveal>
-        <FindYourScentBanner />
+        <CustomizePerfumeBanner />
       </Reveal>
       {genderShowcase && <GenderShowcase section={genderShowcase} />}
       <Reveal>

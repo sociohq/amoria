@@ -9,7 +9,7 @@ import Image from "next/image";
 // taller than the section) so it never runs out of image to reveal.
 const PARALLAX_BUFFER = 0.12; // fraction of the section's own height
 
-export function FindYourScentBanner() {
+export function CustomizePerfumeBanner() {
   const sectionRef = useRef<HTMLElement>(null);
   const [offset, setOffset] = useState(0);
   const rafRef = useRef<number | null>(null);
@@ -45,12 +45,13 @@ export function FindYourScentBanner() {
   return (
     <section ref={sectionRef} className="relative aspect-[16/9] w-full overflow-hidden sm:aspect-[21/9]">
       {/* Anchored to the section's top edge (not centered) and cropped from
-          object-top, so the sky — not the bottles — sits behind the text,
-          with the extra 12% height below as the parallax's scroll buffer. */}
+          object-top, so the blank wall — not the bottles/beakers — sits
+          behind the text, with the extra 12% height below as the
+          parallax's scroll buffer. */}
       <div className="absolute inset-x-0 top-0 h-[112%]" style={{ transform: `translateY(-${offset}px)` }}>
         <Image
-          src="/banners/find-your-scent.png"
-          alt="Amoria Mystique, Nocturne, Aurora, Velaris and Solstice"
+          src="/banners/customize-perfume.png"
+          alt="Empty Amoria bottles beside beakers of fragrance oils, being blended into a custom scent"
           fill
           sizes="100vw"
           className="object-cover object-top"
@@ -58,12 +59,12 @@ export function FindYourScentBanner() {
       </div>
       <div className="absolute inset-0 flex items-start px-6 pt-10 sm:px-12 sm:pt-16">
         <div className="max-w-md">
-          <h2 className="font-serif text-3xl leading-tight text-ink sm:text-4xl">Find Your Perfect Scent</h2>
+          <h2 className="font-serif text-3xl leading-tight text-ink sm:text-4xl">Create Your Own Perfume</h2>
           <p className="mt-3 text-sm text-ink-soft">
-            Answer a few questions and we&apos;ll match you with fragrances made for exactly who you are.
+            Blend your own signature scent from our finest notes — crafted around you, bottled just for you.
           </p>
-          <Link href="/shop" className="mt-6 inline-block bg-ink px-8 py-3 label-caps text-cream hover:opacity-90">
-            Begin the Experience
+          <Link href="/custom-perfume" className="mt-6 inline-block bg-ink px-8 py-3 label-caps text-cream hover:opacity-90">
+            Customize Your Perfume
           </Link>
         </div>
       </div>
