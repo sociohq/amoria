@@ -248,14 +248,6 @@ export interface ContactSubmission {
   createdAt: string;
 }
 
-export interface DashboardSummary {
-  totalOrders: number;
-  totalRevenue: number;
-  pendingOrders: number;
-  activeProducts: number;
-  lowStockVariants: number;
-}
-
 export interface Order {
   id: string;
   status: "PENDING" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED" | "REFUNDED";
