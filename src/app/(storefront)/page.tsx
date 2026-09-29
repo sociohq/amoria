@@ -2,7 +2,9 @@ import { listProducts, listCategories, getShopTheLook, getFeaturedReviews, getGe
 import { listHeroSlides } from "@/lib/heroSlides";
 import { HeroSlider } from "@/components/HeroSlider";
 import { CategoryShowcase } from "@/components/CategoryShowcase";
+import { FragranceFamilyScroller } from "@/components/FragranceFamilyScroller";
 import { ProductSection } from "@/components/ProductSection";
+import { BrandLogoGrid } from "@/components/BrandLogoGrid";
 import { CustomizePerfumeBanner } from "@/components/CustomizePerfumeBanner";
 import { GenderShowcase } from "@/components/GenderShowcase";
 import { ShopReels } from "@/components/ShopReels";
@@ -27,11 +29,17 @@ export default async function HomePage() {
       <HeroSlider slides={heroSlides} />
       <CategoryShowcase categories={categories} />
       <Reveal>
+        <FragranceFamilyScroller />
+      </Reveal>
+      <Reveal>
         <CustomizePerfumeBanner />
       </Reveal>
       {genderShowcase && <GenderShowcase section={genderShowcase} />}
       <Reveal>
         <ProductSection eyebrow="Extrait de Parfum" title="Featured Products" products={featured} />
+      </Reveal>
+      <Reveal>
+        <BrandLogoGrid />
       </Reveal>
       <Reveal>
         <StatementBottleBanner />
