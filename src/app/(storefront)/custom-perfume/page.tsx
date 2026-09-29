@@ -6,12 +6,12 @@ import { useAuth } from "@/lib/auth-context";
 import { useAuthDrawer } from "@/lib/auth-drawer-context";
 import { ApiError } from "@/lib/api";
 import { formatAed } from "@/lib/money";
+import { FRAGRANCE_FAMILIES } from "@/lib/fragranceFamilies";
 import {
-  FRAGRANCE_FAMILIES,
-  FRAGRANCE_FAMILY_IMAGES,
-  FragranceFamily,
+  Concentration,
   Gender,
   PricingTier,
+  Size,
   createCustomPerfumeCheckout,
   getCustomPerfumePricing,
 } from "@/lib/customPerfume";
@@ -77,8 +77,24 @@ type TileTone = keyof typeof TILE_TONES;
 
 // Same idea for the concentration tiers — cooler to bolder as the
 // percentage (and richness) goes up, echoing the "richer, longer-lasting"
-// copy right above them instead of three identical black-and-white tiles.
-const CONCENTRATION_TONES: Record<string, TileTone> = { "20": "royal", "25": "gold", "30": "crimson" };
+// copy right above them instead of five identical black-and-white tiles.
+// Only 3 tones exist in the palette, so the top two concentrations reuse
+// the first two rather than needing a 4th/5th color.
+const CONCENTRATION_TONES: Record<string, TileTone> = {
+  "20": "royal",
+  "25": "gold",
+  "30": "crimson",
+  "35": "royal",
+  "40": "gold",
+};
+
+// Bottle-size line art shown on each concentration tile — keyed by the
+// tier's own `size` string ("50ml"/"100ml") so it stays correct if the
+// concentration-to-size mapping ever changes on the backend.
+const BOTTLE_SIZE_ICONS: Record<string, string> = {
+  "50ml": "/custom-perfume/bottle-50ml.png",
+  "100ml": "/custom-perfume/bottle-100ml.png",
+};
 
 const GENDER_OPTIONS: { value: Gender; label: string; Icon: () => React.JSX.Element; tone: TileTone }[] = [
   { value: "him", label: "For Him", Icon: MarsIcon, tone: "royal" },
@@ -157,8 +173,9 @@ export default function CustomPerfumePage() {
 
   const [customerName, setCustomerName] = useState("");
   const [gender, setGender] = useState<Gender | null>(null);
-  const [fragranceFamily, setFragranceFamily] = useState<FragranceFamily | null>(null);
+  const [fragranceFamily, setFragranceFamily] = useState<string | null>(null);
   const [concentration, setConcentration] = useState<string | null>(null);
+  const [size, setSize] = useState<string | null>(null);
 
   const [tiers, setTiers] = useState<PricingTier[] | null>(null);
   const [tiersError, setTiersError] = useState(false);
@@ -181,11 +198,12 @@ export default function CustomPerfumePage() {
       .catch(() => setTiersError(true));
   }, []);
 
-  const selectedTier = tiers?.find((t) => t.concentration === concentration) ?? null;
+  const selectedConcentrationTier = tiers?.find((t) => t.concentration === concentration) ?? null;
+  const selectedSizeTier = selectedConcentrationTier?.sizes.find((s) => s.size === size) ?? null;
 
   async function handleConfirm(e: React.FormEvent) {
     e.preventDefault();
-    if (!gender || !fragranceFamily || !concentration) return;
+    if (!gender || !fragranceFamily || !concentration || !size) return;
     setError(null);
     setSubmitting(true);
     try {
@@ -193,7 +211,8 @@ export default function CustomPerfumePage() {
         customerName: checkoutName,
         gender,
         fragranceFamily,
-        concentration: concentration as "20" | "25" | "30",
+        concentration: concentration as Concentration,
+        size: size as Size,
         email: user ? undefined : checkoutEmail,
         shippingAddress: { line1, line2: line2 || undefined, city, emirate, phone },
       });
@@ -352,14 +371,17 @@ export default function CustomPerfumePage() {
             {step === 3 && (
               <div className="space-y-6">
                 <h2 className="font-serif text-2xl text-ink">Which fragrance family appeals to you?</h2>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {/* The full 37-family catalog taxonomy (same as the homepage
+                    scroller) rather than the wizard's old 8-option shortlist —
+                    scrollable so the panel doesn't grow to an unwieldy height. */}
+                <div className="grid max-h-[480px] grid-cols-1 gap-3 overflow-y-auto pr-1 sm:grid-cols-2">
                   {FRAGRANCE_FAMILIES.map((f) => (
                     <FamilyTile
-                      key={f}
-                      active={fragranceFamily === f}
-                      onClick={() => setFragranceFamily(f)}
-                      image={FRAGRANCE_FAMILY_IMAGES[f]}
-                      label={f}
+                      key={f.name}
+                      active={fragranceFamily === f.name}
+                      onClick={() => setFragranceFamily(f.name)}
+                      image={f.image}
+                      label={f.name}
                     />
                   ))}
                 </div>
@@ -396,23 +418,51 @@ export default function CustomPerfumePage() {
                 ) : !tiers ? (
                   <p className="text-sm text-ink-soft">Loading pricing…</p>
                 ) : (
-                  <div className="flex flex-col gap-3 sm:flex-row">
-                    {tiers.map((t) => {
-                      const tone = CONCENTRATION_TONES[t.concentration] ?? "royal";
-                      return (
-                        <OptionTile
-                          key={t.concentration}
-                          active={concentration === t.concentration}
-                          onClick={() => setConcentration(t.concentration)}
-                          tone={tone}
-                        >
-                          <span className={`label-caps block ${TILE_TONES[tone].icon}`}>{t.concentration}%</span>
-                          <span className="mt-1 block text-xs text-ink-soft">{t.size}</span>
-                          <span className="mt-1 block text-sm text-ink">{formatAed(t.price)}</span>
-                        </OptionTile>
-                      );
-                    })}
-                  </div>
+                  <>
+                    <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
+                      {tiers.map((t) => {
+                        const tone = CONCENTRATION_TONES[t.concentration] ?? "royal";
+                        return (
+                          <OptionTile
+                            key={t.concentration}
+                            active={concentration === t.concentration}
+                            onClick={() => {
+                              setConcentration(t.concentration);
+                              // Every concentration has its own two prices now,
+                              // so a stale size pick from a different
+                              // concentration would show the wrong price.
+                              setSize(null);
+                            }}
+                            tone={tone}
+                          >
+                            <span className={`label-caps block ${TILE_TONES[tone].icon}`}>{t.concentration}%</span>
+                          </OptionTile>
+                        );
+                      })}
+                    </div>
+
+                    {selectedConcentrationTier && (
+                      <div>
+                        <p className="label-caps mb-3 text-ink-soft">Choose your bottle size</p>
+                        <div className="flex gap-3">
+                          {selectedConcentrationTier.sizes.map((s) => {
+                            const tone = CONCENTRATION_TONES[concentration ?? ""] ?? "royal";
+                            return (
+                              <OptionTile key={s.size} active={size === s.size} onClick={() => setSize(s.size)} tone={tone}>
+                                {BOTTLE_SIZE_ICONS[s.size] && (
+                                  <span className="relative mx-auto mb-2 block h-16 w-16">
+                                    <Image src={BOTTLE_SIZE_ICONS[s.size]} alt="" fill sizes="64px" className="object-contain" />
+                                  </span>
+                                )}
+                                <span className="label-caps block text-ink">{s.size}</span>
+                                <span className="mt-1 block text-sm text-ink">{formatAed(s.price)}</span>
+                              </OptionTile>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
                 <div className="flex gap-3">
                   <button
@@ -424,7 +474,7 @@ export default function CustomPerfumePage() {
                   </button>
                   <button
                     type="button"
-                    disabled={!concentration}
+                    disabled={!concentration || !size}
                     onClick={() => setStep(5)}
                     className="flex-1 bg-ink py-3 label-caps text-cream hover:opacity-90 disabled:opacity-40"
                   >
@@ -434,7 +484,7 @@ export default function CustomPerfumePage() {
               </div>
             )}
 
-            {step === 5 && gender && fragranceFamily && concentration && (
+            {step === 5 && gender && fragranceFamily && concentration && size && (
               <form onSubmit={handleConfirm} className="space-y-4">
                 <h2 className="font-serif text-2xl text-ink">Review &amp; Confirm</h2>
 
@@ -451,10 +501,10 @@ export default function CustomPerfumePage() {
                   </div>
                   <p className="mt-1 text-sm text-ink">
                     {checkoutName} · {GENDER_OPTIONS.find((o) => o.value === gender)?.label} · {fragranceFamily} ·{" "}
-                    {concentration}%{selectedTier ? ` · ${selectedTier.size}` : ""}
+                    {concentration}% · {size}
                   </p>
-                  {selectedTier && (
-                    <p className="mt-2 font-serif text-2xl text-ink">{formatAed(selectedTier.price)}</p>
+                  {selectedSizeTier && (
+                    <p className="mt-2 font-serif text-2xl text-ink">{formatAed(selectedSizeTier.price)}</p>
                   )}
                 </div>
 
@@ -537,7 +587,7 @@ export default function CustomPerfumePage() {
                   >
                     {submitting
                       ? "Redirecting to payment…"
-                      : `Confirm & Pay${selectedTier ? ` ${formatAed(selectedTier.price)}` : ""}`}
+                      : `Confirm & Pay${selectedSizeTier ? ` ${formatAed(selectedSizeTier.price)}` : ""}`}
                   </button>
                 </div>
 

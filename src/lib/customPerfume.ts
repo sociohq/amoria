@@ -1,38 +1,23 @@
 import { apiFetch } from "./api";
 
 export type Gender = "him" | "her" | "unisex";
-// A standard, broader family list rather than the real catalog's 3 —
-// a bespoke blend isn't limited to what's already in stock.
-export const FRAGRANCE_FAMILIES = [
-  "Fresh & Citrusy",
-  "Green & Aromatic",
-  "Fruity & Delicious",
-  "Floral & Delicate",
-  "Woody & Profound",
-  "Sweet & Gourmand",
-  "Spicy & Ambery",
-  "Leathery & Distinctive",
-] as const;
-export type FragranceFamily = (typeof FRAGRANCE_FAMILIES)[number];
 
-// Real ingredient photography (site owner-provided) for the fragrance
-// family step, replacing the earlier emoji-icon placeholders.
-export const FRAGRANCE_FAMILY_IMAGES: Record<FragranceFamily, string> = {
-  "Fresh & Citrusy": "/families/fresh-citrusy.png",
-  "Green & Aromatic": "/families/green-aromatic.png",
-  "Fruity & Delicious": "/families/fruity-delicious.png",
-  "Floral & Delicate": "/families/floral-delicate.png",
-  "Woody & Profound": "/families/woody-profound.png",
-  "Sweet & Gourmand": "/families/sweet-gourmand.png",
-  "Spicy & Ambery": "/families/spicy-ambery.png",
-  "Leathery & Distinctive": "/families/leathery-distinctive.png",
-};
-export type Concentration = "20" | "25" | "30";
+// The wizard's family step now offers the same full taxonomy as the
+// homepage's "Shop By Scent Family" scroller and the real catalog, rather
+// than its own separate, shorter list — a bespoke blend can draw from any
+// family we sell, not a curated subset.
+export { FRAGRANCE_FAMILIES } from "./fragranceFamilies";
+export type { FragranceFamily } from "./fragranceFamilies";
+
+export type Concentration = "20" | "25" | "30" | "35" | "40";
+
+// Every concentration is available in both bottle sizes, each with its
+// own independent price — size is no longer implied by concentration.
+export type Size = "50ml" | "100ml";
 
 export interface PricingTier {
-  concentration: string; // "20" | "25" | "30"
-  size: string; // "50ml" | "100ml" — fixed per concentration
-  price: number; // AED
+  concentration: string; // "20" | "25" | "30" | "35" | "40"
+  sizes: { size: string; price: number }[]; // "50ml" and "100ml", each with its own AED price
 }
 
 // Live prices from the admin-editable "Custom Perfume" product's variants
@@ -46,8 +31,9 @@ export async function getCustomPerfumePricing(): Promise<PricingTier[]> {
 export interface CustomPerfumeCheckoutInput {
   customerName: string;
   gender: Gender;
-  fragranceFamily: FragranceFamily;
+  fragranceFamily: string;
   concentration: Concentration;
+  size: Size;
   email?: string;
   shippingAddress: {
     line1: string;
