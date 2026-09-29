@@ -7,6 +7,8 @@ import { Reel } from "@/lib/types";
 import { formatAed } from "@/lib/money";
 import { listReels } from "@/lib/reels";
 import { useCart } from "@/lib/cart-context";
+import { getPublicSettings } from "@/lib/settings";
+import { InstagramIcon } from "./SocialIcons";
 
 function ReelCard({ reel }: { reel: Reel }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -99,19 +101,38 @@ function ReelCard({ reel }: { reel: Reel }) {
 // least one is added.
 export function ShopReels() {
   const [reels, setReels] = useState<Reel[] | null>(null);
+  const [instagramUrl, setInstagramUrl] = useState<string | null>(null);
 
   useEffect(() => {
     listReels()
       .then(setReels)
       .catch(() => setReels([]));
+    getPublicSettings()
+      .then((s) => setInstagramUrl(s.instagramUrl))
+      .catch(() => {});
   }, []);
 
   if (!reels || reels.length === 0) return null;
 
   return (
     <section className="px-6 py-16">
-      <p className="label-caps text-gold">Watch & Shop</p>
-      <h2 className="mt-1 font-serif text-3xl text-ink">Shop By Reels</h2>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="label-caps text-gold">Watch & Shop</p>
+          <h2 className="mt-1 font-serif text-3xl text-ink">Shop By Reels</h2>
+        </div>
+        {instagramUrl && (
+          <a
+            href={instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 border border-ink px-5 py-2.5 label-caps text-ink transition-colors hover:bg-ink hover:text-cream"
+          >
+            <InstagramIcon />
+            Follow Us On Instagram
+          </a>
+        )}
+      </div>
       <div className="mt-8 flex snap-x snap-mandatory gap-6 overflow-x-auto overflow-y-hidden pb-4">
         {reels.map((r) => (
           <ReelCard key={r.id} reel={r} />
