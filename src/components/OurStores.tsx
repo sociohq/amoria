@@ -5,7 +5,7 @@ import { useLenis } from "lenis/react";
 import { subscribeToNewsletter } from "@/lib/newsletter";
 import { ApiError } from "@/lib/api";
 
-const EMAIL = "amoriaperfumeofficial@gmail.com";
+const EMAIL = "info@amoriaperfume.ae";
 const PHONE_DISPLAY = "+971 50 755 0447";
 const PHONE_HREF = "+971507550447";
 
@@ -17,6 +17,7 @@ const BACKGROUND_VIDEO = "/videos/our-stores-bg.mp4";
 // subtle; the video's own transform (below) scales it up by enough to
 // cover that drift range without exposing an edge.
 const PARALLAX_STRENGTH = 0.15;
+const VIDEO_SCALE = 1.1;
 
 export function OurStores() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -35,7 +36,12 @@ export function OurStores() {
     if (!el) return;
     const rect = el.getBoundingClientRect();
     const distanceFromCenter = rect.top + rect.height / 2 - window.innerHeight / 2;
-    setParallaxOffset(distanceFromCenter * PARALLAX_STRENGTH);
+    // Clamp to the headroom the scale-up actually buys — otherwise the
+    // drift can outrun it while the section is still entering/leaving the
+    // viewport, exposing the section's own background above the video.
+    const maxOffset = ((VIDEO_SCALE - 1) / 2) * rect.height;
+    const offset = Math.max(-maxOffset, Math.min(maxOffset, distanceFromCenter * PARALLAX_STRENGTH));
+    setParallaxOffset(offset);
   });
 
   async function handleSubscribe(e: React.FormEvent) {
@@ -62,7 +68,7 @@ export function OurStores() {
         loop
         playsInline
         className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-        style={{ transform: `scale(1.1) translateY(${parallaxOffset}px)` }}
+        style={{ transform: `scale(${VIDEO_SCALE}) translateY(${parallaxOffset}px)` }}
       >
         <source src={BACKGROUND_VIDEO} type="video/mp4" />
       </video>

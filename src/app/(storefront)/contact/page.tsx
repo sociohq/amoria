@@ -11,9 +11,21 @@ export default function ContactPage() {
       <div className="mt-14 grid gap-14 lg:grid-cols-[1fr_1.4fr]">
         <div className="space-y-6">
           <div>
-            <p className="label-caps text-ink-soft">Email</p>
-            <a href="mailto:amoriaperfumeofficial@gmail.com" className="mt-1 block text-ink hover:text-royal">
-              amoriaperfumeofficial@gmail.com
+            <p className="label-caps text-ink-soft">Sales</p>
+            <a href="mailto:sales@amoriaperfume.ae" className="mt-1 block text-ink hover:text-royal">
+              sales@amoriaperfume.ae
+            </a>
+          </div>
+          <div>
+            <p className="label-caps text-ink-soft">Operations</p>
+            <a href="mailto:operations@amoriaperfume.ae" className="mt-1 block text-ink hover:text-royal">
+              operations@amoriaperfume.ae
+            </a>
+          </div>
+          <div>
+            <p className="label-caps text-ink-soft">General Inquiries</p>
+            <a href="mailto:info@amoriaperfume.ae" className="mt-1 block text-ink hover:text-royal">
+              info@amoriaperfume.ae
             </a>
           </div>
           <div>
