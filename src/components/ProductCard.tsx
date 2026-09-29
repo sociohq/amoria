@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Product } from "@/lib/types";
 import { formatAed, percentOff } from "@/lib/money";
-import { fragranceFamilyImage, genderTag } from "@/lib/fragrance";
+import { cardDisplayName, fragranceFamilyImage, genderTag, genderTextClass } from "@/lib/fragrance";
 import { WishlistButton } from "./WishlistButton";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -50,13 +50,15 @@ export function ProductCard({ product }: { product: Product }) {
           responds to inherited text-align, but the price row below is a
           flex container and doesn't, so the two would visibly disagree. */}
       <div className="mt-2 text-left">
-        <p className="font-serif text-base font-medium tracking-normal text-ink sm:text-2xl sm:font-normal">{product.name}</p>
-        {gender && <p className="mt-0.5 text-[12px] tracking-[-0.11px] text-ink-soft">{gender}</p>}
+        <p className="truncate font-serif text-base font-medium leading-tight tracking-normal text-ink sm:text-xl" title={product.name}>
+          {cardDisplayName(product.name)}
+        </p>
+        {gender && <p className={`mt-0.5 text-[12px] leading-tight tracking-[-0.11px] ${genderTextClass(gender)}`}>{gender}</p>}
         {product.scentAccords.length > 0 && (
           <p className="mt-1 text-xs text-ink-soft">{product.scentAccords.join(" · ")}</p>
         )}
         <div className="mt-1.5 flex items-baseline gap-2 sm:mt-3">
-          <span className="text-[12px] font-medium tracking-[-0.11px] text-ink sm:text-lg sm:font-semibold sm:tracking-normal">
+          <span className="text-[12px] font-medium tracking-[-0.11px] text-gold sm:text-lg sm:font-semibold sm:tracking-normal">
             {formatAed(product.price)}
           </span>
           {product.compareAtPrice && (

@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Product } from "@/lib/types";
 import { formatAed, percentOff } from "@/lib/money";
-import { fragranceFamilyImage, genderTag } from "@/lib/fragrance";
+import { cardDisplayName, fragranceFamilyImage, genderTag, genderTextClass } from "@/lib/fragrance";
 import { useCart } from "@/lib/cart-context";
 import { WishlistButton } from "./WishlistButton";
 
@@ -128,14 +128,19 @@ export function FeaturedProductCard({ product }: { product: Product }) {
           so the two visibly disagree. */}
       <div className="mt-2 text-left">
         <Link href={`/product/${product.slug}`}>
-          <p className="font-serif text-base font-medium tracking-normal text-ink hover:text-royal sm:text-2xl sm:font-normal">{product.name}</p>
+          <p
+            className="truncate font-serif text-base font-medium leading-tight tracking-normal text-ink hover:text-royal sm:text-xl"
+            title={product.name}
+          >
+            {cardDisplayName(product.name)}
+          </p>
         </Link>
-        {gender && <p className="mt-0.5 text-[12px] tracking-[-0.11px] text-ink-soft">{gender}</p>}
+        {gender && <p className={`mt-0.5 text-[12px] leading-tight tracking-[-0.11px] ${genderTextClass(gender)}`}>{gender}</p>}
         {product.scentAccords.length > 0 && (
           <p className="mt-1 text-xs text-ink-soft">{product.scentAccords.join(" · ")}</p>
         )}
         <div className="mt-1.5 flex items-baseline gap-2 sm:mt-3">
-          <span className="text-[12px] font-medium tracking-[-0.11px] text-ink sm:text-lg sm:font-semibold sm:tracking-normal">
+          <span className="text-[12px] font-medium tracking-[-0.11px] text-gold sm:text-lg sm:font-semibold sm:tracking-normal">
             {formatAed(variant?.price ?? product.price)}
           </span>
           {product.compareAtPrice && (
