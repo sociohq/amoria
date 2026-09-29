@@ -14,6 +14,7 @@ import { useLenis } from "lenis/react";
 // bespoke one-off — an admin just tags real 1KG products into that
 // category from the product editor when they're ready.
 const PARALLAX_STRENGTH = 0.15;
+const IMAGE_SCALE = 1.15;
 
 export function StatementBottleBanner() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -25,7 +26,14 @@ export function StatementBottleBanner() {
     if (!el) return;
     const rect = el.getBoundingClientRect();
     const distanceFromCenter = rect.top + rect.height / 2 - window.innerHeight / 2;
-    setParallaxOffset(distanceFromCenter * PARALLAX_STRENGTH);
+    // The scale-up above only buys ((IMAGE_SCALE - 1) / 2) * height of
+    // headroom before an edge is exposed — distanceFromCenter can run far
+    // past that while the section is still entering/leaving the viewport,
+    // so the raw offset needs clamping to that same headroom rather than
+    // being applied straight through.
+    const maxOffset = ((IMAGE_SCALE - 1) / 2) * rect.height;
+    const offset = Math.max(-maxOffset, Math.min(maxOffset, distanceFromCenter * PARALLAX_STRENGTH));
+    setParallaxOffset(offset);
   });
 
   return (
@@ -38,7 +46,7 @@ export function StatementBottleBanner() {
         fill
         sizes="100vw"
         className="pointer-events-none object-cover"
-        style={{ transform: `scale(1.15) translateY(${parallaxOffset}px)` }}
+        style={{ transform: `scale(${IMAGE_SCALE}) translateY(${parallaxOffset}px)` }}
       />
 
       {/* The photo is already bright and even-toned, so dark ink text
