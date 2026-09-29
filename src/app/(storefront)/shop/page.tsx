@@ -4,7 +4,14 @@ import { ProductCard } from "@/components/ProductCard";
 import { ShopFilterDrawer } from "@/components/ShopFilterDrawer";
 
 interface ShopPageProps {
-  searchParams: Promise<{ category?: string; sort?: string; page?: string; minPrice?: string; maxPrice?: string }>;
+  searchParams: Promise<{
+    category?: string;
+    family?: string;
+    sort?: string;
+    page?: string;
+    minPrice?: string;
+    maxPrice?: string;
+  }>;
 }
 
 const SORTS = [
@@ -16,13 +23,14 @@ const SORTS = [
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const params = await searchParams;
   const category = params.category;
+  const family = params.family;
   const sort = (params.sort as (typeof SORTS)[number]["value"]) ?? "newest";
   const page = params.page ? Number(params.page) : 1;
   const minPrice = params.minPrice ? Number(params.minPrice) : undefined;
   const maxPrice = params.maxPrice ? Number(params.maxPrice) : undefined;
 
   const [{ products, totalPages }, categories, priceBounds] = await Promise.all([
-    listProducts({ category, sort, page, minPrice, maxPrice, limit: 12 }).catch(() => ({
+    listProducts({ category, fragranceFamily: family, sort, page, minPrice, maxPrice, limit: 12 }).catch(() => ({
       products: [],
       totalPages: 1,
     })),
@@ -35,10 +43,12 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   // would render as "1kg-collection" verbatim, since capitalize only
   // affects space-separated words, not hyphens.
   const categoryName = category ? categories.find((c) => c.slug === category)?.name ?? category : null;
+  const heading = family ? `${family} Fragrances` : (categoryName ?? "All Fragrances");
 
   function withParam(key: string, value: string) {
     const next = new URLSearchParams();
     if (category) next.set("category", category);
+    if (family) next.set("family", family);
     if (sort !== "newest") next.set("sort", sort);
     if (params.minPrice) next.set("minPrice", params.minPrice);
     if (params.maxPrice) next.set("maxPrice", params.maxPrice);
@@ -49,7 +59,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   return (
     <div className="px-4 py-12 sm:px-6">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="font-serif text-3xl text-ink">{categoryName ?? "All Fragrances"}</h1>
+        <h1 className="font-serif text-3xl text-ink">{heading}</h1>
         <div className="flex items-center gap-4 sm:gap-6">
           <div className="no-scrollbar flex gap-4 overflow-x-auto">
             {SORTS.map((s) => (
@@ -66,6 +76,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
           <ShopFilterDrawer
             categories={categories}
             currentCategory={category}
+            currentFamily={family}
             currentSort={sort}
             currentMinPrice={params.minPrice}
             currentMaxPrice={params.maxPrice}

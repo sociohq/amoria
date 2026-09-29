@@ -4,10 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Category } from "@/lib/types";
 import { PriceRangeSlider } from "./PriceRangeSlider";
+import { FRAGRANCE_FAMILIES } from "@/lib/fragranceFamilies";
 
 interface ShopFilterDrawerProps {
   categories: Category[];
   currentCategory?: string;
+  currentFamily?: string;
   currentSort: string;
   currentMinPrice?: string;
   currentMaxPrice?: string;
@@ -27,6 +29,7 @@ const GROUP_ORDER = ["Shop By Gender", "Shop By Type", "Collections"];
 export function ShopFilterDrawer({
   categories,
   currentCategory,
+  currentFamily,
   currentSort,
   currentMinPrice,
   currentMaxPrice,
@@ -35,6 +38,7 @@ export function ShopFilterDrawer({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [category, setCategory] = useState(currentCategory ?? "");
+  const [family, setFamily] = useState(currentFamily ?? "");
   const [priceRange, setPriceRange] = useState<[number, number]>([
     currentMinPrice ? Number(currentMinPrice) : priceBounds.min,
     currentMaxPrice ? Number(currentMaxPrice) : priceBounds.max,
@@ -51,12 +55,15 @@ export function ShopFilterDrawer({
   const priceIsFiltered =
     (currentMinPrice !== undefined && Number(currentMinPrice) > priceBounds.min) ||
     (currentMaxPrice !== undefined && Number(currentMaxPrice) < priceBounds.max);
-  const activeCount = [currentCategory, priceIsFiltered ? "price" : undefined].filter(Boolean).length;
+  const activeCount = [currentCategory, currentFamily, priceIsFiltered ? "price" : undefined].filter(
+    Boolean
+  ).length;
 
   function openDrawer() {
     // Re-sync the draft with whatever's currently applied — the URL may
     // have changed (Back button, a sort link) since this last opened.
     setCategory(currentCategory ?? "");
+    setFamily(currentFamily ?? "");
     setPriceRange([
       currentMinPrice ? Number(currentMinPrice) : priceBounds.min,
       currentMaxPrice ? Number(currentMaxPrice) : priceBounds.max,
@@ -64,9 +71,10 @@ export function ShopFilterDrawer({
     setOpen(true);
   }
 
-  function buildUrl(overrides: { category?: string; priceRange?: [number, number] }) {
+  function buildUrl(overrides: { category?: string; family?: string; priceRange?: [number, number] }) {
     const params = new URLSearchParams();
     if (overrides.category) params.set("category", overrides.category);
+    if (overrides.family) params.set("family", overrides.family);
     if (currentSort !== "newest") params.set("sort", currentSort);
     if (overrides.priceRange) {
       const [lo, hi] = overrides.priceRange;
@@ -78,12 +86,13 @@ export function ShopFilterDrawer({
   }
 
   function apply() {
-    router.push(buildUrl({ category, priceRange }));
+    router.push(buildUrl({ category, family, priceRange }));
     setOpen(false);
   }
 
   function clearAll() {
     setCategory("");
+    setFamily("");
     setPriceRange([priceBounds.min, priceBounds.max]);
     router.push(buildUrl({}));
     setOpen(false);
@@ -156,6 +165,26 @@ export function ShopFilterDrawer({
               </div>
             </div>
           ))}
+
+          <div>
+            <h3 className="label-caps text-ink-soft">Shop By Fragrance</h3>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {FRAGRANCE_FAMILIES.map((f) => {
+                const active = family === f.name;
+                return (
+                  <button
+                    key={f.name}
+                    onClick={() => setFamily(active ? "" : f.name)}
+                    className={`border px-4 py-2 text-sm transition-colors ${
+                      active ? "border-royal bg-royal text-cream" : "border-border text-ink hover:border-royal"
+                    }`}
+                  >
+                    {f.name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
           {priceBounds.max > priceBounds.min && (
             <div>

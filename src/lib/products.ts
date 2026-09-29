@@ -2,7 +2,10 @@ import { apiFetch } from "./api";
 import { Product, Category, ShopTheLookSection, Review, GenderShowcaseSection } from "./types";
 
 export interface ListProductsParams {
+  search?: string;
   category?: string;
+  fragranceFamily?: string;
+  designHouse?: string;
   minPrice?: number;
   maxPrice?: number;
   sort?: "price_asc" | "price_desc" | "newest";
