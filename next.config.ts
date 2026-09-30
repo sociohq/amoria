@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
     // bucket, not internal infrastructure, so this is a false positive for
     // us rather than an actual SSRF exposure.
     dangerouslyAllowLocalIP: true,
+    // B2 URLs are content-addressed by a unique UUID per upload and never
+    // change once created, so the optimized/resized cache entry is safe to
+    // keep indefinitely instead of expiring after Next's 60s default.
+    minimumCacheTTL: 31536000,
   },
 };
 
