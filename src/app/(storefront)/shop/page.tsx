@@ -6,6 +6,7 @@ import { ShopFilterDrawer } from "@/components/ShopFilterDrawer";
 interface ShopPageProps {
   searchParams: Promise<{
     category?: string;
+    search?: string;
     family?: string;
     sort?: string;
     page?: string;
@@ -24,13 +25,14 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   const params = await searchParams;
   const category = params.category;
   const family = params.family;
+  const search = params.search?.trim() || undefined;
   const sort = (params.sort as (typeof SORTS)[number]["value"]) ?? "newest";
   const page = params.page ? Number(params.page) : 1;
   const minPrice = params.minPrice ? Number(params.minPrice) : undefined;
   const maxPrice = params.maxPrice ? Number(params.maxPrice) : undefined;
 
   const [{ products, totalPages }, categories, priceBounds] = await Promise.all([
-    listProducts({ category, fragranceFamily: family, sort, page, minPrice, maxPrice, limit: 12 }).catch(() => ({
+    listProducts({ category, search, fragranceFamily: family, sort, page, minPrice, maxPrice, limit: 12 }).catch(() => ({
       products: [],
       totalPages: 1,
     })),
@@ -43,12 +45,13 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   // would render as "1kg-collection" verbatim, since capitalize only
   // affects space-separated words, not hyphens.
   const categoryName = category ? categories.find((c) => c.slug === category)?.name ?? category : null;
-  const heading = family ? `${family} Fragrances` : (categoryName ?? "All Fragrances");
+  const heading = search ? `Results for “${search}”` : family ? `${family} Fragrances` : (categoryName ?? "All Fragrances");
 
   function withParam(key: string, value: string) {
     const next = new URLSearchParams();
     if (category) next.set("category", category);
     if (family) next.set("family", family);
+    if (search) next.set("search", search);
     if (sort !== "newest") next.set("sort", sort);
     if (params.minPrice) next.set("minPrice", params.minPrice);
     if (params.maxPrice) next.set("maxPrice", params.maxPrice);

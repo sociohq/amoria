@@ -11,14 +11,79 @@ import { Category } from "@/lib/types";
 import { getPublicSettings, PublicSettings } from "@/lib/settings";
 import { SocialLinks } from "./SocialIcons";
 import { MegaMenu } from "./MegaMenu";
+import { MobileMenu } from "./MobileMenu";
+import { SearchOverlay } from "./SearchOverlay";
 
 const SOLID_THRESHOLD_PX = 60;
+
+const PinIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+    <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" strokeLinejoin="round" />
+    <circle cx="12" cy="10" r="2.3" />
+  </svg>
+);
+
+// English-only for now. Arabic is listed (so the option is visible) but
+// disabled until the site is actually translated — a selector that silently
+// did nothing would be worse than an honest "soon".
+function LanguageSelect({ className = "" }: { className?: string }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onDown(e: MouseEvent | TouchEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("touchstart", onDown);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("touchstart", onDown);
+    };
+  }, [open]);
+
+  return (
+    <div ref={ref} className={`relative ${className}`}>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="flex items-center gap-1"
+      >
+        English
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+      {open && (
+        <ul
+          role="listbox"
+          className="absolute right-0 top-full z-50 mt-2 w-40 border border-border bg-white py-1 text-xs text-ink shadow-sm"
+        >
+          <li role="option" aria-selected className="flex items-center justify-between px-3 py-2">
+            English
+            <span aria-hidden className="text-royal">
+              ✓
+            </span>
+          </li>
+          <li role="option" aria-selected={false} aria-disabled className="flex items-center justify-between px-3 py-2 text-ink-soft/70">
+            العربية
+            <span className="text-[10px] uppercase tracking-wider">Soon</span>
+          </li>
+        </ul>
+      )}
+    </div>
+  );
+}
 
 export function Header({ categories }: { categories: Category[] }) {
   const { user, logout } = useAuth();
   const { openDrawer: openAuthDrawer } = useAuthDrawer();
   const { itemCount, openDrawer } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [settings, setSettings] = useState<PublicSettings | null>(null);
   const pathname = usePathname();
@@ -78,14 +143,15 @@ export function Header({ categories }: { categories: Category[] }) {
       });
   }, []);
 
-  const barClasses = `relative flex items-center justify-center px-6 py-3 border-b transition-colors duration-300 ${
+  const barClasses = `relative flex items-center justify-between px-4 py-3 border-b transition-colors duration-300 md:justify-center md:px-6 ${
     transparent ? "border-white/25 bg-transparent" : "border-border bg-white"
   }`;
-  const navClasses = `relative hidden justify-center gap-10 py-4 transition-colors duration-300 md:flex ${
+  const navClasses = `relative hidden justify-center gap-6 py-4 transition-colors duration-300 md:flex lg:gap-10 [&_a]:whitespace-nowrap ${
     transparent ? "bg-transparent" : "border-b border-border bg-white"
   }`;
   const textClass = transparent ? "text-cream" : "text-ink-soft";
   const linkHoverClass = transparent ? "hover:text-gold-light" : "hover:text-royal";
+  const iconColor = transparent ? "text-cream" : "text-ink";
 
   return (
     <header className={hasFullBleedHero ? "fixed inset-x-0 top-0 z-40" : "sticky top-0 z-40"}>
@@ -99,46 +165,83 @@ export function Header({ categories }: { categories: Category[] }) {
         }`}
       />
 
-      {/* Announcement bar — only shown at the very top; collapses away as
-          soon as scrolling starts, on every page. */}
+      {/* Utility strip (phones) + announcement bar — only shown at the very
+          top; collapses away as soon as scrolling starts, on every page.
+          Overflow is only clipped while collapsed, so the language
+          dropdown can hang below the strip while it's visible. */}
       <div
-        className={`relative overflow-hidden bg-ink px-6 text-center transition-all duration-300 ${
-          scrolled ? "max-h-0 py-0 opacity-0" : "max-h-12 py-2 opacity-100"
+        className={`transition-all duration-300 ${
+          scrolled ? "max-h-0 overflow-hidden opacity-0" : "max-h-24 overflow-visible opacity-100"
         }`}
       >
-        <p className="text-xs tracking-wide text-cream">Free Delivery in UAE for orders above AED 250</p>
-        <div className="absolute inset-y-0 right-6 hidden items-center gap-4 text-xs text-cream/80 sm:flex">
-          <span className="flex items-center gap-1">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M3 9.5 12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z" strokeLinejoin="round" />
-            </svg>
+        <div
+          className={`flex items-center justify-between border-b px-4 py-2 text-xs transition-colors duration-300 md:hidden ${
+            transparent ? "border-white/25 text-cream" : "border-border bg-white text-ink-soft"
+          }`}
+        >
+          <Link href="/stores" className="flex items-center gap-1.5">
+            <PinIcon />
             Find A Store
-          </span>
-          <span>English</span>
+          </Link>
+          <LanguageSelect />
+        </div>
+
+        <div className="relative bg-ink px-6 py-2 text-center">
+          <p className="text-xs tracking-wide text-cream">Free Delivery in UAE for orders above AED 250</p>
+          <div className="absolute inset-y-0 right-6 hidden items-center gap-4 text-xs text-cream/80 md:flex">
+            <Link href="/stores" className="flex items-center gap-1 transition-colors hover:text-cream">
+              <PinIcon />
+              Find A Store
+            </Link>
+            <LanguageSelect />
+          </div>
         </div>
       </div>
 
-      {/* Logo row */}
+      {/* Logo row — phones: menu button + logo on the left, search and cart
+          on the right. Larger screens: logo centered, socials left, icons
+          right. */}
       <div className={barClasses}>
-        <div className={`absolute inset-y-0 left-6 hidden items-center sm:flex ${transparent ? "text-cream" : "text-ink"}`}>
-          <SocialLinks
-            instagramUrl={settings?.instagramUrl}
-            facebookUrl={settings?.facebookUrl}
-            tiktokUrl={settings?.tiktokUrl}
-            twitterUrl={settings?.twitterUrl}
-          />
+        <div className={`flex items-center gap-3 md:hidden ${iconColor}`}>
+          <button onClick={() => setMenuOpen(true)} aria-label="Open menu" aria-expanded={menuOpen}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M3 6h18M3 12h18M3 18h18" strokeLinecap="round" />
+            </svg>
+          </button>
+          <Link href="/" aria-label="Amoria home">
+            <Image
+              src="/logo.png"
+              alt="Amoria"
+              width={130}
+              height={36}
+              className={`h-7 w-auto ${transparent ? "invert" : ""}`}
+              priority
+            />
+          </Link>
         </div>
 
-        <Link href="/">
-          {transparent ? (
-            <Image src="/logo.png" alt="Amoria" width={130} height={36} className="h-8 w-auto invert" priority />
-          ) : (
-            <Image src="/logo.png" alt="Amoria" width={130} height={36} className="h-8 w-auto" priority />
-          )}
+        <div className={`absolute inset-y-0 left-6 hidden items-center md:flex ${iconColor}`}>
+          <SocialLinks settings={settings} max={4} />
+        </div>
+
+        <Link href="/" aria-label="Amoria home" className="hidden md:block">
+          <Image
+            src="/logo.png"
+            alt="Amoria"
+            width={130}
+            height={36}
+            className={`h-8 w-auto ${transparent ? "invert" : ""}`}
+          />
         </Link>
 
-        <div className={`absolute inset-y-0 right-6 flex items-center gap-5 ${transparent ? "text-cream" : "text-ink"}`}>
-          <Link href="/wishlist" aria-label="Wishlist" className="hidden sm:block">
+        <div className={`flex items-center gap-4 md:absolute md:inset-y-0 md:right-6 md:gap-5 ${iconColor}`}>
+          <button onClick={() => setSearchOpen(true)} aria-label="Search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" strokeLinecap="round" />
+            </svg>
+          </button>
+          <Link href="/wishlist" aria-label="Wishlist" className="hidden md:block">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M12 21s-7-4.35-9.5-8.5C.5 8.5 2.5 5 6 5c2 0 3.5 1 4.5 2.5C11.5 6 13 5 15 5c3.5 0 5.5 3.5 3.5 7.5C19 16.65 12 21 12 21z" />
             </svg>
@@ -157,25 +260,20 @@ export function Header({ categories }: { categories: Category[] }) {
             )}
           </button>
           {user ? (
-            <button onClick={() => logout()} aria-label="Sign out" className="hidden sm:block">
+            <button onClick={() => logout()} aria-label="Sign out" className="hidden md:block">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <circle cx="12" cy="8" r="4" />
                 <path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6" strokeLinecap="round" />
               </svg>
             </button>
           ) : (
-            <button onClick={() => openAuthDrawer("login")} aria-label="Sign in" className="hidden sm:block">
+            <button onClick={() => openAuthDrawer("login")} aria-label="Sign in" className="hidden md:block">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <circle cx="12" cy="8" r="4" />
                 <path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6" strokeLinecap="round" />
               </svg>
             </button>
           )}
-          <button className="md:hidden" onClick={() => setMenuOpen((v) => !v)} aria-label="Menu">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M3 6h18M3 12h18M3 18h18" strokeLinecap="round" />
-            </svg>
-          </button>
         </div>
       </div>
 
@@ -233,7 +331,7 @@ export function Header({ categories }: { categories: Category[] }) {
           onMouseEnter={trackUnderline}
           className={`relative text-xs uppercase tracking-[0.12em] transition-colors ${textClass} ${linkHoverClass}`}
         >
-          Our Story
+          About Us
         </Link>
         <Link
           href="/blog"
@@ -251,55 +349,8 @@ export function Header({ categories }: { categories: Category[] }) {
         </Link>
       </nav>
 
-      {menuOpen && (
-        <nav className="flex flex-col gap-1 border-b border-border bg-white px-6 py-4 md:hidden">
-          <Link href="/" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
-            Home
-          </Link>
-          <Link href="/shop" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
-            The Shop
-          </Link>
-          {categories.map((c) => (
-            <Link
-              key={c.id}
-              href={`/shop?category=${c.slug}`}
-              className="py-2 pl-4 text-sm text-ink-soft"
-              onClick={() => setMenuOpen(false)}
-            >
-              {c.name}
-            </Link>
-          ))}
-          <Link href="/shop?category=gift-sets" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
-            Gift Sets
-          </Link>
-          <Link href="/custom-perfume" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
-            Custom Perfume
-          </Link>
-          <Link href="/our-story" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
-            Our Story
-          </Link>
-          <Link href="/blog" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
-            Journal
-          </Link>
-          <Link href="/contact" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
-            Contact Us
-          </Link>
-          <Link href="/wishlist" className="py-2 label-caps text-ink-soft" onClick={() => setMenuOpen(false)}>
-            Wishlist
-          </Link>
-          {!user && (
-            <button
-              onClick={() => {
-                setMenuOpen(false);
-                openAuthDrawer("login");
-              }}
-              className="py-2 text-left label-caps text-ink-soft"
-            >
-              Sign in
-            </button>
-          )}
-        </nav>
-      )}
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} categories={categories} />
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 }

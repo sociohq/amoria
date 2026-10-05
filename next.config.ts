@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // The page lives at /our-story; /about-us is the name people (and the
+  // menu) use for it, so send that to the same place.
+  async redirects() {
+    return [{ source: "/about-us", destination: "/our-story", permanent: false }];
+  },
   images: {
     // Backblaze B2 bucket/region is env-specific, so this is deliberately
     // broad rather than pinning one hostname.
