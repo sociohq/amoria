@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Product } from "@/lib/types";
 import { formatAed, percentOff } from "@/lib/money";
@@ -10,12 +9,13 @@ import { StarRating } from "./StarRating";
 import { Accordion } from "./Accordion";
 import { useCart } from "@/lib/cart-context";
 import { WishlistButton } from "./WishlistButton";
+import { ProductGallery } from "./ProductGallery";
+import { ScentPyramid } from "./ScentPyramid";
 import { DiscountIcon, AuthenticIcon, ShippingIcon } from "./icons/TrustIcons";
 
 export function ProductDetail({ product }: { product: Product }) {
   const router = useRouter();
   const { addItem } = useCart();
-  const [activeImage, setActiveImage] = useState(0);
   const [variantId, setVariantId] = useState(product.variants[0]?.id);
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
@@ -68,42 +68,8 @@ export function ProductDetail({ product }: { product: Product }) {
       {/* Gallery — sticky and height-capped to the viewport on large screens
           so the whole image (plus thumbnails) stays fully in view while the
           details column on the right scrolls past it. */}
-      <div className="lg:sticky lg:top-28 lg:self-start">
-        <div className="relative aspect-square overflow-hidden bg-cream-dark lg:aspect-auto lg:h-[calc(100vh-14rem)]">
-          {images[activeImage]?.url ? (
-            <Image
-              src={images[activeImage].url}
-              alt={images[activeImage].altText ?? product.name}
-              fill
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover lg:object-contain"
-              priority
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center">
-              <span className="font-serif text-2xl tracking-widest text-ink-soft">AMORIA</span>
-            </div>
-          )}
-        </div>
-        {images.length > 1 && (
-          <div className="mt-4 flex gap-3">
-            {images.map((img, i) => (
-              <button
-                key={img.id}
-                onClick={() => setActiveImage(i)}
-                // A plain opacity fade reads as the selected thumbnail without
-                // a boxed-in ring/frame around it — quieter at this small size.
-                className={`relative h-20 w-20 overflow-hidden bg-cream-dark transition-opacity ${
-                  i === activeImage ? "opacity-100" : "opacity-50 hover:opacity-80"
-                }`}
-              >
-                {img.url && (
-                  <Image src={img.url} alt={img.altText ?? product.name} fill sizes="80px" className="object-cover" />
-                )}
-              </button>
-            ))}
-          </div>
-        )}
+      <div className="min-w-0 lg:sticky lg:top-28 lg:self-start">
+        <ProductGallery images={images} name={product.name} />
       </div>
 
       {/* Details */}
@@ -202,11 +168,7 @@ export function ProductDetail({ product }: { product: Product }) {
         <div className="mt-8">
           {(product.topNotes.length > 0 || product.heartNotes.length > 0 || product.baseNotes.length > 0) && (
             <Accordion title="Scent Pyramid" defaultOpen>
-              <div className="space-y-2">
-                {product.topNotes.length > 0 && <p><strong className="text-ink">Top:</strong> {product.topNotes.join(", ")}</p>}
-                {product.heartNotes.length > 0 && <p><strong className="text-ink">Heart:</strong> {product.heartNotes.join(", ")}</p>}
-                {product.baseNotes.length > 0 && <p><strong className="text-ink">Base:</strong> {product.baseNotes.join(", ")}</p>}
-              </div>
+              <ScentPyramid top={product.topNotes} heart={product.heartNotes} base={product.baseNotes} />
             </Accordion>
           )}
           {product.perfumerNote && (
