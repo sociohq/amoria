@@ -8,6 +8,7 @@ import { AuthDrawer } from "@/components/AuthDrawer";
 import { NewsletterPopup } from "@/components/NewsletterPopup";
 import { AuroraMark } from "@/components/AuroraMark";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { ScrollToTopButton } from "@/components/ScrollToTopButton";
 import { PageLoader } from "@/components/PageLoader";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { listCategories } from "@/lib/products";
@@ -39,6 +40,7 @@ export default async function StorefrontLayout({ children }: { children: React.R
             <NewsletterPopup />
             <AuroraMark />
             <WhatsAppButton />
+            <ScrollToTopButton />
           </WishlistProvider>
         </CartProvider>
       </AuthDrawerProvider>

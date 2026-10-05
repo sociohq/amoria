@@ -5,14 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLenis } from "lenis/react";
 
-// Homepage-only promo banner for the statement 1KG bottle — same
+// Homepage-only promo banner for the perfume oils — same
 // scroll-linked parallax drift as OurStores.tsx's background video
 // (useLenis rather than a raw scroll listener, so it stays in sync with
 // the site's own eased smooth-scroll), applied to a still photo instead.
-// "View Details" links to the new "1KG Collection" category via the
-// normal shop filter, so it's a real collection page rather than a
-// bespoke one-off — an admin just tags real 1KG products into that
-// category from the product editor when they're ready.
+// "View Details" links to the Perfume Oils category via the normal shop
+// filter, so it's a real collection page rather than a bespoke one-off.
 const PARALLAX_STRENGTH = 0.15;
 const IMAGE_SCALE = 1.15;
 
@@ -54,14 +52,14 @@ export function StatementBottleBanner() {
           own look rather than crushing it under a gradient. */}
       <div className="relative z-10 max-w-lg px-6 sm:px-12 md:px-16">
         <h2 className="font-serif text-3xl leading-tight text-ink sm:text-4xl">
-          Discover Our Statement 1KG Perfume Bottle.
+          Discover Our Statement Perfume Oils.
         </h2>
         <p className="mt-4 max-w-sm text-sm text-ink-soft sm:text-base">
-          More fragrance. More presence. Discover our 1KG perfume bottle, crafted for those who want to make a
+          More fragrance. More presence. Discover our perfume oils, crafted for those who want to make a
           statement.
         </p>
         <Link
-          href="/shop?category=1kg-collection"
+          href="/shop?category=perfume-oils"
           className="mt-7 inline-block bg-ink px-8 py-3 label-caps text-cream transition-opacity hover:opacity-90"
         >
           View Details

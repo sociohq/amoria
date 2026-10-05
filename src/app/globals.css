@@ -296,3 +296,48 @@ body {
     animation: none;
   }
 }
+
+/* Storefront route-loading bar (app/(storefront)/loading.tsx): a short gold
+   segment sliding along a hairline, so a click gives instant feedback. */
+@keyframes loader-slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(200%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-\[loader-slide_1s_ease-in-out_infinite\] {
+    animation: none;
+  }
+}
+
+/* "Shop By Brand" logo rows (BrandLogoGrid): each row is two identical
+   halves side by side, slid by exactly one half so the loop is seamless.
+   `brands-marquee-reverse` runs the same loop the other way, so adjacent
+   rows drift in opposite directions. Pauses on hover/focus so a logo can
+   be clicked; stays still for people who ask for reduced motion. */
+@keyframes brands-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.brands-marquee {
+  animation: brands-marquee var(--brands-duration, 50s) linear infinite;
+}
+.brands-marquee-reverse {
+  animation-direction: reverse;
+}
+.brands-marquee:hover,
+.brands-marquee:focus-within {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .brands-marquee {
+    animation: none;
+  }
+}
