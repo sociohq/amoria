@@ -1,22 +1,27 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { subscribeToNewsletter } from "@/lib/newsletter";
 import { getPublicSettings, PublicSettings } from "@/lib/settings";
 import { SocialLinks } from "./SocialIcons";
+import { PaymentIcons } from "./PaymentIcons";
 import { ApiError } from "@/lib/api";
 
 const SHOP_LINKS = [
   { label: "All Fragrances", href: "/shop" },
-  { label: "For Him", href: "/shop?category=for-him" },
-  { label: "For Her", href: "/shop?category=for-her" },
-  { label: "Unisex", href: "/shop?category=for-unisex" },
-  { label: "Gift Sets", href: "/shop?category=gift-sets" },
+  { label: "Inspired Perfumes", href: "/shop?category=inspired-fragrance" },
+  { label: "Premium Fragrance", href: "/shop?category=premium-collection" },
+  { label: "Home Fragrance", href: "/shop?category=home-fragrance" },
+  { label: "Perfume Oils", href: "/shop?category=perfume-oils" },
+  { label: "Arabic Fragrance", href: "/shop?category=arabic-fragrance" },
+  { label: "Gift Set", href: "/shop?category=gift-sets" },
 ];
 
 const HOUSE_LINKS = [
-  { label: "Our Story", href: "/our-story" },
+  { label: "About Us", href: "/our-story" },
+  { label: "Our Boutique", href: "/stores" },
   { label: "Journal", href: "/blog" },
   { label: "Sustainability", href: "/sustainability" },
   { label: "Contact", href: "/contact" },
@@ -37,9 +42,9 @@ function FooterColumn({ title, links }: { title: string; links: { label: string;
       <ul className="space-y-2">
         {links.map((l) => (
           <li key={l.href}>
-            <a href={l.href} className="text-sm text-ink hover:text-royal">
+            <Link href={l.href} className="text-sm text-ink hover:text-royal">
               {l.label}
-            </a>
+            </Link>
           </li>
         ))}
       </ul>
@@ -111,31 +116,25 @@ export function Footer() {
             </form>
           )}
           <SocialLinks
-            className="mt-6"
+            className="mt-6 gap-x-4 gap-y-3"
             linkClassName="text-cream hover:text-gold-light"
-            instagramUrl={settings?.instagramUrl}
-            facebookUrl={settings?.facebookUrl}
-            tiktokUrl={settings?.tiktokUrl}
-            twitterUrl={settings?.twitterUrl}
+            settings={settings}
+            size={20}
           />
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-between gap-4 border-t border-cream/15 px-6 py-6 text-xs text-cream/60 sm:flex-row">
+      <div className="flex flex-col items-center justify-between gap-4 border-t border-cream/15 px-6 py-6 text-xs text-cream/60 sm:flex-row sm:pr-28">
         <div className="flex flex-wrap items-center gap-4">
           <span>© {new Date().getFullYear()} Amoria Perfumes</span>
-          <a href="/privacy" className="hover:text-cream">
+          <Link href="/privacy" className="hover:text-cream">
             Privacy
-          </a>
-          <a href="/terms" className="hover:text-cream">
+          </Link>
+          <Link href="/terms" className="hover:text-cream">
             Terms & Conditions
-          </a>
+          </Link>
         </div>
-        <div className="flex items-center gap-2 text-[10px] tracking-wide text-cream/50">
-          <span className="border border-cream/20 px-2 py-1">VISA</span>
-          <span className="border border-cream/20 px-2 py-1">MASTERCARD</span>
-          <span className="border border-cream/20 px-2 py-1">TABBY</span>
-        </div>
+        <PaymentIcons />
       </div>
     </footer>
   );

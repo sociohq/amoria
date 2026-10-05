@@ -236,6 +236,10 @@ export interface Settings {
   facebookUrl: string | null;
   tiktokUrl: string | null;
   twitterUrl: string | null;
+  threadsUrl: string | null;
+  youtubeUrl: string | null;
+  pinterestUrl: string | null;
+  snapchatUrl: string | null;
 }
 
 export interface ContactSubmission {
