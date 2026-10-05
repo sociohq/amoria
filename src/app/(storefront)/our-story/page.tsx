@@ -37,6 +37,60 @@ const CORE_VALUES = [
   },
 ];
 
+// "Our Services" from the same company profile.
+const SERVICES = [
+  {
+    name: "UAE-made perfume oils",
+    description:
+      "Premium UAE-made perfume oils and luxury fragrances, known for their purity and longevity.",
+    href: "/shop?category=perfume-oils",
+    cta: "Shop Perfume Oils",
+  },
+  {
+    name: "Bespoke custom fragrance",
+    description:
+      "Bespoke custom-fragrance creation — your own blend, composed to your taste in our Ajman boutique.",
+    href: "/custom-perfume",
+    cta: "Create Yours",
+  },
+  {
+    name: "Authentic luxury perfumes",
+    description:
+      "Curated retail of authentic luxury perfumes, inspired fragrances, bukhoor and gift sets for personal use and premium gifting.",
+    href: "/shop",
+    cta: "Shop All",
+  },
+  {
+    name: "Wholesale & bulk supply",
+    description:
+      "Wholesale and bulk supply solutions across the GCC, with the same consistent quality and reliable availability.",
+    href: "/contact",
+    cta: "Get In Touch",
+  },
+];
+
+// Photography from the Ajman boutique (supplied by the brand).
+const INSIDE_THE_HOUSE = [
+  {
+    image: "/about/inspired-bar.jpg",
+    alt: "Rows of Amoria inspired-perfume testers on the white counter",
+    title: "The Inspired Perfumes bar",
+    text: "Every inspired fragrance is on the counter to try before you choose.",
+  },
+  {
+    image: "/about/blending-station.jpg",
+    alt: "The Amoria blending station with dropper bottles, beakers and a bottle press",
+    title: "Where custom blends are made",
+    text: "Our blending station — droppers, beakers and a bottle press — is where bespoke fragrances come together.",
+  },
+  {
+    image: "/about/oil-shelves.jpg",
+    alt: "Shelves of Amoria perfume oils in glass bottles and aluminium drums",
+    title: "Perfume oils, by the gram and the kilo",
+    text: "From small glass bottles to full 1KG drums, our oils are poured and packed in-house.",
+  },
+];
+
 export default function OurStoryPage() {
   return (
     <div>
@@ -45,13 +99,12 @@ export default function OurStoryPage() {
           same transparent-over-hero header treatment (see Header.tsx's
           hasFullBleedHero check) since the header sits fixed on top of it. */}
       <ParallaxHero
-        image="/banners/find-your-scent.png"
+        image="/about/boutique-counter.jpg"
         heightClassName="h-[70vh] min-h-[480px]"
-        // find-your-scent.png is bright sky at the top, unlike Hero.tsx's
-        // naturally dark banner — with the transparent header now sitting
-        // over this hero too, the top needs its own darkening (not just
-        // the bottom, for the headline) or the cream nav text has almost
-        // no contrast to read against.
+        // The boutique photo is bright and warm at the top — with the
+        // transparent header sitting over this hero, the top needs its own
+        // darkening (not just the bottom, for the headline) or the cream nav
+        // text has almost no contrast to read against.
         overlayClassName="bg-gradient-to-b from-black/55 via-black/10 to-black/75"
         contentClassName="flex h-full items-end px-6 pb-14 sm:px-12"
       >
@@ -76,6 +129,33 @@ export default function OurStoryPage() {
             <em className="italic text-royal">discerning customers worldwide</em>.
           </p>
         </div>
+      </section>
+
+      {/* Our Boutique */}
+      <section className="grid gap-10 px-6 pb-16 sm:px-12 lg:grid-cols-2 lg:items-center lg:gap-16 lg:pb-24">
+        <Reveal className="relative aspect-[4/3] overflow-hidden bg-cream-dark">
+          <Image
+            src="/about/boutique-arches.jpg"
+            alt="The arched glass shelving of the Amoria boutique in Ajman"
+            fill
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            className="object-cover"
+          />
+        </Reveal>
+        <Reveal delayMs={100}>
+          <p className="label-caps text-gold">Our Boutique</p>
+          <h2 className="mt-3 font-serif text-3xl text-ink sm:text-4xl">A fragrance house you can walk into.</h2>
+          <p className="mt-5 max-w-md text-ink-soft">
+            Our boutique in Ajman is where Amoria comes to life — arched, softly lit shelves of our own signature
+            extraits beside international favourites, inspired fragrances, bakhoor and perfume oils, all in one place.
+          </p>
+          <Link
+            href="/stores"
+            className="mt-6 inline-block border border-ink px-6 py-3 label-caps text-ink hover:bg-ink hover:text-cream"
+          >
+            Visit The Boutique
+          </Link>
+        </Reveal>
       </section>
 
       {/* Vision & Mission */}
@@ -103,16 +183,16 @@ export default function OurStoryPage() {
         </Reveal>
       </section>
 
-      {/* Premium Collection — real bottle photography, not a stand-in
-          category image, since we now have our own studio shots. */}
+      {/* Premium Collection — the four signature bottles, photographed in
+          the boutique. */}
       <section className="grid gap-10 px-6 py-16 sm:px-12 lg:grid-cols-2 lg:items-start lg:gap-16 lg:py-24">
-        <Reveal className="relative aspect-[4/5] overflow-hidden bg-cream-dark">
+        <Reveal className="relative aspect-[4/3] overflow-hidden bg-cream-dark">
           <Image
-            src="https://amoria-product-images.s3.us-east-005.backblazeb2.com/products/cmu6oox9a000ktwcksm9vapsr/5b1a1076-b90e-461c-91ba-d585ebe649d2.png"
-            alt="Amoria Aurora, from the Premium Perfume Collection"
+            src="/about/signature-bottles.jpg"
+            alt="Amoria Nocturne, Mystique, Aurora and Velaris — the four signature creations"
             fill
             sizes="(min-width: 1024px) 50vw, 100vw"
-            className="object-cover"
+            className="object-cover object-bottom"
           />
         </Reveal>
         <Reveal delayMs={100} className="lg:sticky lg:top-28 lg:self-start">
@@ -129,6 +209,66 @@ export default function OurStoryPage() {
           >
             Shop The Collection
           </Link>
+        </Reveal>
+      </section>
+
+      {/* Inside the House — three scenes from the boutique */}
+      <section className="px-6 py-16 sm:px-12 lg:py-24">
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <p className="label-caps text-gold">Inside The House</p>
+          <h2 className="mt-3 font-serif text-3xl text-ink sm:text-4xl">Crafted and poured in Ajman.</h2>
+        </Reveal>
+        <div className="mx-auto mt-12 grid max-w-6xl gap-8 md:grid-cols-3">
+          {INSIDE_THE_HOUSE.map((item, i) => (
+            <Reveal key={item.image} delayMs={i * 80}>
+              <div className="relative aspect-[4/3] overflow-hidden bg-cream-dark">
+                <Image src={item.image} alt={item.alt} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
+              </div>
+              <h3 className="mt-4 font-serif text-xl text-ink">{item.title}</h3>
+              <p className="mt-2 text-sm text-ink-soft">{item.text}</p>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* What We Offer */}
+      <section className="bg-cream-dark px-6 py-16 sm:px-12 lg:py-24">
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <p className="label-caps text-gold">What We Offer</p>
+          <h2 className="mt-3 font-serif text-3xl text-ink sm:text-4xl">From a single bottle to the whole GCC.</h2>
+        </Reveal>
+        <div className="mx-auto mt-12 grid max-w-6xl gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+          {SERVICES.map((service, i) => (
+            <Reveal key={service.name} delayMs={i * 80} className="flex flex-col bg-cream p-8">
+              <h3 className="font-serif text-xl text-ink">{service.name}</h3>
+              <p className="mt-3 flex-1 text-sm text-ink-soft">{service.description}</p>
+              <Link href={service.href} className="mt-6 label-caps text-royal hover:text-ink">
+                {service.cta} →
+              </Link>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* The signature wall */}
+      <section className="grid gap-4 px-6 py-16 sm:px-12 md:grid-cols-2 lg:py-24">
+        <Reveal className="relative aspect-[4/3] overflow-hidden bg-cream-dark">
+          <Image
+            src="/about/premium-shelves.jpg"
+            alt="The Velaris, Aurora and Mystique bottles on the Amoria signature shelves"
+            fill
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="object-cover"
+          />
+        </Reveal>
+        <Reveal delayMs={100} className="relative aspect-[4/3] overflow-hidden bg-cream-dark">
+          <Image
+            src="/about/premium-wall.jpg"
+            alt="The full wall of Amoria signature extraits above the inspired and international ranges"
+            fill
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="object-cover"
+          />
         </Reveal>
       </section>
 
