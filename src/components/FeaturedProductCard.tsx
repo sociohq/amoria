@@ -8,6 +8,7 @@ import { formatAed, percentOff } from "@/lib/money";
 import { cardDisplayName, fragranceFamilyImage, genderTag, genderTextClass } from "@/lib/fragrance";
 import { useCart } from "@/lib/cart-context";
 import { WishlistButton } from "./WishlistButton";
+import { ProductCardImage } from "./ProductCardImage";
 
 export function FeaturedProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
@@ -53,13 +54,7 @@ export function FeaturedProductCard({ product }: { product: Product }) {
       <div className="relative aspect-[3/4] overflow-hidden bg-cream-dark">
         <Link href={`/product/${product.slug}`} className="absolute inset-0">
           {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt={imageAlt}
-              fill
-              sizes="(min-width: 768px) 25vw, 50vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+            <ProductCardImage src={imageUrl} alt={imageAlt} sizes="(min-width: 768px) 25vw, 50vw" />
           ) : (
             <div className="flex h-full items-center justify-center">
               <span className="font-serif text-sm tracking-widest text-ink-soft">AMORIA</span>
@@ -69,7 +64,7 @@ export function FeaturedProductCard({ product }: { product: Product }) {
 
         <WishlistButton
           productId={product.id}
-          className="absolute left-3 top-3 hidden h-8 w-8 items-center justify-center rounded-full border border-border bg-white/90 text-ink-soft transition-colors hover:text-crimson sm:flex"
+          className="absolute left-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-border bg-white/90 text-ink-soft transition-colors hover:text-crimson sm:left-3 sm:top-3 sm:h-8 sm:w-8"
         />
 
         {/* Only the fragrance-family tag lives on the image — gender shows
@@ -77,11 +72,11 @@ export function FeaturedProductCard({ product }: { product: Product }) {
             next to the price rather than a badge here. Always visible,
             above the hover overlay. */}
         {product.fragranceFamily && (
-          <span className="absolute right-3 top-3 hidden items-center gap-1.5 rounded-full border border-border bg-white/90 py-1 pl-1 pr-3 text-xs text-ink-soft sm:flex">
-            <span className="relative h-4 w-4 shrink-0 overflow-hidden rounded-full">
+          <span className="absolute right-2 top-2 z-10 flex max-w-[calc(100%-2.75rem)] items-center gap-1 rounded-full border border-border bg-white/90 py-0.5 pl-0.5 pr-2 text-[10px] text-ink-soft sm:right-3 sm:top-3 sm:max-w-[calc(100%-3.5rem)] sm:gap-1.5 sm:py-1 sm:pl-1 sm:pr-3 sm:text-xs">
+            <span className="relative h-3.5 w-3.5 shrink-0 overflow-hidden rounded-full sm:h-4 sm:w-4">
               <Image src={fragranceFamilyImage(product.fragranceFamily)} alt="" fill sizes="16px" className="object-cover" />
             </span>
-            {product.fragranceFamily}
+            <span className="truncate">{product.fragranceFamily}</span>
           </span>
         )}
 
