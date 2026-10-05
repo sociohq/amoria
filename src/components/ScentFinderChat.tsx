@@ -146,7 +146,7 @@ export function ScentFinderChat({ open, onClose }: { open: boolean; onClose: () 
         className="themed-scroll flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4"
       >
         {messages.map((m) => (
-          <ChatBubble key={m.id} message={m} />
+          <ChatBubble key={m.id} message={m} onNavigate={onClose} />
         ))}
         {typing && <TypingBubble />}
       </div>
@@ -182,7 +182,7 @@ export function ScentFinderChat({ open, onClose }: { open: boolean; onClose: () 
   );
 }
 
-function ChatBubble({ message }: { message: Message }) {
+function ChatBubble({ message, onNavigate }: { message: Message; onNavigate: () => void }) {
   if (message.from === "user") {
     return (
       <div className="flex justify-end">
@@ -197,7 +197,7 @@ function ChatBubble({ message }: { message: Message }) {
     return (
       <div className="flex flex-col gap-2">
         {message.products.map((product) => (
-          <ResultCard key={product.id} product={product} />
+          <ResultCard key={product.id} product={product} onNavigate={onNavigate} />
         ))}
       </div>
     );
@@ -212,17 +212,21 @@ function ChatBubble({ message }: { message: Message }) {
   );
 }
 
-function ResultCard({ product }: { product: Product }) {
+function ResultCard({ product, onNavigate }: { product: Product; onNavigate: () => void }) {
   const variant = product.variants[0];
   const price = variant?.price ?? product.price;
   const imageUrl = product.thumbnailImage ?? product.images[0]?.url;
   return (
     <Link
       href={`/product/${product.slug}`}
+      // The chat panel stays mounted (see the component's own comment), so
+      // without closing it here the product page opened underneath it and
+      // it looked as if tapping a result did nothing.
+      onClick={onNavigate}
       className="flex items-center gap-3 rounded-xl bg-cream-dark p-2.5 transition-colors hover:bg-border"
     >
       <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-white">
-        {imageUrl && <Image src={imageUrl} alt={product.name} fill sizes="56px" className="object-cover" />}
+        {imageUrl && <Image src={imageUrl} alt={product.name} fill sizes="56px" className="object-contain" />}
       </div>
       <div className="min-w-0 flex-1">
         <p className="truncate font-serif text-base text-ink">{product.name}</p>

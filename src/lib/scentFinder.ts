@@ -111,7 +111,12 @@ function budgetFits(band: string | undefined, price: number): boolean {
 // hard "no matches" would be a poor result from a five-question quiz over
 // a small catalog.
 export function matchProducts(products: Product[], answers: QuizAnswers, limit = 3): Product[] {
-  const scored = products.map((product) => {
+  // Only real, photographed fragrances are suggested — an accessory or a
+  // product still waiting on its photo makes a poor "your perfect scent".
+  const candidates = products.filter(
+    (p) => p.productType === "PERFUME" && Boolean(p.thumbnailImage ?? p.images[0]?.url)
+  );
+  const scored = candidates.map((product) => {
     let score = 0;
     const blob = scentBlob(product);
     const categorySlugs = product.categories.map((c) => c.slug);
