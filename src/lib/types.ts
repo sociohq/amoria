@@ -265,6 +265,8 @@ export interface Order {
   // for it hasn't confirmed its email yet — the success page shows the
   // OTP form while this is true.
   needsGuestVerification: boolean;
+  // Set once the order has been handed to the courier — the number to track it with.
+  trackingNumber?: string | null;
   items: Array<{
     id: string;
     productName: string;

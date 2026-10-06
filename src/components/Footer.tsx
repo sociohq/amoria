@@ -25,6 +25,7 @@ const HOUSE_LINKS = [
   { label: "Journal", href: "/blog" },
   { label: "Sustainability", href: "/sustainability" },
   { label: "Contact", href: "/contact" },
+  { label: "Track Order", href: "/track" },
   { label: "FAQ", href: "/faq" },
 ];
 

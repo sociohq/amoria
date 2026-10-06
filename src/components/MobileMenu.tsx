@@ -203,6 +203,9 @@ export function MobileMenu({ open, onClose, categories }: { open: boolean; onClo
 
           <div className="mt-2">
             <SectionHeading>Orders &amp; Help</SectionHeading>
+            <RowLink href="/track" onClick={onClose}>
+              Track Order
+            </RowLink>
             <RowLink href="/shipping" onClick={onClose}>
               Shipping &amp; Delivery
             </RowLink>
