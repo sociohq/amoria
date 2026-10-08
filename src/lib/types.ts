@@ -27,6 +27,8 @@ export interface ProductImage {
   url: string;
   altText: string | null;
   position: number;
+  // The size (ProductVariant.size) this photo belongs to; null = every size.
+  variantSize?: string | null;
 }
 
 export interface ProductVariant {

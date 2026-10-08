@@ -10,6 +10,7 @@ import { Accordion } from "./Accordion";
 import { useCart } from "@/lib/cart-context";
 import { WishlistButton } from "./WishlistButton";
 import { ProductGallery } from "./ProductGallery";
+import { galleryFor, imageForSize } from "@/lib/productImages";
 import { ScentPyramid } from "./ScentPyramid";
 import { DiscountIcon, AuthenticIcon, ShippingIcon } from "./icons/TrustIcons";
 
@@ -22,12 +23,10 @@ export function ProductDetail({ product }: { product: Product }) {
 
   const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
   const off = percentOff(variant?.price ?? product.price, product.compareAtPrice);
-  // The dedicated thumbnail (if set) leads the gallery on the product's
-  // own page too — it's still the main shot of the product, just no
-  // longer required to also be gallery image #1 for admin purposes.
-  const galleryImages = product.thumbnailImage
-    ? [{ id: "thumbnail", url: product.thumbnailImage, altText: product.name, position: -1 }, ...product.images]
-    : product.images;
+  // The photos for the size picked — a size can have its own bottle shots
+  // (see galleryFor). Otherwise the dedicated thumbnail (if set) leads, as
+  // the product's main shot.
+  const galleryImages = galleryFor(product, variant?.size);
   const images = galleryImages.length > 0 ? galleryImages : [{ id: "placeholder", url: "", altText: null, position: 0 }];
   const category = product.categories[0]?.name;
   const fragranceDetails = [
@@ -50,7 +49,7 @@ export function ProductDetail({ product }: { product: Product }) {
         productSlug: product.slug,
         variantSize: variant.size,
         price: variant.price,
-        image: product.thumbnailImage ?? product.images[0]?.url ?? null,
+        image: imageForSize(product, variant?.size),
         quantity,
       });
     } finally {
@@ -69,7 +68,8 @@ export function ProductDetail({ product }: { product: Product }) {
           so the whole image (plus thumbnails) stays fully in view while the
           details column on the right scrolls past it. */}
       <div className="min-w-0 lg:sticky lg:top-28 lg:self-start">
-        <ProductGallery images={images} name={product.name} />
+        {/* keyed by size so switching sizes starts the new gallery on its first photo */}
+        <ProductGallery key={variant?.id ?? "none"} images={images} name={product.name} />
       </div>
 
       {/* Details */}
