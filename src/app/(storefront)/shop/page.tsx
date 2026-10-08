@@ -2,6 +2,7 @@ import Link from "next/link";
 import { listProducts, listCategories, getPriceRange } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { ShopFilterDrawer } from "@/components/ShopFilterDrawer";
+import { Pagination } from "@/components/Pagination";
 
 interface ShopPageProps {
   searchParams: Promise<{
@@ -100,19 +101,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         </div>
       )}
 
-      {totalPages > 1 && (
-        <div className="mt-12 flex justify-center gap-4">
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
-            <Link
-              key={n}
-              href={withParam("page", String(n))}
-              className={`h-8 w-8 text-center leading-8 ${n === page ? "bg-royal text-cream" : "text-ink-soft hover:text-royal"}`}
-            >
-              {n}
-            </Link>
-          ))}
-        </div>
-      )}
+      <Pagination current={page} total={totalPages} hrefFor={(n) => withParam("page", String(n))} />
     </div>
   );
 }
