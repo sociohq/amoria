@@ -24,14 +24,19 @@ export function SizeTiles({
   value,
   onChange,
   tall = false,
+  overlay = false,
 }: {
   variants: ProductVariant[];
   value: string | undefined;
   onChange: (id: string) => void;
   tall?: boolean;
+  // Overlay = the desktop hover tiles that sit directly on the photo: just the
+  // size, a filled black tile when chosen. Otherwise (the mobile sheet) each
+  // tile also shows that size's price.
+  overlay?: boolean;
 }) {
   return (
-    <div role="radiogroup" aria-label="Select size" className="grid grid-cols-2 gap-2">
+    <div role="radiogroup" aria-label="Select size" className={overlay ? "flex gap-2" : "grid grid-cols-2 gap-2"}>
       {variants.map((v) => {
         const selected = v.id === value;
         const soldOut = v.stock === 0;
@@ -43,14 +48,18 @@ export function SizeTiles({
             aria-checked={selected}
             disabled={soldOut}
             onClick={() => onChange(v.id)}
-            className={`flex flex-col items-center justify-center rounded border px-2 text-center transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
-              tall ? "h-[65px]" : "h-[54px]"
-            } ${selected ? "border-[#111] bg-[#111] text-white" : "border-border bg-white text-ink hover:border-ink"}`}
+            className={`flex min-w-0 flex-col items-center justify-center rounded text-center transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+              overlay
+                ? `flex-1 border py-[11px] ${selected ? "border-[#111] bg-[#111] text-[#f4efe8]" : "border-transparent bg-white/95 text-[#111] hover:bg-white"}`
+                : `border px-2 ${tall ? "h-[65px]" : "h-[54px]"} ${selected ? "border-[#111] bg-[#111] text-white" : "border-border bg-white text-ink hover:border-ink"}`
+            }`}
           >
-            <span className="text-[13px] font-medium uppercase tracking-[0.04em] sm:text-sm">{v.size}</span>
-            <span className={`mt-0.5 text-[11px] ${selected ? "text-white/70" : "text-ink-soft/80"}`}>
-              {soldOut ? "Sold out" : formatAed(v.price)}
-            </span>
+            <span className="truncate text-[13px] font-medium uppercase tracking-[0.5px]">{v.size}</span>
+            {!overlay && (
+              <span className={`mt-0.5 text-[11px] ${selected ? "text-white/70" : "text-ink-soft/80"}`}>
+                {soldOut ? "Sold out" : formatAed(v.price)}
+              </span>
+            )}
           </button>
         );
       })}
@@ -124,8 +133,8 @@ export function QuickShopSheet({
             {imageUrl && <Image src={imageUrl} alt="" fill sizes="64px" className="object-cover" />}
           </div>
           <div className="min-w-0 flex-1">
-            {label && <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-royal-light">{label}</p>}
-            <p className="truncate font-serif text-[22px] leading-tight tracking-normal! text-ink">{cardDisplayName(product.name)}</p>
+            {label && <p className="text-[10px] font-medium uppercase tracking-[2px] text-[#8a6a3a]">{label}</p>}
+            <p className="truncate font-serif text-[22px] font-medium leading-tight tracking-normal! text-[#111]">{cardDisplayName(product.name)}</p>
             {product.scentAccords.length > 0 && (
               <p className="mt-0.5 truncate text-xs text-ink-soft/80">{product.scentAccords.join(" · ")}</p>
             )}
