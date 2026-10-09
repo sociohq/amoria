@@ -28,7 +28,7 @@ function ArrowButton({ direction, onClick }: { direction: "left" | "right"; onCl
   );
 }
 
-// Homepage "Shop The Look" banner: one lifestyle image with clickable
+// Homepage "Shop The Bundle" banner: one lifestyle image with clickable
 // hotspot dots pinned to it (as x/y percentages — see the admin page for
 // how those get set), each swapping the product panel on the right. The
 // active hotspot, the right panel, and the dot pagination all stay in
@@ -66,7 +66,7 @@ export function ShopTheLook({ section }: { section: ShopTheLookSection }) {
   return (
     <section className="px-6 py-16 sm:px-12">
       <div className="mb-10 text-center">
-        <p className="label-caps text-gold">Shop The Look</p>
+        <p className="label-caps text-gold">Shop The Bundle</p>
         <h2 className="mt-1 font-serif text-3xl text-ink">{section.title}</h2>
         {section.subtitle && <p className="mt-2 text-ink-soft">{section.subtitle}</p>}
       </div>
