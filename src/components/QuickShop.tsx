@@ -125,7 +125,7 @@ export function QuickShopSheet({
           </div>
           <div className="min-w-0 flex-1">
             {label && <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-royal-light">{label}</p>}
-            <p className="truncate font-serif text-[22px] leading-tight tracking-normal text-ink">{cardDisplayName(product.name)}</p>
+            <p className="truncate font-serif text-[22px] leading-tight tracking-normal! text-ink">{cardDisplayName(product.name)}</p>
             {product.scentAccords.length > 0 && (
               <p className="mt-0.5 truncate text-xs text-ink-soft/80">{product.scentAccords.join(" · ")}</p>
             )}

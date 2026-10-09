@@ -119,7 +119,7 @@ export function ProductCard({ product }: { product: Product }) {
           <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-royal-light @min-[200px]:text-[11px]">{label}</p>
         )}
         <Link href={href} className="mt-1.5 block @min-[200px]:mt-2" title={product.name}>
-          <span className="block truncate font-serif text-lg leading-tight tracking-normal text-ink decoration-ink decoration-1 underline-offset-4 group-hover:underline @min-[200px]:text-2xl">
+          <span className="block truncate font-serif text-lg leading-tight tracking-normal! text-ink decoration-ink decoration-1 underline-offset-4 group-hover:underline @min-[200px]:text-2xl">
             {cardDisplayName(product.name)}
           </span>
         </Link>
