@@ -35,7 +35,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
           No {brand.name} fragrances yet — check back soon, or ask an admin to add one.
         </p>
       ) : (
-        <div className="mx-auto mt-12 grid max-w-6xl grid-cols-2 gap-x-4 gap-y-6 sm:gap-x-6 sm:gap-y-10 md:grid-cols-4">
+        <div className="mx-auto mt-12 grid max-w-6xl grid-cols-2 gap-x-4 gap-y-6 sm:gap-x-6 sm:gap-y-10 md:grid-cols-3 lg:grid-cols-4">
           {products.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

@@ -28,7 +28,7 @@ export function ProductCardImage({ src, alt, sizes }: { src: string; alt: string
             setContain(img.naturalWidth / img.naturalHeight > CONTAIN_ABOVE_RATIO);
           }
         }}
-        className={`transition-transform duration-500 group-hover:scale-105 ${contain ? "object-contain p-3" : "object-cover"}`}
+        className={contain ? "object-contain p-3" : "object-cover"}
       />
     </span>
   );

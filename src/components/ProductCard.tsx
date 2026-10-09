@@ -1,67 +1,151 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Product } from "@/lib/types";
 import { formatAed, percentOff } from "@/lib/money";
-import { cardDisplayName, fragranceFamilyImage, genderTag, genderTextClass } from "@/lib/fragrance";
+import { cardDisplayName, cardLabel } from "@/lib/fragrance";
+import { imageForSize } from "@/lib/productImages";
+import { useCart } from "@/lib/cart-context";
 import { WishlistButton } from "./WishlistButton";
 import { ProductCardImage } from "./ProductCardImage";
+import { BagIcon, QuickShopSheet, SizeTiles } from "./QuickShop";
 
+const BADGE_LABELS = { BESTSELLER: "Bestseller", NEW: "New", LIMITED: "Limited" } as const;
+
+// The product card used everywhere products are listed (shop, homepage
+// sections, brand pages, blog embeds). The photo carries an optional label and
+// the wishlist heart; below it sit the category, name, scent notes and price.
+// Buying straight from the card: on a mouse device a size panel slides up over
+// the photo on hover; on touch (phone, tablet) a bag button opens a bottom
+// sheet. Either way picking a size also swaps to that size's own photo.
 export function ProductCard({ product }: { product: Product }) {
-  // The dedicated listing thumbnail wins when set; falls back to the
-  // first gallery image for a product that predates that field.
-  const imageUrl = product.thumbnailImage ?? product.images[0]?.url;
-  const imageAlt = product.thumbnailImage ? product.name : (product.images[0]?.altText ?? product.name);
-  const off = percentOff(product.price, product.compareAtPrice);
-  const gender = genderTag(product.categories);
+  const { addItem } = useCart();
+  const [variantId, setVariantId] = useState(product.variants[0]?.id);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [adding, setAdding] = useState(false);
+
+  const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
+  const price = variant?.price ?? product.price;
+  const off = percentOff(price, product.compareAtPrice);
+  const label = cardLabel(product);
+  const imageUrl = imageForSize(product, variant?.size) ?? product.thumbnailImage ?? product.images[0]?.url ?? null;
+  const imageAlt = product.name;
+  const badge = product.badge ? BADGE_LABELS[product.badge] : null;
+  const href = `/product/${product.slug}`;
+
+  async function add(quantity: number) {
+    if (!variant) return;
+    setAdding(true);
+    try {
+      await addItem({
+        variantId: variant.id,
+        productId: product.id,
+        productName: product.name,
+        productSlug: product.slug,
+        variantSize: variant.size,
+        price: variant.price,
+        image: imageUrl,
+        quantity,
+      });
+      setSheetOpen(false);
+    } finally {
+      setAdding(false);
+    }
+  }
 
   return (
-    <Link href={`/product/${product.slug}`} className="group block">
-      <div className="relative aspect-[3/4] overflow-hidden bg-cream-dark">
-        {imageUrl ? (
-          <ProductCardImage src={imageUrl} alt={imageAlt} sizes="(min-width: 768px) 25vw, 50vw" />
-        ) : (
-          <div className="flex h-full items-center justify-center text-ink-soft">
-            <span className="font-serif text-sm tracking-widest">AMORIA</span>
-          </div>
+    <div className="group @container w-full shrink-0 text-left">
+      <div className="relative aspect-[4/5] overflow-hidden rounded-md bg-[#f3f0f1]">
+        <Link href={href} className="absolute inset-0" aria-label={product.name}>
+          {imageUrl ? (
+            <ProductCardImage src={imageUrl} alt={imageAlt} sizes="(min-width: 1024px) 25vw, 50vw" />
+          ) : (
+            <div className="flex h-full items-center justify-center text-ink-soft">
+              <span className="font-serif text-sm tracking-widest">AMORIA</span>
+            </div>
+          )}
+        </Link>
+
+        {badge && (
+          <span className="pointer-events-none absolute left-2 top-2 z-10 bg-[#111] px-2 py-1 text-[9px] font-medium uppercase leading-none tracking-[0.2em] text-white @min-[200px]:left-3.5 @min-[200px]:top-3.5 @min-[200px]:px-3 @min-[200px]:py-2 @min-[200px]:text-[11px]">
+            {badge}
+          </span>
         )}
+
         <WishlistButton
           productId={product.id}
-          className="absolute left-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-border bg-white/90 text-ink-soft transition-colors hover:text-crimson sm:left-3 sm:top-3 sm:h-8 sm:w-8"
+          className="absolute right-2 top-2 z-10 flex h-[30px] w-[30px] items-center justify-center rounded-full bg-[#fcfcfc] text-ink shadow-sm transition-colors hover:text-crimson @min-[200px]:right-3.5 @min-[200px]:top-3.5 @min-[200px]:h-[38px] @min-[200px]:w-[38px]"
         />
 
-        {/* Only the fragrance-family tag lives on the image — gender shows
-            as text below instead, and the discount now reads as "X% Off"
-            next to the price rather than a badge here. */}
-        {product.fragranceFamily && (
-          <span className="absolute right-2 top-2 z-10 flex max-w-[calc(100%-2.75rem)] items-center gap-1 rounded-full border border-border bg-white/90 py-0.5 pl-0.5 pr-2 text-[10px] text-ink-soft sm:right-3 sm:top-3 sm:max-w-[calc(100%-3.5rem)] sm:gap-1.5 sm:py-1 sm:pl-1 sm:pr-3 sm:text-xs">
-            <span className="relative h-3.5 w-3.5 shrink-0 overflow-hidden rounded-full sm:h-4 sm:w-4">
-              <Image src={fragranceFamilyImage(product.fragranceFamily)} alt="" fill sizes="16px" className="object-cover" />
-            </span>
-            <span className="truncate">{product.fragranceFamily}</span>
-          </span>
+        {product.variants.length > 0 && (
+          <>
+            {/* Touch devices (and anything narrower than a desktop): bag button → sheet. */}
+            <button
+              type="button"
+              onClick={() => setSheetOpen(true)}
+              aria-label={`Add ${product.name} to cart`}
+              className="absolute bottom-2 right-2 z-10 flex h-[34px] w-[34px] items-center justify-center rounded-full bg-[#111] text-white shadow-lg lg:hidden [@media(hover:none)]:flex @min-[200px]:h-10 @min-[200px]:w-10"
+            >
+              <BagIcon className="h-4 w-4" />
+            </button>
+
+            {/* Mouse devices: size panel over the bottom of the photo on hover. */}
+            <div className="pointer-events-none absolute inset-x-3 bottom-3 z-10 hidden translate-y-2 rounded-md bg-[#f9f8f8]/95 p-3.5 opacity-0 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-sm transition-all duration-300 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 lg:block [@media(hover:none)]:hidden">
+              <p className="mb-2.5 text-[11px] font-medium uppercase tracking-[0.18em] text-ink-soft">Select size</p>
+              <SizeTiles variants={product.variants} value={variant?.id} onChange={setVariantId} />
+              <button
+                type="button"
+                onClick={() => add(1)}
+                disabled={!variant || variant.stock === 0 || adding}
+                className="mt-2 flex h-11 w-full items-center justify-center gap-2.5 rounded bg-[#111] text-[12px] font-medium uppercase tracking-[0.3em] text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+              >
+                <BagIcon className="h-4 w-4" />
+                {variant?.stock === 0 ? "Out of stock" : adding ? "Adding…" : "Add to cart"}
+              </button>
+            </div>
+          </>
         )}
       </div>
-      {/* text-left guards against an ancestor's text-center — a plain <p>
-          responds to inherited text-align, but the price row below is a
-          flex container and doesn't, so the two would visibly disagree. */}
-      <div className="mt-2 text-left">
-        <p className="truncate font-serif text-base font-medium leading-tight tracking-normal text-ink sm:text-xl" title={product.name}>
-          {cardDisplayName(product.name)}
-        </p>
-        {gender && <p className={`mt-0.5 text-[12px] leading-tight tracking-[-0.11px] ${genderTextClass(gender)}`}>{gender}</p>}
-        {product.scentAccords.length > 0 && (
-          <p className="mt-1 text-xs text-ink-soft">{product.scentAccords.join(" · ")}</p>
+
+      <div className="mt-3 @min-[200px]:mt-3.5">
+        {label && (
+          <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-royal-light @min-[200px]:text-[11px]">{label}</p>
         )}
-        <div className="mt-1.5 flex items-baseline gap-2 sm:mt-3">
-          <span className="text-[12px] font-medium tracking-[-0.11px] text-gold sm:text-lg sm:font-semibold sm:tracking-normal">
-            {formatAed(product.price)}
+        <Link href={href} className="mt-1.5 block @min-[200px]:mt-2" title={product.name}>
+          <span className="block truncate font-serif text-lg leading-tight tracking-normal text-ink decoration-ink decoration-1 underline-offset-4 group-hover:underline @min-[200px]:text-2xl">
+            {cardDisplayName(product.name)}
           </span>
-          {product.compareAtPrice && (
-            <span className="text-[11px] text-ink-soft line-through">{formatAed(product.compareAtPrice)}</span>
+        </Link>
+        {product.scentAccords.length > 0 && (
+          <p className="mt-1 truncate text-xs text-ink-soft/80 @min-[200px]:mt-1.5 @min-[200px]:text-[13px]">{product.scentAccords.join(" · ")}</p>
+        )}
+        <div className="mt-3 hidden border-t border-ink/10 @min-[200px]:block" />
+        <div className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 @min-[200px]:mt-3">
+          <span className="text-base font-semibold text-ink @min-[200px]:text-xl @min-[200px]:font-medium">{formatAed(price)}</span>
+          {product.compareAtPrice && off && (
+            <span className="text-xs text-ink-soft/70 line-through @min-[200px]:text-sm">{formatAed(product.compareAtPrice)}</span>
           )}
-          {off && <span className="text-[11px] font-medium text-green-600">{off}% Off</span>}
+          {off && (
+            <span className="rounded-full bg-[#ddd3c2] px-2.5 py-1 text-[11px] font-medium leading-none text-royal @min-[200px]:text-xs">
+              Save {off}%
+            </span>
+          )}
         </div>
       </div>
-    </Link>
+
+      {sheetOpen && (
+        <QuickShopSheet
+          product={product}
+          imageUrl={imageUrl}
+          label={label}
+          variantId={variant?.id}
+          onVariantChange={setVariantId}
+          onClose={() => setSheetOpen(false)}
+          onAdd={add}
+          adding={adding}
+        />
+      )}
+    </div>
   );
 }

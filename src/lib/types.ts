@@ -70,6 +70,8 @@ export interface Product {
   // a product that predates this field; the storefront falls back to
   // images[0] in that case.
   thumbnailImage: string | null;
+  // Small label on the product card; null = none.
+  badge?: "BESTSELLER" | "NEW" | "LIMITED" | null;
   // Admin-editable accordion sections on the product page (heading +
   // body, e.g. "Sizes and Refills"). Null/empty falls back to generated
   // defaults — see productInfoSections() in lib/format.ts.

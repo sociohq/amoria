@@ -60,6 +60,23 @@ export function cardDisplayName(name: string): string {
 // The category the header's mega menu groups as "Shop By Gender" doubles as
 // the product's gender tag, shown as-is ("For Him", "For Unisex") in the
 // card's category line beneath the product name.
+// The small gold line above a card's name: "Women's Perfume", "Men's Perfume"…
+// for perfumes (from the gender category), otherwise the product's first
+// category. Null when it has neither.
+export function cardLabel(product: {
+  productType?: string;
+  categories: { name: string; menuGroup: string | null }[];
+}): string | null {
+  const gender = genderTag(product.categories);
+  if (gender && (product.productType ?? "PERFUME") === "PERFUME") {
+    const g = gender.toLowerCase();
+    if (g.includes("him")) return "Men's Perfume";
+    if (g.includes("her")) return "Women's Perfume";
+    return "Unisex Perfume";
+  }
+  return product.categories[0]?.name ?? null;
+}
+
 export function genderTag(categories: { name: string; menuGroup: string | null }[]): string | null {
   const category = categories.find((c) => c.menuGroup === "Shop By Gender");
   return category?.name ?? null;
