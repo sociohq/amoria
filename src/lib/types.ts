@@ -34,7 +34,9 @@ export interface ProductImage {
 export interface ProductVariant {
   id: string;
   size: string;
-  price: number; // AED
+  price: number; // AED — after any category sale
+  // The full price, present only while a category sale is on (shown crossed out).
+  compareAtPrice?: number;
   stock: number;
   sku: string;
 }
@@ -72,6 +74,8 @@ export interface Product {
   thumbnailImage: string | null;
   // Small label on the product card; null = none.
   badge?: "BESTSELLER" | "NEW" | "LIMITED" | null;
+  // Percent off from a category sale, when one applies.
+  discountPercent?: number;
   // Admin-editable accordion sections on the product page (heading +
   // body, e.g. "Sizes and Refills"). Null/empty falls back to generated
   // defaults — see productInfoSections() in lib/format.ts.

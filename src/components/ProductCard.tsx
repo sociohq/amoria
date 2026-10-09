@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Product } from "@/lib/types";
-import { formatAed, percentOff } from "@/lib/money";
+import { compareFor, formatAed, percentOff } from "@/lib/money";
 import { cardDisplayName, cardLabel } from "@/lib/fragrance";
 import { imageForSize } from "@/lib/productImages";
 import { useCart } from "@/lib/cart-context";
@@ -39,7 +39,8 @@ export function ProductCard({ product }: { product: Product }) {
   // A single size has nothing to choose — the card then offers just Add to cart.
   const hasSizes = product.variants.length > 1;
   const price = variant?.price ?? product.price;
-  const off = percentOff(price, product.compareAtPrice);
+  const compare = compareFor(product, variant);
+  const off = percentOff(price, compare);
   const label = cardLabel(product);
   const imageUrl =
     imageForSize(product, variant?.size) ??
@@ -164,9 +165,9 @@ export function ProductCard({ product }: { product: Product }) {
             <span className="text-base font-medium leading-normal text-[#111] @min-[260px]:text-lg">
               {formatAed(price)}
             </span>
-            {product.compareAtPrice && off && (
+            {compare && off && (
               <span className="text-xs leading-normal text-[#9c968f] line-through @min-[260px]:text-[13px]">
-                {formatAed(product.compareAtPrice)}
+                {formatAed(compare)}
               </span>
             )}
             {off && (

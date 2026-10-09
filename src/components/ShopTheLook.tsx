@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ShopTheLookSection } from "@/lib/types";
-import { formatAed, percentOff } from "@/lib/money";
+import { compareFor, formatAed, percentOff } from "@/lib/money";
 
 // Matches ProductSection's ArrowButton exactly (not exported there, so
 // duplicated rather than reworking that component's file for one shared
@@ -47,7 +47,8 @@ export function ShopTheLook({ section }: { section: ShopTheLookSection }) {
   const product = active.product;
   const variant = product.variants[0];
   const price = variant?.price ?? product.price;
-  const off = percentOff(price, product.compareAtPrice);
+  const compare = compareFor(product, variant);
+  const off = percentOff(price, compare);
   const imageUrl = product.thumbnailImage ?? product.images[0]?.url;
 
   function goTo(index: number) {
@@ -120,9 +121,7 @@ export function ShopTheLook({ section }: { section: ShopTheLookSection }) {
             )}
             <div className="mt-3 flex items-center justify-center gap-3">
               <span className="text-lg text-ink">{formatAed(price)}</span>
-              {product.compareAtPrice && (
-                <span className="text-sm text-ink-soft line-through">{formatAed(product.compareAtPrice)}</span>
-              )}
+              {compare && off && <span className="text-sm text-ink-soft line-through">{formatAed(compare)}</span>}
               {off && <span className="text-sm font-medium text-royal">{off}% Off</span>}
             </div>
             <Link

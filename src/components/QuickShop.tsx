@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { Product, ProductVariant } from "@/lib/types";
-import { formatAed, percentOff } from "@/lib/money";
+import { compareFor, formatAed, percentOff } from "@/lib/money";
 import { cardDisplayName } from "@/lib/fragrance";
 
 export function BagIcon({ className = "h-4 w-4" }: { className?: string }) {
@@ -95,7 +95,8 @@ export function QuickShopSheet({
   const closeRef = useRef<HTMLButtonElement>(null);
   const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
   const price = variant?.price ?? product.price;
-  const off = percentOff(price, product.compareAtPrice);
+  const compare = compareFor(product, variant);
+  const off = percentOff(price, compare);
   const maxQty = Math.max(1, Math.min(10, variant?.stock ?? 1));
   const hasSizes = product.variants.length > 1;
 
@@ -140,8 +141,8 @@ export function QuickShopSheet({
             )}
             <p className="mt-1.5 flex flex-wrap items-baseline gap-x-2">
               <span className="text-lg font-semibold text-ink">{formatAed(price)}</span>
-              {product.compareAtPrice && off && (
-                <span className="text-xs text-ink-soft/70 line-through">{formatAed(product.compareAtPrice)}</span>
+              {compare && off && (
+                <span className="text-xs text-ink-soft/70 line-through">{formatAed(compare)}</span>
               )}
             </p>
           </div>

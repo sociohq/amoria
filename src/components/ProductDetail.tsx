@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Product } from "@/lib/types";
-import { formatAed, percentOff } from "@/lib/money";
+import { compareFor, formatAed, percentOff } from "@/lib/money";
 import { formatConcentration, deliveryEstimate, productInfoSections } from "@/lib/format";
 import { StarRating } from "./StarRating";
 import { Accordion } from "./Accordion";
@@ -22,7 +22,8 @@ export function ProductDetail({ product }: { product: Product }) {
   const [adding, setAdding] = useState(false);
 
   const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
-  const off = percentOff(variant?.price ?? product.price, product.compareAtPrice);
+  const compare = compareFor(product, variant);
+  const off = percentOff(variant?.price ?? product.price, compare);
   // The photos for the size picked — a size can have its own bottle shots
   // (see galleryFor). Otherwise the dedicated thumbnail (if set) leads, as
   // the product's main shot.
@@ -96,9 +97,7 @@ export function ProductDetail({ product }: { product: Product }) {
 
         <div className="mt-4 flex items-baseline gap-3">
           <span className="text-2xl text-ink">{formatAed(variant?.price ?? product.price)}</span>
-          {product.compareAtPrice && (
-            <span className="text-ink-soft line-through">{formatAed(product.compareAtPrice)}</span>
-          )}
+          {compare && off && <span className="text-ink-soft line-through">{formatAed(compare)}</span>}
           {off && <span className="font-medium text-royal">{off}% Off</span>}
         </div>
         <p className="mt-1 text-xs text-ink-soft">Tax included. Shipping calculated at checkout.</p>
