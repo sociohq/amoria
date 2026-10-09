@@ -88,6 +88,7 @@ export function QuickShopSheet({
   const price = variant?.price ?? product.price;
   const off = percentOff(price, product.compareAtPrice);
   const maxQty = Math.max(1, Math.min(10, variant?.stock ?? 1));
+  const hasSizes = product.variants.length > 1;
 
   useEffect(() => {
     const raf = requestAnimationFrame(() => setShown(true));
@@ -149,10 +150,14 @@ export function QuickShopSheet({
         </div>
 
         <div className="border-t border-border pt-5">
-          <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.18em] text-ink-soft">Select size</p>
-          <SizeTiles variants={product.variants} value={variant?.id} onChange={(id) => { onVariantChange(id); setQuantity(1); }} tall />
+          {hasSizes && (
+            <>
+              <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.18em] text-ink-soft">Select size</p>
+              <SizeTiles variants={product.variants} value={variant?.id} onChange={(id) => { onVariantChange(id); setQuantity(1); }} tall />
+            </>
+          )}
 
-          <div className="mt-4 flex gap-3">
+          <div className={`${hasSizes ? "mt-4" : ""} flex gap-3`}>
             <div className="flex h-[50px] shrink-0 items-center rounded border border-border bg-white">
               <button
                 type="button"

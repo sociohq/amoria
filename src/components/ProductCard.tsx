@@ -26,6 +26,8 @@ export function ProductCard({ product }: { product: Product }) {
   const [adding, setAdding] = useState(false);
 
   const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
+  // A single size has nothing to choose — the card then offers just Add to cart.
+  const hasSizes = product.variants.length > 1;
   const price = variant?.price ?? product.price;
   const off = percentOff(price, product.compareAtPrice);
   const label = cardLabel(product);
@@ -92,13 +94,17 @@ export function ProductCard({ product }: { product: Product }) {
 
             {/* Mouse devices: size panel over the bottom of the photo on hover. */}
             <div className="pointer-events-none absolute inset-x-3 bottom-3 z-10 hidden translate-y-2 rounded-md bg-[#f9f8f8]/95 p-3.5 opacity-0 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-sm transition-all duration-300 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 lg:block [@media(hover:none)]:hidden">
-              <p className="mb-2.5 text-[11px] font-medium uppercase tracking-[0.18em] text-ink-soft">Select size</p>
-              <SizeTiles variants={product.variants} value={variant?.id} onChange={setVariantId} />
+              {hasSizes && (
+                <>
+                  <p className="mb-2.5 text-[11px] font-medium uppercase tracking-[0.18em] text-ink-soft">Select size</p>
+                  <SizeTiles variants={product.variants} value={variant?.id} onChange={setVariantId} />
+                </>
+              )}
               <button
                 type="button"
                 onClick={() => add(1)}
                 disabled={!variant || variant.stock === 0 || adding}
-                className="mt-2 flex h-11 w-full items-center justify-center gap-2.5 rounded bg-[#111] text-[12px] font-medium uppercase tracking-[0.3em] text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+                className={`${hasSizes ? "mt-2" : ""} flex h-11 w-full items-center justify-center gap-2.5 rounded bg-[#111] text-[12px] font-medium uppercase tracking-[0.3em] text-white transition-opacity hover:opacity-90 disabled:opacity-50`}
               >
                 <BagIcon className="h-4 w-4" />
                 {variant?.stock === 0 ? "Out of stock" : adding ? "Adding…" : "Add to cart"}
