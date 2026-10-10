@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { TrackOrder } from "@/components/TrackOrder";
 
 export const metadata = {
-  title: "Track Your Order | Amoria",
+  title: "Track Your Order",
   description: "Follow your Amoria parcel with its tracking number.",
 };
 

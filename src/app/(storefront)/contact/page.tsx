@@ -1,5 +1,11 @@
 import { ContactForm } from "@/components/ContactForm";
 
+export const metadata = {
+  title: "Contact Us",
+  description: "Get in touch with Amoria Perfume for orders, gifting and fragrance advice. We reply quickly.",
+};
+
+
 export default function ContactPage() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-24">

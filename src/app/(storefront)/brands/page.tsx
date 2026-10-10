@@ -2,7 +2,8 @@ import { BRANDS } from "@/lib/brands";
 import { BrandTile } from "@/components/BrandLogoGrid/BrandTile";
 
 export const metadata = {
-  title: "Shop By Brand | Amoria",
+  title: "Shop By Brand",
+  description: "Browse inspired fragrances by the designer houses that inspire them.",
 };
 
 // The full roster the homepage's "Shop By Brand" teaser only samples 12

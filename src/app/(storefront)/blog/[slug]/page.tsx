@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getPostBySlug } from "@/lib/posts";
@@ -5,6 +6,17 @@ import { PostBody } from "@/components/PostBody";
 
 interface PostPageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: PostPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug).catch(() => null);
+  if (!post) return { title: "Article not found", robots: { index: false } };
+  return {
+    title: post.title,
+    description: post.excerpt,
+    openGraph: { type: "article", title: post.title, description: post.excerpt, ...(post.heroImage ? { images: [{ url: post.heroImage }] } : {}) },
+  };
 }
 
 export default async function PostPage({ params }: PostPageProps) {

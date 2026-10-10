@@ -1,5 +1,11 @@
 import { LegalPage } from "@/components/LegalPage";
 
+export const metadata = {
+  title: "Shipping & Delivery",
+  description: "Delivery across the UAE, usually within 1-3 working days. Free delivery on orders above AED 250.",
+};
+
+
 // Verbatim from the site owner's "Delivery and shipping policy amoria.pdf".
 // No page existed for this policy before — added and linked from the
 // footer's Legal & Policies column alongside Terms/Privacy/Returns.

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { listProducts, listCategories, getPriceRange } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
@@ -25,6 +26,29 @@ const SORTS = [
   { value: "price_asc", label: "Price: Low to High" },
   { value: "price_desc", label: "Price: High to Low" },
 ] as const;
+
+export async function generateMetadata({ searchParams }: ShopPageProps): Promise<Metadata> {
+  const params = await searchParams;
+  const search = params.search?.trim();
+  // Search results are different for every query — keep them out of search engines.
+  if (search) return { title: `Results for “${search}”`, robots: { index: false, follow: true } };
+  if (params.category) {
+    const categories = await listCategories().catch(() => []);
+    const name = categories.find((c) => c.slug === params.category)?.name;
+    if (name) {
+      return {
+        title: name,
+        description: `Shop ${name} at Amoria Perfume: premium fragrances with fast delivery across the UAE.`,
+        alternates: { canonical: `/shop?category=${params.category}` },
+      };
+    }
+  }
+  return {
+    title: "Shop All Fragrances",
+    description: "Shop every Amoria Perfume fragrance: extrait de parfum, inspired perfumes, bukhoor and body care, delivered across the UAE.",
+    alternates: { canonical: "/shop" },
+  };
+}
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const params = await searchParams;

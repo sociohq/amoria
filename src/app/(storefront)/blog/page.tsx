@@ -3,6 +3,12 @@ import Link from "next/link";
 import { listPosts } from "@/lib/posts";
 import { formatPostDate } from "@/lib/format";
 
+export const metadata = {
+  title: "Journal",
+  description: "Fragrance guides, new arrivals and stories from the Amoria Perfume journal.",
+};
+
+
 export default async function BlogIndexPage() {
   const posts = await listPosts().catch(() => []);
 

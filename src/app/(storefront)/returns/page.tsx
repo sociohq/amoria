@@ -1,5 +1,11 @@
 import { LegalPage } from "@/components/LegalPage";
 
+export const metadata = {
+  title: "Returns & Exchanges",
+  description: "How returns and exchanges work at Amoria Perfume, and how to get in touch if something isn't right.",
+};
+
+
 // Verbatim from the site owner's "return refund and exchange policy amoria.pdf".
 export default function ReturnsPage() {
   return (

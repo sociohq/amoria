@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getBrandBySlug } from "@/lib/brands";
@@ -6,6 +7,16 @@ import { ProductCard } from "@/components/ProductCard";
 
 interface BrandPageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: BrandPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const brand = getBrandBySlug(slug);
+  if (!brand) return { title: "Brand not found", robots: { index: false } };
+  return {
+    title: `${brand.name} Inspired Perfumes`,
+    description: `Shop Amoria Perfume fragrances inspired by ${brand.name}: the character you love at a fraction of the price.`,
+  };
 }
 
 export default async function BrandPage({ params }: BrandPageProps) {

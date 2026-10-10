@@ -1,5 +1,11 @@
 import { LegalPage } from "@/components/LegalPage";
 
+export const metadata = {
+  title: "Terms & Conditions",
+  description: "The terms that apply when you shop with Amoria Perfume.",
+};
+
+
 // Verbatim from the site owner's "T&C amoria.pdf". The source document
 // itself has an unfilled "Effective Date: [Insert Date]" placeholder —
 // left as "Effective Date: To be confirmed" here rather than inventing

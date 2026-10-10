@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 
 export const metadata = {
-  title: "Our Boutique | Amoria",
+  title: "Our Boutique",
   description: "Visit the Amoria Perfume boutique in Muwaihat, Ajman.",
 };
 

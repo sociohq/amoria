@@ -4,6 +4,12 @@ import { Reveal } from "@/components/Reveal";
 import { ParallaxHero } from "@/components/ParallaxHero";
 import { OurStores } from "@/components/OurStores";
 
+export const metadata = {
+  title: "Our Story",
+  description: "The story of Amoria Perfume: a UAE perfume house crafting extrait de parfum and inspired fragrances in small batches.",
+};
+
+
 // Real copy and photography from the company's own 2026 profile document
 // (Vision & Mission, Overview, Core Values, and the founder bio/portrait) —
 // replaces the earlier placeholder narrative with the brand's actual words.
