@@ -16,7 +16,11 @@ interface ShopPageProps {
   }>;
 }
 
+// A–Z is the default order: products read alphabetically by the name on the card.
+const DEFAULT_SORT = "name_asc";
 const SORTS = [
+  { value: "name_asc", label: "A–Z" },
+  { value: "name_desc", label: "Z–A" },
   { value: "newest", label: "Newest" },
   { value: "price_asc", label: "Price: Low to High" },
   { value: "price_desc", label: "Price: High to Low" },
@@ -27,7 +31,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   const category = params.category;
   const family = params.family;
   const search = params.search?.trim() || undefined;
-  const sort = (params.sort as (typeof SORTS)[number]["value"]) ?? "newest";
+  const sort = SORTS.some((s) => s.value === params.sort) ? (params.sort as (typeof SORTS)[number]["value"]) : DEFAULT_SORT;
   const page = params.page ? Number(params.page) : 1;
   const minPrice = params.minPrice ? Number(params.minPrice) : undefined;
   const maxPrice = params.maxPrice ? Number(params.maxPrice) : undefined;
@@ -53,7 +57,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     if (category) next.set("category", category);
     if (family) next.set("family", family);
     if (search) next.set("search", search);
-    if (sort !== "newest") next.set("sort", sort);
+    if (sort !== DEFAULT_SORT) next.set("sort", sort);
     if (params.minPrice) next.set("minPrice", params.minPrice);
     if (params.maxPrice) next.set("maxPrice", params.maxPrice);
     next.set(key, value);

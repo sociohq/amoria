@@ -75,7 +75,7 @@ export function ShopFilterDrawer({
     const params = new URLSearchParams();
     if (overrides.category) params.set("category", overrides.category);
     if (overrides.family) params.set("family", overrides.family);
-    if (currentSort !== "newest") params.set("sort", currentSort);
+    if (currentSort !== "name_asc") params.set("sort", currentSort);
     if (overrides.priceRange) {
       const [lo, hi] = overrides.priceRange;
       if (lo > priceBounds.min) params.set("minPrice", String(lo));

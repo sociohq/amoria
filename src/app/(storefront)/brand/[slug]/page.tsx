@@ -17,7 +17,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
   // matching products yet — skip the fetch rather than querying with an
   // empty filter (which would return the whole catalog).
   const { products } = brand.designHouse
-    ? await listProducts({ designHouse: brand.designHouse, limit: 100 }).catch(() => ({ products: [] }))
+    ? await listProducts({ designHouse: brand.designHouse, limit: 100, sort: "name_asc" }).catch(() => ({ products: [] }))
     : { products: [] };
 
   return (
