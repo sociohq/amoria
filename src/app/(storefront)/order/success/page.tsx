@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 import { Order } from "@/lib/types";
@@ -76,28 +77,102 @@ function OrderSuccessContent() {
     return <p className="text-center text-ink-soft">Confirming your order…</p>;
   }
   if (status === "error" || !order) {
-    return <p className="text-center text-ink-soft">We couldn&apos;t find that order.</p>;
+    return (
+      <div className="text-center">
+        <p className="text-ink-soft">We couldn&apos;t find that order.</p>
+        <p className="mt-2 text-sm text-ink-soft">
+          If you placed it from your Amoria account, sign in and open this link again.
+        </p>
+        <Link href="/shop" className="mt-8 inline-block border border-ink px-8 py-3 label-caps text-ink hover:bg-ink hover:text-cream">
+          Continue Shopping
+        </Link>
+      </div>
+    );
   }
 
   const isPaid = order.status !== "PENDING";
   const showAccountNotice = isPaid && order.needsGuestVerification;
+  const closed = order.status === "CANCELLED" || order.status === "REFUNDED";
+  // How far along the order is: 0 awaiting payment, 1 ordered, 2 shipped, 3 delivered.
+  const stage = order.status === "DELIVERED" ? 3 : order.status === "SHIPPED" ? 2 : isPaid ? 1 : 0;
+  const heading = closed
+    ? order.status === "REFUNDED"
+      ? "Order refunded"
+      : "Order cancelled"
+    : stage === 3
+      ? "Your order has been delivered"
+      : stage === 2
+        ? "Your order is on its way"
+        : isPaid
+          ? "Thank you for your order"
+          : "Order received";
+  const intro = closed
+    ? "This order is no longer active. Questions? Reply to your confirmation email."
+    : stage === 3
+      ? "We hope you love it."
+      : stage === 2
+        ? "It has been handed to the courier. Follow it below."
+        : isPaid
+          ? "Your payment was successful. We're getting your order ready and will email you the moment it ships."
+          : "We're still confirming your payment. This page will update once it clears.";
 
   return (
     <div className="text-center">
-      <h1 className="font-serif text-3xl text-ink">{isPaid ? "Thank you for your order" : "Order received"}</h1>
-      <p className="mt-2 text-ink-soft">
-        {isPaid
-          ? "Your payment was successful. A confirmation has been recorded."
-          : "We're still confirming your payment. This page will update once it clears."}
-      </p>
+      <h1 className="font-serif text-3xl text-ink">{heading}</h1>
+      <p className="mt-2 text-ink-soft">{intro}</p>
+      <p className="mt-1 text-xs text-ink-soft">Order #{order.id.slice(-8).toUpperCase()}</p>
+
+      {!closed && stage > 0 && (
+        <div className="mx-auto mt-8 max-w-md">
+          <ol className="grid grid-cols-3" aria-label="Order progress">
+            {["Ordered", "Shipped", "Delivered"].map((label, i) => {
+              const done = i < stage;
+              return (
+                <li key={label} className="flex flex-col items-center">
+                  <div className="flex w-full items-center">
+                    <span className={`h-0.5 flex-1 ${i === 0 ? "bg-transparent" : i < stage ? "bg-ink" : "bg-border"}`} />
+                    <span
+                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 text-xs ${
+                        done ? "border-ink bg-ink text-cream" : "border-border bg-white text-transparent"
+                      }`}
+                    >
+                      ✓
+                    </span>
+                    <span className={`h-0.5 flex-1 ${i === 2 ? "bg-transparent" : i + 1 < stage ? "bg-ink" : "bg-border"}`} />
+                  </div>
+                  <span className={`mt-2 text-xs ${done ? "font-medium text-ink" : "text-ink-soft"}`}>{label}</span>
+                </li>
+              );
+            })}
+          </ol>
+          {order.trackingNumber && (
+            <div className="mt-6 text-sm text-ink-soft">
+              Tracking number <span className="font-medium text-ink">{order.trackingNumber}</span>
+              <div>
+                <Link
+                  href={`/track?awb=${encodeURIComponent(order.trackingNumber)}`}
+                  className="mt-3 inline-block bg-ink px-8 py-3 label-caps text-cream transition-opacity hover:opacity-90"
+                >
+                  Track your parcel
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="mx-auto mt-8 max-w-md space-y-3 border-y border-border py-6 text-left">
         {order.items.map((item) => (
-          <div key={item.id} className="flex justify-between text-sm text-ink">
-            <span>
+          <div key={item.id} className="flex items-center justify-between gap-3 text-sm text-ink">
+            {item.imageUrl && (
+              <span className="relative h-14 w-12 shrink-0 overflow-hidden bg-cream-dark">
+                <Image src={item.imageUrl} alt="" fill sizes="48px" className="object-cover" />
+              </span>
+            )}
+            <span className="min-w-0 flex-1">
               {item.productName} ({item.variantSize}) × {item.quantity}
             </span>
-            <span>{formatAed(item.unitPrice * item.quantity)}</span>
+            <span className="shrink-0">{formatAed(item.unitPrice * item.quantity)}</span>
           </div>
         ))}
         <div className="flex justify-between border-t border-border pt-3 font-medium text-ink">
