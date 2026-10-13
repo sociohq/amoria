@@ -9,6 +9,7 @@ import { useAuthDrawer } from "@/lib/auth-drawer-context";
 import { apiFetch, ApiError } from "@/lib/api";
 import { formatAed } from "@/lib/money";
 import { getPublicSettings } from "@/lib/settings";
+import { WELCOME_CODE_KEY } from "@/lib/welcome";
 
 const EMIRATES = ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Fujairah", "Ras Al Khaimah", "Umm Al Quwain"];
 
@@ -39,6 +40,21 @@ export default function CheckoutPage() {
   const [discount, setDiscount] = useState<number | null>(null);
   const [couponError, setCouponError] = useState<string | null>(null);
   const [applyingCoupon, setApplyingCoupon] = useState(false);
+
+  // A visitor who claimed the welcome offer has their code waiting here — it
+  // is only pre-filled, they still press Apply.
+  useEffect(() => {
+    let saved: string | null = null;
+    try {
+      saved = localStorage.getItem(WELCOME_CODE_KEY);
+    } catch {
+      // Storage blocked — they can still type or paste the code.
+    }
+    if (!saved) return;
+    const code = saved;
+    // Deferred a tick: browser storage is only readable after hydration.
+    queueMicrotask(() => setCouponCode((current) => current || code));
+  }, []);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -86,6 +102,14 @@ export default function CheckoutPage() {
     } catch (err) {
       setDiscount(null);
       setCouponError(err instanceof ApiError ? err.message : "Could not validate coupon");
+      // A spent or expired welcome code shouldn't keep re-appearing.
+      try {
+        if (localStorage.getItem(WELCOME_CODE_KEY) === couponCode.trim().toUpperCase() && err instanceof ApiError && /already used|usage limit|expired/i.test(err.message)) {
+          localStorage.removeItem(WELCOME_CODE_KEY);
+        }
+      } catch {
+        // Nothing to clean up if storage isn't available.
+      }
     } finally {
       setApplyingCoupon(false);
     }
