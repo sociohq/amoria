@@ -40,14 +40,47 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
 
   if (slides.length === 0) return null;
 
+  // When every slide is a finished banner, the section follows the picture's
+  // own 16:9 shape instead of filling the screen, so nothing gets cropped away
+  // on phones and tablets. Mixed sets keep the full-screen hero.
+  const bannerOnly = slides.every((s) => s.imageOnly);
+
   function goTo(i: number) {
     setIndex((i + slides.length) % slides.length);
   }
 
   return (
-    <section className="relative h-screen w-full overflow-hidden">
+    <section
+      className={`relative w-full overflow-hidden ${bannerOnly ? "aspect-video max-h-screen" : "h-screen"}`}
+    >
       {slides.map((slide, i) => {
         const visible = i === index;
+        if (slide.imageOnly) {
+          return (
+            <div
+              key={slide.id}
+              aria-hidden={!visible}
+              className={`absolute inset-0 transition-opacity duration-[900ms] ease-out ${
+                visible ? "opacity-100" : "pointer-events-none opacity-0"
+              }`}
+            >
+              {slide.image && (
+                <Image
+                  src={slide.image}
+                  alt=""
+                  fill
+                  priority={i === 0}
+                  sizes="100vw"
+                  className="object-cover"
+                />
+              )}
+              <h1 className="sr-only">{slide.heading}</h1>
+              {slide.ctaLink && (
+                <Link href={slide.ctaLink} aria-label={slide.ctaText || slide.heading} className="absolute inset-0 z-10" />
+              )}
+            </div>
+          );
+        }
         return (
           <div
             key={slide.id}

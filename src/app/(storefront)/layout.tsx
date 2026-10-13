@@ -12,6 +12,7 @@ import { ScrollToTopButton } from "@/components/ScrollToTopButton";
 import { PageLoader } from "@/components/PageLoader";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { listCategories } from "@/lib/products";
+import { listHeroSlides } from "@/lib/heroSlides";
 
 // All the storefront-only chrome — announcement bar, mega-menu header,
 // footer, cart/auth drawers, the newsletter popup, the floating Aurora
@@ -24,7 +25,13 @@ import { listCategories } from "@/lib/products";
 export default async function StorefrontLayout({ children }: { children: React.ReactNode }) {
   // Resilient to the backend/DB being unavailable — the header should
   // never take the whole site down over a categories fetch.
-  const categories = await listCategories().catch(() => []);
+  const [categories, heroSlides] = await Promise.all([
+    listCategories().catch(() => []),
+    listHeroSlides().catch(() => []),
+  ]);
+  // A hero made only of finished banners has its own artwork at the top, so the
+  // header stays solid above it instead of floating over the picture.
+  const bannerHero = heroSlides.length > 0 && heroSlides.every((s) => s.imageOnly);
 
   return (
     <SmoothScroll>
@@ -32,7 +39,7 @@ export default async function StorefrontLayout({ children }: { children: React.R
       <AuthDrawerProvider>
         <CartProvider>
           <WishlistProvider>
-            <Header categories={categories} />
+            <Header categories={categories} bannerHero={bannerHero} />
             <main className="min-h-screen">{children}</main>
             <Footer />
             <CartDrawer />

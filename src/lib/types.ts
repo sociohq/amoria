@@ -8,6 +8,7 @@ export interface HeroSlide {
   subtext: string | null;
   ctaText: string | null;
   ctaLink: string | null;
+  imageOnly?: boolean;
   position: number;
   active: boolean;
 }
