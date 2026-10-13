@@ -79,3 +79,34 @@ export async function getRecommendedProducts(slug: string): Promise<Product[]> {
   const { products } = await apiFetch<{ products: Product[] }>(`/api/products/${slug}/recommended`);
   return products;
 }
+
+// The homepage "Featured Products" row: the ten New Arrival perfumes mixed in
+// with the Premium Fragrance and Inspired Perfumes ranges (one of each in turn),
+// instead of simply the newest products in the shop — which, as the catalogue
+// grows, are often accessories. Only products that have a photo are used.
+export async function listFeaturedMix(): Promise<Product[]> {
+  const pick = (category: string, limit: number) =>
+    listProducts({ category, limit: limit + 6, sort: "newest" })
+      .then(({ products }) => products.filter((p) => p.images.length > 0).slice(0, limit))
+      .catch(() => [] as Product[]);
+
+  const [newArrivals, premium, inspired] = await Promise.all([
+    pick("new-arrival", 10),
+    pick("premium-collection", 4),
+    pick("inspired-fragrance", 6),
+  ]);
+
+  const mixed: Product[] = [];
+  const seen = new Set<string>();
+  const longest = Math.max(newArrivals.length, premium.length, inspired.length);
+  for (let i = 0; i < longest; i++) {
+    for (const list of [newArrivals, premium, inspired]) {
+      const product = list[i];
+      if (product && !seen.has(product.id)) {
+        seen.add(product.id);
+        mixed.push(product);
+      }
+    }
+  }
+  return mixed;
+}

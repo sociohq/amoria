@@ -1,4 +1,4 @@
-import { listProducts, listCategories, getShopTheLook, getFeaturedReviews, getGenderShowcase } from "@/lib/products";
+import { listFeaturedMix, listCategories, getShopTheLook, getFeaturedReviews, getGenderShowcase } from "@/lib/products";
 import { listHeroSlides } from "@/lib/heroSlides";
 import { HeroSlider } from "@/components/HeroSlider";
 import { CategoryShowcase } from "@/components/CategoryShowcase";
@@ -15,8 +15,8 @@ import { OurStores } from "@/components/OurStores";
 import { Reveal } from "@/components/Reveal";
 
 export default async function HomePage() {
-  const [{ products: featured }, categories, shopTheLook, reviews, genderShowcase, heroSlides] = await Promise.all([
-    listProducts({ limit: 8, sort: "newest" }).catch(() => ({ products: [] })),
+  const [featured, categories, shopTheLook, reviews, genderShowcase, heroSlides] = await Promise.all([
+    listFeaturedMix(),
     listCategories().catch(() => []),
     getShopTheLook().catch(() => null),
     getFeaturedReviews().catch(() => []),
