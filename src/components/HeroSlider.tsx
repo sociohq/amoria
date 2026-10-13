@@ -34,7 +34,10 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
 
   useEffect(() => {
     if (slides.length < 2) return;
-    const timer = setInterval(() => setIndex((i) => (i + 1) % slides.length), AUTO_ADVANCE_MS);
+    const timer = setInterval(
+      () => setIndex((i) => (i + 1) % slides.length),
+      AUTO_ADVANCE_MS,
+    );
     return () => clearInterval(timer);
   }, [slides.length]);
 
@@ -48,32 +51,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
     <section className="relative h-screen w-full overflow-hidden">
       {slides.map((slide, i) => {
         const visible = i === index;
-        if (slide.imageOnly) {
-          return (
-            <div
-              key={slide.id}
-              aria-hidden={!visible}
-              className={`absolute inset-0 transition-opacity duration-[900ms] ease-out ${
-                visible ? "opacity-100" : "pointer-events-none opacity-0"
-              }`}
-            >
-              {slide.image && (
-                <Image
-                  src={slide.image}
-                  alt=""
-                  fill
-                  priority={i === 0}
-                  sizes="100vw"
-                  className="object-cover"
-                />
-              )}
-              <h1 className="sr-only">{slide.heading}</h1>
-              {slide.ctaLink && (
-                <Link href={slide.ctaLink} aria-label={slide.ctaText || slide.heading} className="absolute inset-0 z-10" />
-              )}
-            </div>
-          );
-        }
+        const banner = Boolean(slide.imageOnly);
         return (
           <div
             key={slide.id}
@@ -86,41 +64,80 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
               className="absolute inset-x-0 -top-[15%] h-[130%]"
               style={{ transform: `translateY(${scrollY * PARALLAX_SPEED}px)` }}
             >
-              <div className="hero-zoom relative h-full w-full">
-                {slide.image && (
-                  <Image
-                    src={slide.image}
-                    alt={slide.heading}
-                    fill
-                    priority={i === 0}
-                    sizes="100vw"
-                    className="object-cover"
-                  />
+              <div
+                className={`hero-zoom relative h-full w-full ${banner ? "bg-ink" : ""}`}
+              >
+                {slide.image && banner ? (
+                  // Finished banner artwork: it carries its own text, so it sits
+                  // below the fixed header (which would otherwise cover the
+                  // title) and is shown as-is, with the same parallax + slow zoom
+                  // as the other slides. The offsets are in box terms: the box
+                  // starts 15% of the screen above the section (11.538% of itself).
+                  <div className="absolute inset-x-0 bottom-[11.538%] top-[calc(118px+11.538%)] md:top-[calc(138px+11.538%)]">
+                    <Image
+                      src={slide.image}
+                      alt=""
+                      fill
+                      priority={i === 0}
+                      sizes="100vw"
+                      className="object-contain object-center md:object-cover md:object-top"
+                    />
+                  </div>
+                ) : (
+                  slide.image && (
+                    <Image
+                      src={slide.image}
+                      alt={slide.heading}
+                      fill
+                      priority={i === 0}
+                      sizes="100vw"
+                      className="object-cover"
+                    />
+                  )
                 )}
               </div>
             </div>
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/45 via-black/15 to-transparent" />
+            {!banner && (
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/45 via-black/15 to-transparent" />
+            )}
 
-            <div className="relative z-10 flex h-full items-end px-6 pb-24 sm:pb-20">
-              <div className="max-w-md">
-                <h1 className="font-serif text-4xl leading-tight text-cream sm:text-5xl">{slide.heading}</h1>
-                {slide.subtext && <p className="mt-5 text-cream/85">{slide.subtext}</p>}
-                {slide.ctaText && slide.ctaLink && (
+            {banner ? (
+              <>
+                <h1 className="sr-only">{slide.heading}</h1>
+                {slide.ctaLink && (
                   <Link
                     href={slide.ctaLink}
-                    className="group relative mt-8 inline-block overflow-hidden bg-ink px-8 py-3 label-caps text-cream transition-all duration-500 ease-out hover:scale-[1.03] hover:bg-royal hover:shadow-lg hover:shadow-royal/30"
-                  >
-                    <span className="relative z-10">{slide.ctaText}</span>
-                    {/* A thin gold sheen that sweeps across on hover — the
-                        "luxury touch" rather than a plain opacity fade. */}
-                    <span
-                      aria-hidden
-                      className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-gold-light/50 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full"
-                    />
-                  </Link>
+                    aria-label={slide.ctaText || slide.heading}
+                    className="absolute inset-0 z-10"
+                  />
                 )}
+              </>
+            ) : (
+              <div className="relative z-10 flex h-full items-end px-6 pb-24 sm:pb-20">
+                <div className="max-w-md">
+                  <h1 className="font-serif text-4xl leading-tight text-cream sm:text-5xl">
+                    {slide.heading}
+                  </h1>
+                  {slide.subtext && (
+                    <p className="mt-5 text-cream/85">{slide.subtext}</p>
+                  )}
+                  {slide.ctaText && slide.ctaLink && (
+                    <Link
+                      href={slide.ctaLink}
+                      className="group relative mt-8 inline-block overflow-hidden bg-ink px-8 py-3 label-caps text-cream transition-all duration-500 ease-out hover:scale-[1.03] hover:bg-royal hover:shadow-lg hover:shadow-royal/30"
+                    >
+                      <span className="relative z-10">{slide.ctaText}</span>
+                      {/* A thin gold sheen that sweeps across on hover — the
+                        "luxury touch" rather than a plain opacity fade. */}
+                      <span
+                        aria-hidden
+                        className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-gold-light/50 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full"
+                      />
+                    </Link>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         );
       })}
@@ -134,7 +151,9 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
               onClick={() => goTo(i)}
               aria-label={`Go to slide ${i + 1}`}
               className={`h-1.5 rounded-full transition-all ${
-                i === index ? "w-6 bg-cream" : "w-1.5 bg-cream/40 hover:bg-cream/70"
+                i === index
+                  ? "w-6 bg-cream"
+                  : "w-1.5 bg-cream/40 hover:bg-cream/70"
               }`}
             />
           ))}
