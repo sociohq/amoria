@@ -275,6 +275,8 @@ export interface Order {
   needsGuestVerification: boolean;
   // Set once the order has been handed to the courier — the number to track it with.
   trackingNumber?: string | null;
+  // True when live parcel tracking (the courier link) is switched on.
+  trackingAvailable?: boolean;
   items: Array<{
     id: string;
     productName: string;

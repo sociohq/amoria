@@ -148,14 +148,18 @@ function OrderSuccessContent() {
           {order.trackingNumber && (
             <div className="mt-6 text-sm text-ink-soft">
               Tracking number <span className="font-medium text-ink">{order.trackingNumber}</span>
-              <div>
-                <Link
-                  href={`/track?awb=${encodeURIComponent(order.trackingNumber)}`}
-                  className="mt-3 inline-block bg-ink px-8 py-3 label-caps text-cream transition-opacity hover:opacity-90"
-                >
-                  Track your parcel
-                </Link>
-              </div>
+              {order.trackingAvailable ? (
+                <div>
+                  <Link
+                    href={`/track?awb=${encodeURIComponent(order.trackingNumber)}`}
+                    className="mt-3 inline-block bg-ink px-8 py-3 label-caps text-cream transition-opacity hover:opacity-90"
+                  >
+                    Track your parcel
+                  </Link>
+                </div>
+              ) : (
+                <p className="mt-2 text-xs">Keep this number for reference. We&apos;ll email you again when it&apos;s delivered.</p>
+              )}
             </div>
           )}
         </div>
