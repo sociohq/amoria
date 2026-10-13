@@ -234,6 +234,8 @@ export interface Settings {
   maxLeadDays: number;
   freeShippingThreshold: number; // AED
   standardShippingFee: number; // AED
+  codEnabled: boolean; // cash on delivery offered at checkout
+  codFee: number; // AED, added to a cash-on-delivery order
   newsletterPopupEnabled: boolean;
   newsletterPopupDelaySeconds: number;
   newsletterPopupEyebrow: string;
@@ -267,6 +269,9 @@ export interface Order {
   subtotal: number;
   discount: number;
   shippingFee: number;
+  // Cash on delivery: the extra fee (0 for card orders) and how the order is paid.
+  codFee?: number;
+  paymentMethod?: "CARD" | "COD";
   total: number;
   createdAt: string;
   guestEmail: string | null;

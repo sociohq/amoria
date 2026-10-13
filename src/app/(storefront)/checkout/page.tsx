@@ -64,12 +64,18 @@ export default function CheckoutPage() {
   // same endpoint for the cart drawer's free-shipping nudge).
   const [shippingFee, setShippingFee] = useState<number | null>(null);
   const [freeShippingThreshold, setFreeShippingThreshold] = useState<number | null>(null);
+  // Cash on delivery is offered when the admin has it switched on; it adds a fee.
+  const [codEnabled, setCodEnabled] = useState(false);
+  const [codFee, setCodFee] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState<"CARD" | "COD">("CARD");
 
   useEffect(() => {
     getPublicSettings()
       .then((s) => {
         setShippingFee(s.standardShippingFee);
         setFreeShippingThreshold(s.freeShippingThreshold);
+        setCodEnabled(Boolean(s.codEnabled));
+        setCodFee(s.codFee ?? 0);
       })
       .catch(() => {}); // sidebar just shows "Calculated at checkout" instead
   }, []);
@@ -87,7 +93,10 @@ export default function CheckoutPage() {
       : freeShippingThreshold != null && discountedSubtotal >= freeShippingThreshold
         ? 0
         : shippingFee;
-  const estimatedTotal = estimatedShipping == null ? discountedSubtotal : discountedSubtotal + estimatedShipping;
+  const isCod = codEnabled && paymentMethod === "COD";
+  const codCharge = isCod ? codFee : 0;
+  const estimatedTotal =
+    (estimatedShipping == null ? discountedSubtotal : discountedSubtotal + estimatedShipping) + codCharge;
 
   async function applyCoupon() {
     if (!couponCode.trim()) return;
@@ -123,6 +132,7 @@ export default function CheckoutPage() {
       const result = await apiFetch<{ url: string }>("/api/checkout/session", {
         method: "POST",
         body: JSON.stringify({
+          paymentMethod: isCod ? "COD" : "CARD",
           couponCode: discount !== null ? couponCode : undefined,
           email: user ? undefined : checkoutEmail,
           name: user ? undefined : checkoutName,
@@ -130,7 +140,7 @@ export default function CheckoutPage() {
           shippingAddress: { line1, line2: line2 || undefined, city, emirate, phone },
         }),
       });
-      window.location.href = result.url; // hand off to Stripe Checkout
+      window.location.href = result.url; // Stripe Checkout, or straight to the order page for cash on delivery
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Something went wrong");
       setSubmitting(false);
@@ -343,6 +353,45 @@ export default function CheckoutPage() {
                 </p>
               </div>
 
+              {codEnabled && (
+                <fieldset>
+                  <legend className="label-caps mb-2 text-ink-soft">Payment Method</legend>
+                  <div className="space-y-2">
+                    {(
+                      [
+                        { value: "CARD", title: "Pay by card", note: "Credit or debit card, Apple Pay, Google Pay" },
+                        {
+                          value: "COD",
+                          title: "Cash on delivery",
+                          note: `Pay the courier in cash when your order arrives. +${formatAed(codFee)} handling fee`,
+                        },
+                      ] as const
+                    ).map((opt) => (
+                      <label
+                        key={opt.value}
+                        className={`flex cursor-pointer items-start gap-3 border p-4 transition-colors ${
+                          paymentMethod === opt.value ? "border-ink bg-cream-dark/40" : "border-border hover:border-ink-soft"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value={opt.value}
+                          checked={paymentMethod === opt.value}
+                          onChange={() => setPaymentMethod(opt.value)}
+                          className="mt-1"
+                          style={{ accentColor: "var(--color-ink)" }}
+                        />
+                        <span>
+                          <span className="block text-sm font-medium text-ink">{opt.title}</span>
+                          <span className="block text-xs text-ink-soft">{opt.note}</span>
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+              )}
+
               <div>
                 <label className="label-caps mb-1 block text-ink-soft">Coupon Code</label>
                 <div className="flex gap-2">
@@ -380,7 +429,13 @@ export default function CheckoutPage() {
                   disabled={submitting}
                   className="flex-1 bg-royal py-3 label-caps text-cream hover:opacity-90 disabled:opacity-50"
                 >
-                  {submitting ? "Redirecting to payment…" : "Continue to Payment"}
+                  {submitting
+                    ? isCod
+                      ? "Placing your order…"
+                      : "Redirecting to payment…"
+                    : isCod
+                      ? "Place Order"
+                      : "Continue to Payment"}
                 </button>
               </div>
             </form>
@@ -432,6 +487,12 @@ export default function CheckoutPage() {
                     : formatAed(estimatedShipping)}
               </span>
             </div>
+            {isCod && (
+              <div className="flex justify-between text-ink-soft">
+                <span>Cash on delivery fee</span>
+                <span>{formatAed(codFee)}</span>
+              </div>
+            )}
           </div>
           <div className="mt-4 flex justify-between border-t border-border pt-4 font-medium text-ink">
             <span>Total</span>

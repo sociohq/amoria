@@ -91,6 +91,7 @@ function OrderSuccessContent() {
   }
 
   const isPaid = order.status !== "PENDING";
+  const isCod = order.paymentMethod === "COD";
   const showAccountNotice = isPaid && order.needsGuestVerification;
   const closed = order.status === "CANCELLED" || order.status === "REFUNDED";
   // How far along the order is: 0 awaiting payment, 1 ordered, 2 shipped, 3 delivered.
@@ -104,7 +105,9 @@ function OrderSuccessContent() {
       : stage === 2
         ? "Your order is on its way"
         : isPaid
-          ? "Thank you for your order"
+          ? isCod
+            ? "Your order is confirmed"
+            : "Thank you for your order"
           : "Order received";
   const intro = closed
     ? "This order is no longer active. Questions? Reply to your confirmation email."
@@ -113,7 +116,9 @@ function OrderSuccessContent() {
       : stage === 2
         ? "It has been handed to the courier. Follow it below."
         : isPaid
-          ? "Your payment was successful. We're getting your order ready and will email you the moment it ships."
+          ? isCod
+            ? `Thank you. Please pay ${formatAed(order.total)} in cash to the courier when your order arrives. We're getting it ready and will email you the moment it ships.`
+            : "Your payment was successful. We're getting your order ready and will email you the moment it ships."
           : "We're still confirming your payment. This page will update once it clears.";
 
   return (
@@ -179,8 +184,14 @@ function OrderSuccessContent() {
             <span className="shrink-0">{formatAed(item.unitPrice * item.quantity)}</span>
           </div>
         ))}
+        {isCod && order.codFee ? (
+          <div className="flex justify-between text-sm text-ink-soft">
+            <span>Cash on delivery fee</span>
+            <span>{formatAed(order.codFee)}</span>
+          </div>
+        ) : null}
         <div className="flex justify-between border-t border-border pt-3 font-medium text-ink">
-          <span>Total</span>
+          <span>{isCod && stage < 3 ? "To pay on delivery" : "Total"}</span>
           <span>{formatAed(order.total)}</span>
         </div>
       </div>
