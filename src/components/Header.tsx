@@ -78,7 +78,7 @@ function LanguageSelect({ className = "" }: { className?: string }) {
   );
 }
 
-export function Header({ categories, bannerHero = false }: { categories: Category[]; bannerHero?: boolean }) {
+export function Header({ categories }: { categories: Category[] }) {
   const { user, logout } = useAuth();
   const { openDrawer: openAuthDrawer } = useAuthDrawer();
   const { itemCount, openDrawer } = useCart();
@@ -120,7 +120,7 @@ export function Header({ categories, bannerHero = false }: { categories: Categor
   // treatment — logo/nav rows start see-through (the hero shows through)
   // and turn solid white once scrolled past it. Every other page is a
   // plain solid sticky header throughout.
-  const hasFullBleedHero = (pathname === "/" && !bannerHero) || pathname === "/our-story";
+  const hasFullBleedHero = pathname === "/" || pathname === "/our-story";
   const transparent = hasFullBleedHero && !scrolled;
 
   // Tracked on every page, not just home — the announcement bar collapses

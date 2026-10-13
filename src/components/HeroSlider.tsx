@@ -40,19 +40,12 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
 
   if (slides.length === 0) return null;
 
-  // When every slide is a finished banner, the section follows the picture's
-  // own 16:9 shape instead of filling the screen, so nothing gets cropped away
-  // on phones and tablets. Mixed sets keep the full-screen hero.
-  const bannerOnly = slides.every((s) => s.imageOnly);
-
   function goTo(i: number) {
     setIndex((i + slides.length) % slides.length);
   }
 
   return (
-    <section
-      className={`relative w-full overflow-hidden ${bannerOnly ? "aspect-video max-h-screen" : "h-screen"}`}
-    >
+    <section className="relative h-screen w-full overflow-hidden">
       {slides.map((slide, i) => {
         const visible = i === index;
         if (slide.imageOnly) {
