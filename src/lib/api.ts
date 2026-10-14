@@ -1,4 +1,9 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+// Server Components talk to the API directly on the same machine when INTERNAL_API_URL is set
+// (faster, and not counted against visitors' rate limits); browsers always use the public URL.
+const API_URL =
+  (typeof window === "undefined" ? process.env.INTERNAL_API_URL : undefined) ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:4000";
 
 export class ApiError extends Error {
   constructor(
