@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { getImageProps } from "next/image";
 import { HeroSlide } from "@/lib/types";
 
 // Same parallax feel as the old single-image Hero (see ParallaxHero.tsx) —
@@ -11,6 +11,37 @@ import { HeroSlide } from "@/lib/types";
 // several admin-managed slides.
 const PARALLAX_SPEED = 0.35;
 const AUTO_ADVANCE_MS = 7000;
+
+// A slide's picture, with an optional portrait version for phones. The browser
+// takes the phone picture on narrow screens and the main one everywhere else, so
+// a wide desktop picture never has to be squeezed into a tall phone screen.
+function HeroPicture({
+  src,
+  mobileSrc,
+  alt,
+  priority,
+  className,
+}: {
+  src: string;
+  mobileSrc?: string | null;
+  alt: string;
+  priority: boolean;
+  className: string;
+}) {
+  const common = { alt, fill: true, sizes: "100vw", priority } as const;
+  const {
+    props: { srcSet, ...img },
+  } = getImageProps({ ...common, src });
+  const mobileSet = mobileSrc ? getImageProps({ ...common, src: mobileSrc }).props.srcSet : undefined;
+  return (
+    <picture>
+      {mobileSet && <source media="(max-width: 767px)" srcSet={mobileSet} />}
+      <source srcSet={srcSet} />
+      {/* eslint-disable-next-line jsx-a11y/alt-text -- the alt is among the props from next/image's getImageProps */}
+      <img {...img} className={className} />
+    </picture>
+  );
+}
 
 export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
   const [index, setIndex] = useState(0);
@@ -74,23 +105,27 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
                   // as the other slides. The offsets are in box terms: the box
                   // starts 15% of the screen above the section (11.538% of itself).
                   <div className="absolute inset-x-0 bottom-[11.538%] top-[calc(118px+11.538%)] md:top-[calc(138px+11.538%)]">
-                    <Image
+                    <HeroPicture
                       src={slide.image}
+                      mobileSrc={slide.mobileImage}
                       alt=""
-                      fill
                       priority={i === 0}
-                      sizes="100vw"
-                      className="object-contain object-center md:object-cover md:object-top"
+                      // With a phone picture the phone screen is filled; without one, the
+                      // wide picture is shown whole instead of being cropped to a sliver.
+                      className={
+                        slide.mobileImage
+                          ? "object-cover object-center md:object-top"
+                          : "object-contain object-center md:object-cover md:object-top"
+                      }
                     />
                   </div>
                 ) : (
                   slide.image && (
-                    <Image
+                    <HeroPicture
                       src={slide.image}
+                      mobileSrc={slide.mobileImage}
                       alt={slide.heading}
-                      fill
                       priority={i === 0}
-                      sizes="100vw"
                       className="object-cover"
                     />
                   )
