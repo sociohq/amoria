@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/lib/cart-context";
@@ -19,6 +19,17 @@ const STEPS = [
   { n: 3, label: "Review & Pay" },
 ] as const;
 
+// The server's breakdown of what this order costs (POST /api/checkout/quote).
+interface Quote {
+  subtotal: number;
+  discount: number;
+  shippingFee: number;
+  codFee: number;
+  total: number;
+  coupon: { code: string; type: "PERCENTAGE" | "FIXED"; value: number } | null;
+  couponError: string | null;
+}
+
 const inputClass =
   "w-full border border-border bg-cream px-4 py-3 text-sm outline-none focus:border-royal disabled:opacity-60";
 
@@ -36,10 +47,15 @@ export default function CheckoutPage() {
   const [line2, setLine2] = useState("");
   const [city, setCity] = useState("");
   const [emirate, setEmirate] = useState("Dubai");
+  // What the customer has typed, and the code they actually applied. Whether the
+  // applied code works — and what it takes off — is decided by the server on every
+  // quote below, never worked out here.
   const [couponCode, setCouponCode] = useState("");
-  const [discount, setDiscount] = useState<number | null>(null);
+  const [appliedCode, setAppliedCode] = useState<string | null>(null);
   const [couponError, setCouponError] = useState<string | null>(null);
-  const [applyingCoupon, setApplyingCoupon] = useState(false);
+  const [quote, setQuote] = useState<Quote | null>(null);
+  const [quoting, setQuoting] = useState(false);
+  const quoteSeq = useRef(0);
 
   // A visitor who claimed the welcome offer has their code waiting here — it
   // is only pre-filled, they still press Apply.
@@ -58,12 +74,6 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  // Shown as a real, computed shipping line in the summary sidebar
-  // throughout checkout, rather than deferring "calculated at checkout"
-  // — both thresholds are already public (ShippingProgress uses the
-  // same endpoint for the cart drawer's free-shipping nudge).
-  const [shippingFee, setShippingFee] = useState<number | null>(null);
-  const [freeShippingThreshold, setFreeShippingThreshold] = useState<number | null>(null);
   // Cash on delivery is offered when the admin has it switched on; it adds a fee.
   const [codEnabled, setCodEnabled] = useState(false);
   const [codFee, setCodFee] = useState(0);
@@ -72,12 +82,10 @@ export default function CheckoutPage() {
   useEffect(() => {
     getPublicSettings()
       .then((s) => {
-        setShippingFee(s.standardShippingFee);
-        setFreeShippingThreshold(s.freeShippingThreshold);
         setCodEnabled(Boolean(s.codEnabled));
         setCodFee(s.codFee ?? 0);
       })
-      .catch(() => {}); // sidebar just shows "Calculated at checkout" instead
+      .catch(() => {}); // cash on delivery just isn't offered
   }, []);
 
   // No login required to buy — a guest checks out with just their details
@@ -86,42 +94,68 @@ export default function CheckoutPage() {
   const checkoutName = user ? user.name : fullName;
   const checkoutEmail = user ? user.email : email;
 
-  const discountedSubtotal = subtotal - (discount ?? 0);
-  const estimatedShipping =
-    shippingFee == null
-      ? null
-      : freeShippingThreshold != null && discountedSubtotal >= freeShippingThreshold
-        ? 0
-        : shippingFee;
   const isCod = codEnabled && paymentMethod === "COD";
-  const codCharge = isCod ? codFee : 0;
-  const estimatedTotal =
-    (estimatedShipping == null ? discountedSubtotal : discountedSubtotal + estimatedShipping) + codCharge;
 
-  async function applyCoupon() {
-    if (!couponCode.trim()) return;
-    setApplyingCoupon(true);
-    setCouponError(null);
-    try {
-      const result = await apiFetch<{ discount: number }>("/api/coupons/validate", {
+  // The summary shows the server's numbers — the same calculation the order and
+  // the payment are built from — and asks again whenever anything that changes
+  // the price changes: the cart, the applied code, the payment method.
+  const cartKey = items.map((i) => `${i.variantId}:${i.quantity}`).join(",");
+  const guestEmail = user ? undefined : email || undefined;
+  useEffect(() => {
+    if (cartLoading || items.length === 0) return;
+    const seq = ++quoteSeq.current;
+    // A tick of debounce so typing an email or clicking + doesn't fire a request per keystroke.
+    const timer = setTimeout(() => {
+      setQuoting(true);
+      apiFetch<Quote>("/api/checkout/quote", {
         method: "POST",
-        body: JSON.stringify({ code: couponCode, cartTotal: subtotal, email: user ? undefined : checkoutEmail }),
-      });
-      setDiscount(result.discount);
-    } catch (err) {
-      setDiscount(null);
-      setCouponError(err instanceof ApiError ? err.message : "Could not validate coupon");
-      // A spent or expired welcome code shouldn't keep re-appearing.
-      try {
-        if (localStorage.getItem(WELCOME_CODE_KEY) === couponCode.trim().toUpperCase() && err instanceof ApiError && /already used|usage limit|expired/i.test(err.message)) {
-          localStorage.removeItem(WELCOME_CODE_KEY);
-        }
-      } catch {
-        // Nothing to clean up if storage isn't available.
-      }
-    } finally {
-      setApplyingCoupon(false);
-    }
+        body: JSON.stringify({
+          paymentMethod: isCod ? "COD" : "CARD",
+          couponCode: appliedCode ?? undefined,
+          email: guestEmail,
+          items: user ? undefined : items.map((i) => ({ variantId: i.variantId, quantity: i.quantity })),
+        }),
+      })
+        .then((q) => {
+          if (seq !== quoteSeq.current) return; // an older answer arriving late
+          setQuote(q);
+          if (appliedCode && q.couponError) {
+            // The code stopped applying (or never did): say so, and drop it so the
+            // next numbers shown really are what will be charged.
+            setCouponError(q.couponError);
+            setAppliedCode(null);
+            try {
+              if (localStorage.getItem(WELCOME_CODE_KEY) === appliedCode && /already used|usage limit|expired/i.test(q.couponError)) {
+                localStorage.removeItem(WELCOME_CODE_KEY);
+              }
+            } catch {
+              // Nothing to clean up if storage isn't available.
+            }
+          }
+        })
+        .catch(() => {
+          if (seq === quoteSeq.current) setQuote(null);
+        })
+        .finally(() => {
+          if (seq === quoteSeq.current) setQuoting(false);
+        });
+    }, 250);
+    return () => clearTimeout(timer);
+    // cartKey stands in for items: it changes exactly when a line or quantity does.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cartKey, cartLoading, appliedCode, isCod, guestEmail, user?.id]);
+
+  function applyCoupon() {
+    const code = couponCode.trim().toUpperCase();
+    if (!code) return;
+    setCouponError(null);
+    setAppliedCode(code);
+  }
+
+  function removeCoupon() {
+    setAppliedCode(null);
+    setCouponError(null);
+    setCouponCode("");
   }
 
   async function handlePay(e: React.FormEvent) {
@@ -133,7 +167,7 @@ export default function CheckoutPage() {
         method: "POST",
         body: JSON.stringify({
           paymentMethod: isCod ? "COD" : "CARD",
-          couponCode: discount !== null ? couponCode : undefined,
+          couponCode: appliedCode ?? undefined,
           email: user ? undefined : checkoutEmail,
           name: user ? undefined : checkoutName,
           items: user ? undefined : items.map((i) => ({ variantId: i.variantId, quantity: i.quantity })),
@@ -399,19 +433,42 @@ export default function CheckoutPage() {
                     placeholder="Coupon code"
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value)}
-                    className="flex-1 border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-royal"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        applyCoupon();
+                      }
+                    }}
+                    disabled={appliedCode !== null}
+                    className="flex-1 border border-border bg-cream px-3 py-2 text-sm outline-none focus:border-royal disabled:opacity-60"
                   />
-                  <button
-                    type="button"
-                    onClick={applyCoupon}
-                    disabled={applyingCoupon}
-                    className="border border-ink px-4 py-2 label-caps text-ink hover:bg-ink hover:text-cream"
-                  >
-                    Apply
-                  </button>
+                  {appliedCode ? (
+                    <button
+                      type="button"
+                      onClick={removeCoupon}
+                      className="border border-ink px-4 py-2 label-caps text-ink hover:bg-ink hover:text-cream"
+                    >
+                      Remove
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={applyCoupon}
+                      disabled={quoting}
+                      className="border border-ink px-4 py-2 label-caps text-ink hover:bg-ink hover:text-cream disabled:opacity-50"
+                    >
+                      Apply
+                    </button>
+                  )}
                 </div>
                 {couponError && <p className="mt-2 text-sm text-crimson">{couponError}</p>}
-                {discount !== null && <p className="mt-2 text-sm text-royal">Coupon applied: -{formatAed(discount)}</p>}
+                {appliedCode && quote?.coupon && quote.discount > 0 && (
+                  <p className="mt-2 text-sm text-royal">
+                    Code {quote.coupon.code} applied:{" "}
+                    {quote.coupon.type === "PERCENTAGE" ? `${quote.coupon.value}% off your items` : "discount on your items"} (−
+                    {formatAed(quote.discount)}). Delivery is not discounted.
+                  </p>
+                )}
               </div>
 
               {error && <p className="text-sm text-crimson">{error}</p>}
@@ -426,7 +483,7 @@ export default function CheckoutPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={submitting}
+                  disabled={submitting || quoting || !quote}
                   className="flex-1 bg-royal py-3 label-caps text-cream hover:opacity-90 disabled:opacity-50"
                 >
                   {submitting
@@ -466,37 +523,31 @@ export default function CheckoutPage() {
               </div>
             ))}
           </div>
-          <div className="mt-4 space-y-2 text-sm">
+          <div className={`mt-4 space-y-2 text-sm transition-opacity ${quoting ? "opacity-60" : ""}`}>
             <div className="flex justify-between text-ink">
               <span>Subtotal</span>
-              <span>{formatAed(subtotal)}</span>
+              <span>{formatAed(quote ? quote.subtotal : subtotal)}</span>
             </div>
-            {discount !== null && (
+            {quote && quote.discount > 0 && (
               <div className="flex justify-between text-royal">
-                <span>Discount</span>
-                <span>-{formatAed(discount)}</span>
+                <span>Discount{quote.coupon ? ` (${quote.coupon.code})` : ""}</span>
+                <span>-{formatAed(quote.discount)}</span>
               </div>
             )}
             <div className="flex justify-between text-ink-soft">
               <span>Shipping</span>
-              <span>
-                {estimatedShipping == null
-                  ? "Calculated at checkout"
-                  : estimatedShipping === 0
-                    ? "Free"
-                    : formatAed(estimatedShipping)}
-              </span>
+              <span>{!quote ? "Calculated at checkout" : quote.shippingFee === 0 ? "Free" : formatAed(quote.shippingFee)}</span>
             </div>
-            {isCod && (
+            {quote && quote.codFee > 0 && (
               <div className="flex justify-between text-ink-soft">
                 <span>Cash on delivery fee</span>
-                <span>{formatAed(codFee)}</span>
+                <span>{formatAed(quote.codFee)}</span>
               </div>
             )}
           </div>
           <div className="mt-4 flex justify-between border-t border-border pt-4 font-medium text-ink">
             <span>Total</span>
-            <span>{formatAed(estimatedTotal)}</span>
+            <span>{quote ? formatAed(quote.total) : "—"}</span>
           </div>
         </div>
       </div>
