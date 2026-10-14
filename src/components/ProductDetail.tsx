@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useFreeShippingThreshold } from "@/lib/useFreeShippingThreshold";
 import { useRouter } from "next/navigation";
 import { Product } from "@/lib/types";
 import { compareFor, formatAed, percentOff } from "@/lib/money";
@@ -16,6 +17,7 @@ import { DiscountIcon, AuthenticIcon, ShippingIcon } from "./icons/TrustIcons";
 
 export function ProductDetail({ product }: { product: Product }) {
   const router = useRouter();
+  const freeFrom = useFreeShippingThreshold();
   const { addItem } = useCart();
   const [variantId, setVariantId] = useState(product.variants[0]?.id);
   const [quantity, setQuantity] = useState(1);
@@ -123,7 +125,7 @@ export function ProductDetail({ product }: { product: Product }) {
           {[
             { icon: DiscountIcon, label: "Up To 85% Off", sub: "On All Your Perfume Orders" },
             { icon: AuthenticIcon, label: "100% Authentic", sub: "Original & Verified Products" },
-            { icon: ShippingIcon, label: "Free Shipping", sub: "All Orders Above AED 99" },
+            { icon: ShippingIcon, label: "Free Shipping", sub: freeFrom ? `All Orders Above AED ${freeFrom}` : "On Qualifying Orders" },
           ].map((b) => (
             <div key={b.label} className="flex flex-col items-center">
               <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gold/10 text-royal">
@@ -187,7 +189,7 @@ export function ProductDetail({ product }: { product: Product }) {
               </dl>
             </Accordion>
           )}
-          {productInfoSections(product).map((section) => (
+          {productInfoSections(product, freeFrom).map((section) => (
             <Accordion key={section.heading} title={section.heading}>
               <p className="whitespace-pre-line">{section.content}</p>
             </Accordion>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useFreeShippingThreshold } from "@/lib/useFreeShippingThreshold";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { Product, ProductVariant } from "@/lib/types";
@@ -90,6 +91,7 @@ export function QuickShopSheet({
   onAdd: (quantity: number) => void;
   adding: boolean;
 }) {
+  const freeFrom = useFreeShippingThreshold();
   const [quantity, setQuantity] = useState(1);
   const [shown, setShown] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -201,7 +203,9 @@ export function QuickShopSheet({
               </span>
             </button>
           </div>
-          <p className="mt-4 text-center text-xs text-ink-soft/80">Free delivery in UAE on orders above AED 250</p>
+          <p className="mt-4 text-center text-xs text-ink-soft/80">
+            {freeFrom ? `Free delivery in UAE on orders above AED ${freeFrom}` : "Free delivery in UAE on qualifying orders"}
+          </p>
         </div>
       </div>
     </div>,

@@ -33,7 +33,16 @@ export function formatPostDate(iso: string): string {
 // Shared by the storefront fallback below and the admin form's initial
 // pre-fill for a product with no customized sections yet — kept as one
 // function so the two never drift out of sync.
-export function defaultInfoSections({ isScentCapable, sizes }: { isScentCapable: boolean; sizes: string }): InfoSection[] {
+export function defaultInfoSections({
+  isScentCapable,
+  sizes,
+  freeShippingFrom,
+}: {
+  isScentCapable: boolean;
+  sizes: string;
+  // Free-delivery minimum (AED) from settings; without it the wording carries no number.
+  freeShippingFrom?: number | null;
+}): InfoSection[] {
   return [
     {
       heading: "Sizes and Refills",
@@ -50,7 +59,9 @@ export function defaultInfoSections({ isScentCapable, sizes }: { isScentCapable:
       : []),
     {
       heading: "Shipping, Returns and Questions",
-      content: "Free shipping on orders above AED 99. Unopened items can be returned within 14 days of delivery.",
+      content: `${
+        freeShippingFrom ? `Free shipping on orders above AED ${freeShippingFrom}.` : "Free shipping on qualifying orders."
+      } Unopened items can be returned within 14 days of delivery.`,
     },
   ];
 }
@@ -62,11 +73,12 @@ export function defaultInfoSections({ isScentCapable, sizes }: { isScentCapable:
 // them customized yet (new products start with these same defaults
 // pre-filled in the admin form, so this mostly exists for products that
 // existed before the field did).
-export function productInfoSections(product: Product): InfoSection[] {
+export function productInfoSections(product: Product, freeShippingFrom?: number | null): InfoSection[] {
   if (product.infoSections && product.infoSections.length > 0) return product.infoSections;
 
   return defaultInfoSections({
     isScentCapable: product.productType === "PERFUME" || product.productType === "HAIR_CARE",
     sizes: product.variants.map((v) => v.size).join(", "),
+    freeShippingFrom,
   });
 }

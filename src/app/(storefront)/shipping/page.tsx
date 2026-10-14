@@ -1,15 +1,31 @@
 import { LegalPage } from "@/components/LegalPage";
+import { getPublicSettings } from "@/lib/settings";
 
-export const metadata = {
-  title: "Shipping & Delivery",
-  description: "Delivery across the UAE, usually within 1-3 working days. Free delivery on orders above AED 250.",
-};
+// The free-delivery minimum comes from admin → Settings, so this page can't
+// disagree with what checkout actually charges.
+async function freeDeliveryFrom(): Promise<number | null> {
+  try {
+    const { freeShippingThreshold } = await getPublicSettings();
+    return freeShippingThreshold > 0 ? freeShippingThreshold : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function generateMetadata() {
+  const from = await freeDeliveryFrom();
+  return {
+    title: "Shipping & Delivery",
+    description: `Delivery across the UAE, usually within 1-3 working days.${from ? ` Free delivery on orders above AED ${from}.` : ""}`,
+  };
+}
 
 
 // Verbatim from the site owner's "Delivery and shipping policy amoria.pdf".
 // No page existed for this policy before — added and linked from the
 // footer's Legal & Policies column alongside Terms/Privacy/Returns.
-export default function ShippingPage() {
+export default async function ShippingPage() {
+  const from = await freeDeliveryFrom();
   return (
     <LegalPage
       title="Delivery & Shipping Policy"
@@ -66,8 +82,10 @@ export default function ShippingPage() {
             {
               type: "ul",
               items: [
-                "Free delivery on orders above AED 200.",
-                "Orders below AED 200 may be subject to a standard delivery charge displayed at checkout.",
+                from ? `Free delivery on orders above AED ${from}.` : "Free delivery on qualifying orders.",
+                from
+                  ? `Orders below AED ${from} may be subject to a standard delivery charge displayed at checkout.`
+                  : "Other orders may be subject to a standard delivery charge displayed at checkout.",
                 "Any promotional free shipping offers will be clearly communicated on the website.",
               ],
             },

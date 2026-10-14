@@ -187,7 +187,11 @@ export function Header({ categories }: { categories: Category[] }) {
         </div>
 
         <div className="relative bg-ink px-6 py-2 text-center">
-          <p className="text-xs tracking-wide text-cream">Free Delivery in UAE for orders above AED 250</p>
+          <p className="text-xs tracking-wide text-cream">
+            {settings && settings.freeShippingThreshold > 0
+              ? `Free Delivery in UAE for orders above AED ${settings.freeShippingThreshold}`
+              : "Free Delivery in UAE on qualifying orders"}
+          </p>
           <div className="absolute inset-y-0 right-6 hidden items-center gap-4 text-xs text-cream/80 md:flex">
             <Link href="/stores" className="flex items-center gap-1 transition-colors hover:text-cream">
               <PinIcon />
