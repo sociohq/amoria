@@ -20,6 +20,7 @@ import { WHATSAPP_NUMBER } from "./WhatsAppButton";
 
 // A one-line caption under each standard section's title on phones.
 const SECTION_SUBTITLES: Record<string, string> = {
+  Description: "What it is and how it wears",
   "Scent Pyramid": "Top, heart and base notes",
   "Perfumer's Note": "The story behind the scent",
   "Fragrance Details": "Family, longevity, sillage",
@@ -307,6 +308,11 @@ export function ProductDetail({ product }: { product: Product }) {
 
           <h2 className="mt-8 border-t border-border pt-8 font-serif text-2xl tracking-normal! text-ink lg:hidden">Product information</h2>
           <div className="mt-3 lg:mt-8">
+            {product.description?.trim() && (
+              <Accordion title="Description" subtitle={SECTION_SUBTITLES.Description} defaultOpen>
+                <p className="whitespace-pre-line">{product.description.trim()}</p>
+              </Accordion>
+            )}
             {hasNotes && (
               <Accordion title="Scent Pyramid" subtitle={SECTION_SUBTITLES["Scent Pyramid"]} defaultOpen>
                 <div className="lg:hidden">
