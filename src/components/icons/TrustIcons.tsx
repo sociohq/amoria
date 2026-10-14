@@ -30,3 +30,16 @@ export function ShippingIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
+// A headset: someone is there to help.
+export function SupportIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="20 20 34 34" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M28 38V36A9 9 0 0 1 46 36V38" />
+      <rect x="26" y="37" width="4.5" height="8" rx="1.8" />
+      <rect x="43.5" y="37" width="4.5" height="8" rx="1.8" />
+      <path d="M46 45C46 47.2 44.2 48.5 41.5 48.5H38.5" />
+      <circle cx="37" cy="48.5" r="1.1" />
+    </svg>
+  );
+}

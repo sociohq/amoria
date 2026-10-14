@@ -13,7 +13,7 @@ import { WishlistButton } from "./WishlistButton";
 import { ProductGallery } from "./ProductGallery";
 import { galleryFor, imageForSize } from "@/lib/productImages";
 import { ScentPyramid } from "./ScentPyramid";
-import { DiscountIcon, AuthenticIcon, ShippingIcon } from "./icons/TrustIcons";
+import { SupportIcon, AuthenticIcon, ShippingIcon } from "./icons/TrustIcons";
 
 export function ProductDetail({ product }: { product: Product }) {
   const router = useRouter();
@@ -123,7 +123,7 @@ export function ProductDetail({ product }: { product: Product }) {
 
         <div className="mt-8 grid grid-cols-3 gap-4 border-y border-border py-6 text-center">
           {[
-            { icon: DiscountIcon, label: "Up To 85% Off", sub: "On All Your Perfume Orders" },
+            { icon: SupportIcon, label: "24/7 Support", sub: "We're Here To Help" },
             { icon: AuthenticIcon, label: "100% Authentic", sub: "Original & Verified Products" },
             { icon: ShippingIcon, label: "Free Shipping", sub: freeFrom ? `All Orders Above AED ${freeFrom}` : "On Qualifying Orders" },
           ].map((b) => (
