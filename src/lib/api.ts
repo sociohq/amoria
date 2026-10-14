@@ -24,6 +24,9 @@ export async function apiFetch<T>(path: string, options: RequestInit = {}): Prom
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      // Server-side only (the variable doesn't exist in browsers): tells the API this is our own
+      // storefront server, so page renders aren't counted against visitors' rate limits.
+      ...(typeof window === "undefined" && process.env.INTERNAL_API_KEY ? { "X-Internal-Key": process.env.INTERNAL_API_KEY } : {}),
       ...options.headers,
     },
     cache: "no-store",
