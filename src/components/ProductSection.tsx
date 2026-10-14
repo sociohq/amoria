@@ -28,10 +28,12 @@ export function ProductSection({
   eyebrow,
   title,
   products,
+  viewAllHref = "/shop",
 }: {
   eyebrow: string;
   title: string;
   products: Product[];
+  viewAllHref?: string;
 }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
 
@@ -57,7 +59,7 @@ export function ProductSection({
           <h2 className="mt-1 font-serif text-3xl text-ink">{title}</h2>
         </div>
         <div className="hidden items-center gap-5 sm:flex">
-          <Link href="/shop" className="text-sm text-ink underline underline-offset-4 hover:text-royal">
+          <Link href={viewAllHref} className="text-sm text-ink underline underline-offset-4 hover:text-royal">
             View all
           </Link>
           {products.length > 4 && (
@@ -77,7 +79,7 @@ export function ProductSection({
         ))}
       </div>
       <Link
-        href="/shop"
+        href={viewAllHref}
         className="mt-8 block border border-ink py-3 text-center label-caps text-ink hover:bg-ink hover:text-cream sm:hidden"
       >
         View All

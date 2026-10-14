@@ -1,4 +1,4 @@
-import { listFeaturedMix, listCategories, getShopTheLook, getFeaturedReviews, getGenderShowcase } from "@/lib/products";
+import { listFeaturedMix, getHomeSections, listCategories, getShopTheLook, getFeaturedReviews, getGenderShowcase } from "@/lib/products";
 import { listHeroSlides } from "@/lib/heroSlides";
 import { HeroSlider } from "@/components/HeroSlider";
 import { CategoryShowcase } from "@/components/CategoryShowcase";
@@ -15,8 +15,12 @@ import { OurStores } from "@/components/OurStores";
 import { Reveal } from "@/components/Reveal";
 
 export default async function HomePage() {
-  const [featured, categories, shopTheLook, reviews, genderShowcase, heroSlides] = await Promise.all([
-    listFeaturedMix(),
+  const [homeSections, categories, shopTheLook, reviews, genderShowcase, heroSlides] = await Promise.all([
+    // The rows are set up in the admin; if that can't be reached, fall back to the plain Featured mix.
+    getHomeSections().catch(async () => {
+      const products = await listFeaturedMix().catch(() => []);
+      return [{ key: "featured", eyebrow: "Extrait de Parfum", title: "Featured Products", viewAllHref: "/shop", products }];
+    }),
     listCategories().catch(() => []),
     getShopTheLook().catch(() => null),
     getFeaturedReviews().catch(() => []),
@@ -35,9 +39,16 @@ export default async function HomePage() {
         <CustomizePerfumeBanner />
       </Reveal>
       {genderShowcase && <GenderShowcase section={genderShowcase} />}
-      <Reveal>
-        <ProductSection eyebrow="Extrait de Parfum" title="Featured Products" products={featured} />
-      </Reveal>
+      {homeSections.map((section) => (
+        <Reveal key={section.key}>
+          <ProductSection
+            eyebrow={section.eyebrow}
+            title={section.title}
+            products={section.products}
+            viewAllHref={section.viewAllHref}
+          />
+        </Reveal>
+      ))}
       <Reveal>
         <BrandLogoGrid />
       </Reveal>

@@ -80,6 +80,20 @@ export async function getRecommendedProducts(slug: string): Promise<Product[]> {
   return products;
 }
 
+// The homepage's product rows ("Featured Products", "New Arrivals", …), as set up in
+// the admin: heading, link and the products to show.
+export interface HomeSectionData {
+  key: string;
+  eyebrow: string;
+  title: string;
+  viewAllHref: string;
+  products: Product[];
+}
+export async function getHomeSections(): Promise<HomeSectionData[]> {
+  const { sections } = await apiFetch<{ sections: HomeSectionData[] }>("/api/home-sections");
+  return sections;
+}
+
 // The homepage "Featured Products" row: the ten New Arrival perfumes mixed in
 // with the Premium Fragrance and Inspired Perfumes ranges (one of each in turn),
 // instead of simply the newest products in the shop — which, as the catalogue
