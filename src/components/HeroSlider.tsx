@@ -91,58 +91,26 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
               visible ? "opacity-100" : "pointer-events-none opacity-0"
             }`}
           >
-            <div
-              className="absolute inset-x-0 -top-[15%] h-[130%]"
-              style={{ transform: `translateY(${scrollY * PARALLAX_SPEED}px)` }}
-            >
+            {banner && slide.image ? (
+              // A finished banner fills the hero edge to edge exactly like the other slides, under the
+              // header. It keeps its whole top (no parallax overscan, which would crop the baked-in
+              // title) and only takes the slow zoom.
+              <div className="hero-zoom absolute inset-0">
+                <HeroPicture
+                  src={slide.image}
+                  mobileSrc={slide.mobileImage}
+                  alt=""
+                  priority={i === 0}
+                  className="object-cover object-top"
+                />
+              </div>
+            ) : (
               <div
-                className="hero-zoom relative h-full w-full"
+                className="absolute inset-x-0 -top-[15%] h-[130%]"
+                style={{ transform: `translateY(${scrollY * PARALLAX_SPEED}px)` }}
               >
-                {slide.image && banner ? (
-                  // Finished banner artwork: it carries its own text, so it sits
-                  // below the fixed header (which would otherwise cover the
-                  // title) and is shown as-is, with the same parallax + slow zoom
-                  // as the other slides. The offsets are in box terms: the box
-                  // starts 15% of the screen above the section (11.538% of itself).
-                  // A phone picture is made for the whole phone screen, so it runs up under the
-                  // header like the other slides; the wide picture keeps clear of the header.
-                  <>
-                  {/* The strip behind the header is filled with a soft, enlarged blur of the top
-                      of the same picture, so the hero reads as one full-bleed image rather than
-                      a dark bar above it. (Not needed with a phone picture, which runs to the top.) */}
-                  <div
-                    aria-hidden
-                    className={`absolute inset-x-0 top-0 h-[calc(118px+11.538%)] overflow-hidden bg-[#c9b087] md:h-[calc(138px+11.538%)] ${
-                      slide.mobileImage ? "max-md:hidden" : ""
-                    }`}
-                  >
-                    {/* Four times taller than the strip, so only the picture's top edge shows (soft sky and marble, never the bottles). */}
-                    <div className="absolute inset-x-0 top-0 h-[400%]">
-                      <HeroPicture src={slide.image} alt="" priority={false} className="scale-110 object-cover object-top blur-xl" />
-                    </div>
-                  </div>
-                  <div
-                    className={`absolute inset-x-0 bottom-[11.538%] md:top-[calc(138px+11.538%)] ${
-                      slide.mobileImage ? "top-[11.538%]" : "top-[calc(118px+11.538%)]"
-                    }`}
-                  >
-                    <HeroPicture
-                      src={slide.image}
-                      mobileSrc={slide.mobileImage}
-                      alt=""
-                      priority={i === 0}
-                      // With a phone picture the phone screen is filled; without one, the
-                      // wide picture is shown whole instead of being cropped to a sliver.
-                      className={
-                        slide.mobileImage
-                          ? "object-cover object-center md:object-top"
-                          : "object-contain object-center md:object-cover md:object-top"
-                      }
-                    />
-                  </div>
-                  </>
-                ) : (
-                  slide.image && (
+                <div className="hero-zoom relative h-full w-full">
+                  {slide.image && (
                     <HeroPicture
                       src={slide.image}
                       mobileSrc={slide.mobileImage}
@@ -150,10 +118,10 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
                       priority={i === 0}
                       className="object-cover"
                     />
-                  )
-                )}
+                  )}
+                </div>
               </div>
-            </div>
+            )}
             {!banner && (
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/45 via-black/15 to-transparent" />
             )}
@@ -163,7 +131,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
                 {/* A soft dark shade across the top keeps the header's logo and menu readable over the picture. */}
                 <div
                   aria-hidden
-                  className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black/65 via-black/30 to-transparent"
+                  className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/50 via-black/20 to-transparent"
                 />
                 <h1 className="sr-only">{slide.heading}</h1>
                 {slide.ctaLink && (
