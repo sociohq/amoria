@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import type { ReactNode } from "react";
 import Image from "next/image";
 
 interface GalleryImage {
@@ -15,7 +16,19 @@ interface GalleryImage {
 // you're on; on desktop the same strip is driven by arrow buttons and the
 // thumbnails. Scroll position is the source of truth, so a swipe, a
 // thumbnail tap and the arrows all stay in step.
-export function ProductGallery({ images, name }: { images: GalleryImage[]; name: string }) {
+export function ProductGallery({
+  images,
+  name,
+  label,
+  heart,
+}: {
+  images: GalleryImage[];
+  name: string;
+  // Phones: a small pill in the top-right corner (e.g. the concentration) …
+  label?: string | null;
+  // … and a slot for the wishlist heart in the bottom-right corner.
+  heart?: ReactNode;
+}) {
   const trackRef = useRef<HTMLDivElement>(null);
   const frame = useRef<number | null>(null);
   const [active, setActive] = useState(0);
@@ -49,7 +62,7 @@ export function ProductGallery({ images, name }: { images: GalleryImage[]; name:
           {images.map((img, i) => (
             <div
               key={img.id}
-              className="relative aspect-square w-full shrink-0 snap-center bg-cream-dark lg:aspect-auto lg:h-[calc(100vh-14rem)]"
+              className="relative aspect-[3/4] w-full shrink-0 snap-center bg-[#f3f0f1] lg:aspect-auto lg:h-[calc(100vh-14rem)] lg:bg-cream-dark"
             >
               {img.url ? (
                 <Image
@@ -94,20 +107,30 @@ export function ProductGallery({ images, name }: { images: GalleryImage[]; name:
                 <path d="m9 6 6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
-            <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center gap-1.5 lg:hidden" aria-hidden>
-              {images.map((img, i) => (
-                <span
-                  key={img.id}
-                  className={`h-1.5 rounded-full transition-all ${i === active ? "w-5 bg-ink" : "w-1.5 bg-ink/30"}`}
-                />
-              ))}
-            </div>
+            <span className="pointer-events-none absolute bottom-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-ink lg:hidden">
+              {active + 1} / {images.length}
+            </span>
           </>
         )}
+        {label && (
+          <span className="pointer-events-none absolute right-4 top-4 rounded-full bg-white/95 px-3.5 py-1.5 text-[13px] font-medium text-ink lg:hidden">
+            {label}
+          </span>
+        )}
+        {heart && <div className="absolute bottom-4 right-4 lg:hidden">{heart}</div>}
       </div>
 
       {many && (
-        <div className="no-scrollbar mt-4 flex gap-3 overflow-x-auto">
+        <div className="relative h-[3px] w-full bg-border lg:hidden" aria-hidden>
+          <div
+            className="absolute inset-y-0 left-0 bg-ink transition-transform duration-300"
+            style={{ width: `${100 / images.length}%`, transform: `translateX(${active * 100}%)` }}
+          />
+        </div>
+      )}
+
+      {many && (
+        <div className="no-scrollbar mt-4 hidden gap-3 overflow-x-auto lg:flex">
           {images.map((img, i) => (
             <button
               key={img.id}

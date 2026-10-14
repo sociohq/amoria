@@ -154,7 +154,12 @@ export function Header({ categories }: { categories: Category[] }) {
   const iconColor = transparent ? "text-cream" : "text-ink";
 
   return (
-    <header className={hasFullBleedHero ? "fixed inset-x-0 top-0 z-40" : "sticky top-0 z-40"}>
+    <header
+      className={`${hasFullBleedHero ? "fixed inset-x-0 top-0 z-40" : "sticky top-0 z-40"} ${
+        // Product pages bring their own compact bar on phones and tablets (ProductMobileHeader).
+        pathname.startsWith("/product/") ? "max-lg:hidden" : ""
+      }`}
+    >
       {/* Backdrop scrim behind the mega menu — dims the rest of the page so
           the header + dropdown stay the visual focus. First child so it
           paints under the rest of the header's own (later-DOM) chrome. */}

@@ -349,3 +349,9 @@ body {
     translate: 0 -4.25rem;
   }
 }
+/* Same for the product page's sticky price / Add to cart bar (phones and tablets). */
+@media (max-width: 1023px) {
+  html[data-pdp-bar] .fab-shift {
+    translate: 0 -5rem;
+  }
+}

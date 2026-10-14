@@ -42,3 +42,35 @@ export function ScentPyramid({ top, heart, base }: { top: string[]; heart: strin
     </div>
   );
 }
+
+const TileIcon = ({ kind }: { kind: "top" | "heart" | "base" }) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    {kind === "top" && <path d="M12 3c3.5 4.2 5.5 7 5.5 10a5.5 5.5 0 0 1-11 0c0-3 2-5.8 5.5-10Z" />}
+    {kind === "heart" && <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z" />}
+    {kind === "base" && <path d="M12 4 4 19h16L12 4ZM8.5 14h7M10.2 10h3.6" />}
+  </svg>
+);
+
+// The same notes as three tiles side by side — easier to read on a phone than the
+// stepped triangle. Only tiers that have notes are shown.
+export function ScentTiles({ top, heart, base }: { top: string[]; heart: string[]; base: string[] }) {
+  const tiers = [
+    { kind: "top" as const, label: "Top", notes: top },
+    { kind: "heart" as const, label: "Heart", notes: heart },
+    { kind: "base" as const, label: "Base", notes: base },
+  ].filter((t) => t.notes.length > 0);
+  if (tiers.length === 0) return null;
+  return (
+    <div className={`grid gap-2 ${tiers.length === 1 ? "grid-cols-1" : tiers.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}>
+      {tiers.map((t) => (
+        <div key={t.kind} className="flex flex-col items-center rounded-lg bg-white px-2 py-4 text-center">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gold/15 text-royal">
+            <TileIcon kind={t.kind} />
+          </span>
+          <span className="mt-2 text-[10px] font-medium uppercase tracking-[2px] text-ink-soft">{t.label}</span>
+          <span className="mt-1 font-serif text-[17px] leading-snug text-ink">{t.notes.join(", ")}</span>
+        </div>
+      ))}
+    </div>
+  );
+}

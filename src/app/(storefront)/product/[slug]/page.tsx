@@ -45,10 +45,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const recommended = await recommendedPromise;
 
   return (
-    <div>
+    // Room at the bottom for the phone's sticky price / Add to cart bar.
+    <div className="pb-24 lg:pb-0">
       <ProductDetail product={product} />
       <ReviewsSection eyebrow="Customer Reviews" title="What They're Saying" reviews={product.reviews ?? []} />
-      <ReviewForm productId={product.id} productName={cardDisplayName(product.name)} />
+      <div id="write-review" className="scroll-mt-20">
+        <ReviewForm productId={product.id} productName={cardDisplayName(product.name)} />
+      </div>
       <ProductSection eyebrow="You May Also Like" title="Recommended For You" products={recommended} />
     </div>
   );

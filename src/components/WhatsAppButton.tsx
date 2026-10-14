@@ -1,6 +1,6 @@
 // Same phone number already used for the Contact page's "tel:" link, in
 // wa.me's required digits-only format (no "+", no spaces).
-const WHATSAPP_NUMBER = "971507550447";
+export const WHATSAPP_NUMBER = "971507550447";
 
 // Floating bottom-left button — bottom-right is already taken by the
 // AuroraMark "Find Your Scent" pill, so this sits on the opposite corner
