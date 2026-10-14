@@ -16,6 +16,8 @@ interface ShopFilterDrawerProps {
   // The actual min/max price across the catalog — the slider's draggable
   // bounds, so they always match what's really for sale.
   priceBounds: { min: number; max: number };
+  // "bar" is the phone listing's bottom bar button (label + status); "inline" the desktop text button.
+  variant?: "inline" | "bar";
 }
 
 // Mirrors the header mega menu's grouping (see Header.tsx) so "Filter"
@@ -34,6 +36,7 @@ export function ShopFilterDrawer({
   currentMinPrice,
   currentMaxPrice,
   priceBounds,
+  variant = "inline",
 }: ShopFilterDrawerProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -100,6 +103,32 @@ export function ShopFilterDrawer({
 
   return (
     <>
+      {variant === "bar" ? (
+        <button
+          type="button"
+          onClick={openDrawer}
+          aria-haspopup="dialog"
+          className="flex items-center justify-between gap-3 px-5 py-3 text-left"
+        >
+          <span className="min-w-0">
+            <span className="block text-[10px] font-medium uppercase tracking-[2px] text-ink-soft">Filter</span>
+            <span className="mt-0.5 flex items-center gap-1.5 truncate text-sm font-medium text-ink">
+              {activeCount > 0 ? "Applied" : "All products"}
+              {activeCount > 0 && (
+                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-ink text-[10px] text-cream">
+                  {activeCount}
+                </span>
+              )}
+            </span>
+          </span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="shrink-0 text-ink">
+            <line x1="4" y1="7" x2="20" y2="7" />
+            <circle cx="9" cy="7" r="2.2" fill="white" />
+            <line x1="4" y1="17" x2="20" y2="17" />
+            <circle cx="15" cy="17" r="2.2" fill="white" />
+          </svg>
+        </button>
+      ) : (
       <button
         onClick={openDrawer}
         className="flex items-center gap-2 label-caps text-ink-soft transition-colors hover:text-royal"
@@ -117,6 +146,7 @@ export function ShopFilterDrawer({
           </span>
         )}
       </button>
+      )}
 
       {/* Backdrop */}
       <div

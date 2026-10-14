@@ -341,3 +341,11 @@ body {
     animation: none;
   }
 }
+
+/* The shop's phone Sort/Filter bar is pinned to the bottom edge; while it is on
+   screen the floating chat / aurora / scroll-to-top buttons ride above it. */
+@media (max-width: 639px) {
+  html[data-shop-bar] .fab-shift {
+    translate: 0 -4.25rem;
+  }
+}

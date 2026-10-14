@@ -33,7 +33,7 @@ export function ScrollToTopButton() {
       onClick={toTop}
       aria-label="Back to top"
       tabIndex={visible ? 0 : -1}
-      className={`fixed bottom-[4.5rem] right-4 z-40 flex h-10 w-10 items-center justify-center rounded-full bg-ink text-cream shadow-md shadow-ink/20 transition-all duration-300 hover:scale-105 sm:bottom-24 sm:right-6 sm:h-12 sm:w-12 ${
+      className={`fab-shift fixed bottom-[4.5rem] right-4 z-40 flex h-10 w-10 items-center justify-center rounded-full bg-ink text-cream shadow-md shadow-ink/20 transition-all duration-300 hover:scale-105 sm:bottom-24 sm:right-6 sm:h-12 sm:w-12 ${
         visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0"
       }`}
     >

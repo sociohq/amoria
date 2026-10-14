@@ -4,6 +4,7 @@ import { listProducts, listCategories, getPriceRange } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { ShopFilterDrawer } from "@/components/ShopFilterDrawer";
 import { Pagination } from "@/components/Pagination";
+import { ShopMobileBar } from "@/components/ShopMobileBar";
 
 interface ShopPageProps {
   searchParams: Promise<{
@@ -60,10 +61,11 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   const minPrice = params.minPrice ? Number(params.minPrice) : undefined;
   const maxPrice = params.maxPrice ? Number(params.maxPrice) : undefined;
 
-  const [{ products, totalPages }, categories, priceBounds] = await Promise.all([
+  const [{ products, totalPages, total }, categories, priceBounds] = await Promise.all([
     listProducts({ category, search, fragranceFamily: family, sort, page, minPrice, maxPrice, limit: 12 }).catch(() => ({
       products: [],
       totalPages: 1,
+      total: 0,
     })),
     listCategories().catch(() => []),
     getPriceRange().catch(() => ({ min: 0, max: 0 })),
@@ -89,10 +91,16 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   }
 
   return (
-    <div className="px-4 py-12 sm:px-6">
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="font-serif text-3xl text-ink">{heading}</h1>
-        <div className="flex items-center gap-4 sm:gap-6">
+    <div className="px-4 pb-28 pt-8 sm:px-6 sm:py-12">
+      <div className="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="font-serif text-3xl text-ink">{heading}</h1>
+          <p className="mt-1 text-sm text-ink-soft">
+            {total} {total === 1 ? "product" : "products"}
+          </p>
+        </div>
+        {/* Desktop and tablet: sort links + filter button. On phones the bottom bar below replaces them. */}
+        <div className="hidden items-center gap-4 sm:flex sm:gap-6">
           <div className="no-scrollbar flex gap-4 overflow-x-auto">
             {SORTS.map((s) => (
               <Link
@@ -117,12 +125,29 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         </div>
       </div>
 
+      <ShopMobileBar
+        sorts={SORTS.map((s) => ({ value: s.value, label: s.label, href: withParam("sort", s.value) }))}
+        currentSort={sort}
+        filter={
+          <ShopFilterDrawer
+            variant="bar"
+            categories={categories}
+            currentCategory={category}
+            currentFamily={family}
+            currentSort={sort}
+            currentMinPrice={params.minPrice}
+            currentMaxPrice={params.maxPrice}
+            priceBounds={priceBounds}
+          />
+        }
+      />
+
       {products.length === 0 ? (
         <p className="py-20 text-center text-ink-soft">
           No products found yet. Check back soon, or ask an admin to add one.
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-x-6 sm:gap-y-10 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:gap-x-6 sm:gap-y-10 md:grid-cols-3 lg:grid-cols-4">
           {products.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

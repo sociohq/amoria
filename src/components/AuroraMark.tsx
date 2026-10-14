@@ -101,7 +101,7 @@ export function AuroraMark() {
         type="button"
         onClick={() => setChatOpen((v) => !v)}
         aria-label={chatOpen ? "Close Find Your Scent" : PHRASES[phraseIndex]}
-        className="group fixed bottom-4 right-4 z-40 inline-flex h-11 items-center rounded-full bg-white py-1.5 pr-1.5 shadow-sm shadow-ink/10 transition-[padding-left] duration-300 ease-out hover:scale-105 sm:bottom-6 sm:right-6 sm:h-14"
+        className="fab-shift group fixed bottom-4 right-4 z-40 inline-flex h-11 items-center rounded-full bg-white py-1.5 pr-1.5 shadow-sm shadow-ink/10 transition-[padding-left] duration-300 ease-out hover:scale-105 sm:bottom-6 sm:right-6 sm:h-14"
         style={{
           paddingLeft: expanded ? "1.125rem" : "0.375rem",
           transitionTimingFunction: expanded ? EASE_OUT : EASE_IN,
