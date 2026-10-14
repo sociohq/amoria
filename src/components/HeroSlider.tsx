@@ -104,7 +104,13 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
                   // title) and is shown as-is, with the same parallax + slow zoom
                   // as the other slides. The offsets are in box terms: the box
                   // starts 15% of the screen above the section (11.538% of itself).
-                  <div className="absolute inset-x-0 bottom-[11.538%] top-[calc(118px+11.538%)] md:top-[calc(138px+11.538%)]">
+                  // A phone picture is made for the whole phone screen, so it runs up under the
+                  // header like the other slides; the wide picture keeps clear of the header.
+                  <div
+                    className={`absolute inset-x-0 bottom-[11.538%] md:top-[calc(138px+11.538%)] ${
+                      slide.mobileImage ? "top-[11.538%]" : "top-[calc(118px+11.538%)]"
+                    }`}
+                  >
                     <HeroPicture
                       src={slide.image}
                       mobileSrc={slide.mobileImage}
@@ -138,6 +144,13 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
 
             {banner ? (
               <>
+                {/* Keeps the header's logo and menu readable over a bright phone picture. */}
+                {slide.mobileImage && (
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-black/60 via-black/25 to-transparent md:hidden"
+                  />
+                )}
                 <h1 className="sr-only">{slide.heading}</h1>
                 {slide.ctaLink && (
                   <Link
