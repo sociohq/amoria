@@ -10,7 +10,7 @@ import { ApiError } from "@/lib/api";
 const DISMISSED_KEY = "amoria-welcome-dismissed";
 
 // First-visit welcome popup — a visitor leaves their name and phone number
-// and is shown a one-time 10% code to use at checkout. Content, timing and
+// and is shown a one-time 15% code to use at checkout. Content, timing and
 // the on/off switch all come from Settings (admin-editable), nothing here is
 // hardcoded. Shown once per browser (tracked in localStorage), after the
 // admin-configured delay, unless already dismissed or claimed.
