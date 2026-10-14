@@ -91,37 +91,23 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
               visible ? "opacity-100" : "pointer-events-none opacity-0"
             }`}
           >
-            {banner && slide.image ? (
-              // A finished banner fills the hero edge to edge exactly like the other slides, under the
-              // header. It keeps its whole top (no parallax overscan, which would crop the baked-in
-              // title) and only takes the slow zoom.
-              <div className="hero-zoom absolute inset-0">
-                <HeroPicture
-                  src={slide.image}
-                  mobileSrc={slide.mobileImage}
-                  alt=""
-                  priority={i === 0}
-                  className="object-cover object-top"
-                />
+            {/* Every slide's picture — banners included — sits in the same parallax + slow-zoom box. */}
+            <div
+              className="absolute inset-x-0 -top-[15%] h-[130%]"
+              style={{ transform: `translateY(${scrollY * PARALLAX_SPEED}px)` }}
+            >
+              <div className="hero-zoom relative h-full w-full">
+                {slide.image && (
+                  <HeroPicture
+                    src={slide.image}
+                    mobileSrc={slide.mobileImage}
+                    alt={banner ? "" : slide.heading}
+                    priority={i === 0}
+                    className="object-cover"
+                  />
+                )}
               </div>
-            ) : (
-              <div
-                className="absolute inset-x-0 -top-[15%] h-[130%]"
-                style={{ transform: `translateY(${scrollY * PARALLAX_SPEED}px)` }}
-              >
-                <div className="hero-zoom relative h-full w-full">
-                  {slide.image && (
-                    <HeroPicture
-                      src={slide.image}
-                      mobileSrc={slide.mobileImage}
-                      alt={slide.heading}
-                      priority={i === 0}
-                      className="object-cover"
-                    />
-                  )}
-                </div>
-              </div>
-            )}
+            </div>
             {!banner && (
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/45 via-black/15 to-transparent" />
             )}
