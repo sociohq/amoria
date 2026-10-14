@@ -38,6 +38,8 @@ export function ProductCard({ product }: { product: Product }) {
     product.variants.find((v) => v.id === variantId) ?? product.variants[0];
   // A single size has nothing to choose — the card then offers just Add to cart.
   const hasSizes = product.variants.length > 1;
+  // Smallest size first on the phone's size pills (the data order is whatever was entered).
+  const sizesAscending = [...product.variants].sort((a, b) => (parseFloat(a.size) || 0) - (parseFloat(b.size) || 0));
   const price = variant?.price ?? product.price;
   const compare = compareFor(product, variant);
   const off = percentOff(price, compare);
@@ -178,7 +180,7 @@ export function ProductCard({ product }: { product: Product }) {
           )}
           {hasSizes && (
             <div className="flex flex-wrap items-center gap-1.5 lg:hidden">
-              {product.variants.slice(0, 3).map((v) => (
+              {sizesAscending.slice(0, 3).map((v) => (
                 <button
                   key={v.id}
                   type="button"
