@@ -1,5 +1,7 @@
+// Whole prices stay plain ("AED 99"); a price with fils always shows both decimals ("AED 69.30").
 export function formatAed(amount: number): string {
-  return `AED ${amount.toLocaleString("en-AE", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+  const hasFils = Math.round(amount * 100) % 100 !== 0;
+  return `AED ${amount.toLocaleString("en-AE", { minimumFractionDigits: hasFils ? 2 : 0, maximumFractionDigits: 2 })}`;
 }
 
 // The crossed-out price for a size: its own full price during a category sale,
