@@ -41,6 +41,8 @@ export interface ProductVariant {
   compareAtPrice?: number;
   stock: number;
   sku: string;
+  // true = this size shows only its own photos, never another size's (see galleryFor).
+  ownPhotosOnly?: boolean;
 }
 
 export interface InfoSection {
