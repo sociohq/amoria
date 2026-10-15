@@ -5,10 +5,12 @@ import { Stars } from "./StarRating";
 // A customer testimonial card — photo on the left, star rating, quote, and
 // name (+ location, when set) on the right, matching the reference layout
 // the site owner shared. Falls back to an initial-letter placeholder when
-// no photo has been uploaded for that review yet.
+// no photo has been uploaded for that review yet. Every card in the row is the
+// same height; the stars and quote start at the top and the name sits at the
+// bottom, so quotes of different lengths still line up card to card.
 function ReviewCard({ review }: { review: Review }) {
   return (
-    <div className="flex w-[380px] shrink-0 gap-5 bg-cream-dark p-6 sm:w-[420px]">
+    <div className="mr-6 flex w-[380px] shrink-0 gap-5 bg-cream-dark p-6 sm:w-[420px]">
       <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-lg bg-white sm:h-32 sm:w-32">
         {review.customerImage ? (
           <Image src={review.customerImage} alt={review.customerName} fill sizes="128px" className="object-cover" />
@@ -18,16 +20,16 @@ function ReviewCard({ review }: { review: Review }) {
           </span>
         )}
       </div>
-      <div className="flex flex-col justify-center">
+      <div className="flex min-w-0 flex-1 flex-col">
         {/* Unfilled stars read as a black outline here (matching the
             reference), rather than the gold outline used on the product
             card's aggregate summary elsewhere. */}
         <Stars rating={review.rating} unfilledColor="text-ink" />
         <p className="mt-3 text-sm font-medium leading-snug text-ink">{review.reviewText}</p>
-        <p className="mt-4 text-sm font-semibold text-ink">
-          {review.customerName}
-          {review.location && <span className="font-normal text-ink-soft"> , {review.location}</span>}
-        </p>
+        <div className="mt-auto pt-4">
+          <p className="text-sm font-semibold text-ink">{review.customerName}</p>
+          {review.location && <p className="mt-0.5 text-xs text-ink-soft">{review.location}</p>}
+        </div>
       </div>
     </div>
   );
@@ -71,7 +73,7 @@ export function ReviewsSection({ eyebrow, title, reviews }: { eyebrow: string; t
       </div>
       <div className="overflow-hidden">
         <div
-          className="reviews-marquee flex w-max gap-6"
+          className="reviews-marquee flex w-max"
           style={{ animationDuration: `${durationSeconds}s` }}
         >
           {track.map((r, i) => (
