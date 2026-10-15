@@ -49,11 +49,12 @@ export default async function HomePage() {
           />
         </Reveal>
       ))}
-      <Reveal>
-        <BrandLogoGrid />
-      </Reveal>
+      {/* New Arrivals leads straight into the oil-bottle banner; the brand strip follows it. */}
       <Reveal>
         <StatementBottleBanner />
+      </Reveal>
+      <Reveal>
+        <BrandLogoGrid />
       </Reveal>
       {shopTheLook && (
         <Reveal>
