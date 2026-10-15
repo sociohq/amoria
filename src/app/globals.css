@@ -342,6 +342,37 @@ body {
   }
 }
 
+/* "Browse Our Category" (CategoryShowcase): two identical halves slid by exactly one half for a
+   seamless, slow drift. Pauses on hover/focus; with reduced motion it becomes a plain swipe row
+   showing a single copy. */
+@keyframes category-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.category-marquee {
+  animation: category-marquee var(--category-duration, 60s) linear infinite;
+}
+.category-marquee:hover,
+.category-marquee:focus-within {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .category-marquee-wrap {
+    overflow-x: auto;
+    padding-left: 1.5rem;
+  }
+  .category-marquee {
+    animation: none;
+  }
+  .category-marquee-half[aria-hidden="true"] {
+    display: none;
+  }
+}
+
 /* The shop's phone Sort/Filter bar is pinned to the bottom edge; while it is on
    screen the floating chat / aurora / scroll-to-top buttons ride above it. */
 @media (max-width: 639px) {
