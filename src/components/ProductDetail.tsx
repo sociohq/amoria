@@ -13,6 +13,7 @@ import { useCart } from "@/lib/cart-context";
 import { WishlistButton } from "./WishlistButton";
 import { ProductGallery } from "./ProductGallery";
 import { NewCustomerOffer } from "./NewCustomerOffer";
+import { DescriptionLead } from "./DescriptionLead";
 import { ProductMobileHeader } from "./ProductMobileHeader";
 import { galleryFor, imageForSize } from "@/lib/productImages";
 import { ScentPyramid, ScentTiles } from "./ScentPyramid";
@@ -167,6 +168,7 @@ export function ProductDetail({ product }: { product: Product }) {
           </div>
           <p className="mt-2 text-xs text-ink-soft lg:mt-1">Tax included. Shipping calculated at checkout.</p>
           <NewCustomerOffer />
+          <DescriptionLead text={product.description ?? ""} />
 
           {/* Phones: rating chip */}
           {product.reviewCount > 0 && (
