@@ -145,7 +145,8 @@ export function ProductDetail({ product }: { product: Product }) {
             <div>
               {category && <p className="label-caps hidden text-ink-soft lg:block">The Shop · {category}</p>}
               <h1 className="mt-2 font-serif text-[28px] leading-[1.2] tracking-normal! text-ink lg:text-3xl lg:leading-snug lg:tracking-[1px]!">
-                {product.name} {concentration}
+                {product.name}
+                {concentration && !product.name.toLowerCase().includes(concentration.toLowerCase()) ? ` ${concentration}` : ""}
               </h1>
             </div>
             <WishlistButton
