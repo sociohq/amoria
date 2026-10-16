@@ -12,6 +12,7 @@ import { Accordion } from "./Accordion";
 import { useCart } from "@/lib/cart-context";
 import { WishlistButton } from "./WishlistButton";
 import { ProductGallery } from "./ProductGallery";
+import { NewCustomerOffer } from "./NewCustomerOffer";
 import { ProductMobileHeader } from "./ProductMobileHeader";
 import { galleryFor, imageForSize } from "@/lib/productImages";
 import { ScentPyramid, ScentTiles } from "./ScentPyramid";
@@ -165,6 +166,7 @@ export function ProductDetail({ product }: { product: Product }) {
             {off && <span className="font-medium text-[#2f7d4f] lg:text-royal">{off}% Off</span>}
           </div>
           <p className="mt-2 text-xs text-ink-soft lg:mt-1">Tax included. Shipping calculated at checkout.</p>
+          <NewCustomerOffer />
 
           {/* Phones: rating chip */}
           {product.reviewCount > 0 && (

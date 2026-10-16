@@ -9,6 +9,7 @@ import { useAuthDrawer } from "@/lib/auth-drawer-context";
 import { useCart } from "@/lib/cart-context";
 import { Category } from "@/lib/types";
 import { getPublicSettings, PublicSettings } from "@/lib/settings";
+import { promoOffer, promoMinimum } from "@/lib/promo";
 import { SocialLinks } from "./SocialIcons";
 import { MegaMenu } from "./MegaMenu";
 import { MobileMenu } from "./MobileMenu";
@@ -86,6 +87,14 @@ export function Header({ categories }: { categories: Category[] }) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [settings, setSettings] = useState<PublicSettings | null>(null);
+  // The black bar alternates between free delivery and the promoted coupon (when there is one).
+  const [barMessage, setBarMessage] = useState(0);
+  const promo = settings?.promo ?? null;
+  useEffect(() => {
+    if (!promo) return;
+    const t = setInterval(() => setBarMessage((m) => (m === 0 ? 1 : 0)), 4500);
+    return () => clearInterval(t);
+  }, [promo]);
   const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
   // A thin underline that slides to whichever nav item is hovered,
@@ -192,11 +201,32 @@ export function Header({ categories }: { categories: Category[] }) {
         </div>
 
         <div className="relative bg-ink px-6 py-2 text-center">
-          <p className="text-xs tracking-wide text-cream">
-            {settings && settings.freeShippingThreshold > 0
-              ? `Free Delivery in UAE for orders above AED ${settings.freeShippingThreshold}`
-              : "Free Delivery in UAE on qualifying orders"}
-          </p>
+          {/* Both messages share one grid cell so the bar never changes height as they swap. */}
+          <div className="grid">
+            <p
+              aria-hidden={Boolean(promo) && barMessage === 1}
+              className={`col-start-1 row-start-1 text-xs tracking-wide text-cream transition-opacity duration-700 ${
+                promo && barMessage === 1 ? "opacity-0" : "opacity-100"
+              }`}
+            >
+              {settings && settings.freeShippingThreshold > 0
+                ? `Free Delivery in UAE for orders above AED ${settings.freeShippingThreshold}`
+                : "Free Delivery in UAE on qualifying orders"}
+            </p>
+            {promo && (
+              <Link
+                href="/shop"
+                aria-hidden={barMessage === 0}
+                tabIndex={barMessage === 1 ? undefined : -1}
+                className={`col-start-1 row-start-1 text-xs tracking-wide text-cream transition-opacity duration-700 ${
+                  barMessage === 1 ? "opacity-100" : "pointer-events-none opacity-0"
+                }`}
+              >
+                Use code <strong className="font-semibold text-gold-light">{promo.code}</strong> for {promoOffer(promo)}
+                {promoMinimum(promo) ? ` ${promoMinimum(promo)}` : " your order"}
+              </Link>
+            )}
+          </div>
           <div className="absolute inset-y-0 right-6 hidden items-center gap-4 text-xs text-cream/80 md:flex">
             <Link href="/stores" className="flex items-center gap-1 transition-colors hover:text-cream">
               <PinIcon />

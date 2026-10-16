@@ -231,7 +231,18 @@ export interface Coupon {
   expiresAt: string | null;
 }
 
+// The coupon the store is promoting right now (see Settings.promoCouponCode); absent when
+// there isn't one or it can no longer be used.
+export interface PromoCoupon {
+  code: string;
+  type: "PERCENTAGE" | "FIXED";
+  value: number; // percent, or AED for a fixed amount
+  minOrderValue: number | null; // AED
+  expiresAt: string | null;
+}
+
 export interface Settings {
+  promo?: PromoCoupon | null;
   orderCutoffHour: number;
   minLeadDays: number;
   maxLeadDays: number;
