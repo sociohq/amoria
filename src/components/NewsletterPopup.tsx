@@ -9,11 +9,12 @@ import { ApiError } from "@/lib/api";
 
 const DISMISSED_KEY = "amoria-welcome-dismissed";
 
-// First-visit welcome popup — a visitor leaves their name and phone number
-// and is shown a one-time 15% code to use at checkout. Content, timing and
-// the on/off switch all come from Settings (admin-editable), nothing here is
-// hardcoded. Shown once per browser (tracked in localStorage), after the
-// admin-configured delay, unless already dismissed or claimed.
+// Welcome popup — a visitor leaves their name and phone number and is shown a
+// one-time 15% code to use at checkout. Content, timing and the on/off switch
+// all come from Settings (admin-editable), nothing here is hardcoded. It shows
+// on every visit, after the admin-configured delay. Closing it (or claiming the
+// code) keeps it closed for the rest of that visit only (sessionStorage), so it
+// doesn't nag on every page, and it comes back the next time they visit.
 export function NewsletterPopup() {
   const [settings, setSettings] = useState<PublicSettings | null>(null);
   const [open, setOpen] = useState(false);
@@ -25,14 +26,14 @@ export function NewsletterPopup() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let alreadyDismissed = false;
+    let closedThisVisit = false;
     try {
-      alreadyDismissed = localStorage.getItem(DISMISSED_KEY) === "1";
+      closedThisVisit = sessionStorage.getItem(DISMISSED_KEY) === "1";
     } catch {
-      // Private browsing / storage blocked — treat as not-yet-seen rather
-      // than crash; worst case the popup shows more than once for them.
+      // Storage blocked — treat as not-yet-seen rather than crash; worst case
+      // the popup shows again on the next page load.
     }
-    if (alreadyDismissed) return;
+    if (closedThisVisit) return;
 
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -56,7 +57,7 @@ export function NewsletterPopup() {
   function dismiss() {
     setOpen(false);
     try {
-      localStorage.setItem(DISMISSED_KEY, "1");
+      sessionStorage.setItem(DISMISSED_KEY, "1");
     } catch {
       // Nothing to do if storage isn't available — it'll just show again.
     }
@@ -71,7 +72,7 @@ export function NewsletterPopup() {
       setOffer(result);
       setStatus("done");
       try {
-        localStorage.setItem(DISMISSED_KEY, "1");
+        sessionStorage.setItem(DISMISSED_KEY, "1");
         if (!result.redeemed) localStorage.setItem(WELCOME_CODE_KEY, result.code);
       } catch {
         // Ignore — the code is on screen either way.
