@@ -1,5 +1,7 @@
 import { listFeaturedMix, getHomeSections, listCategories, getShopTheLook, getFeaturedReviews, getGenderShowcase } from "@/lib/products";
 import { listHeroSlides } from "@/lib/heroSlides";
+import { listPosts } from "@/lib/posts";
+import { BlogSection } from "@/components/BlogSection";
 import { HeroSlider } from "@/components/HeroSlider";
 import { CategoryShowcase } from "@/components/CategoryShowcase";
 import { FragranceFamilyScroller } from "@/components/FragranceFamilyScroller";
@@ -15,7 +17,7 @@ import { OurStores } from "@/components/OurStores";
 import { Reveal } from "@/components/Reveal";
 
 export default async function HomePage() {
-  const [homeSections, categories, shopTheLook, reviews, genderShowcase, heroSlides] = await Promise.all([
+  const [homeSections, categories, shopTheLook, reviews, genderShowcase, heroSlides, posts] = await Promise.all([
     // The rows are set up in the admin; if that can't be reached, fall back to the plain Featured mix.
     getHomeSections().catch(async () => {
       const products = await listFeaturedMix().catch(() => []);
@@ -26,6 +28,7 @@ export default async function HomePage() {
     getFeaturedReviews().catch(() => []),
     getGenderShowcase().catch(() => null),
     listHeroSlides().catch(() => []),
+    listPosts().catch(() => []),
   ]);
 
   return (
@@ -59,6 +62,12 @@ export default async function HomePage() {
       {shopTheLook && (
         <Reveal>
           <ShopTheLook section={shopTheLook} />
+        </Reveal>
+      )}
+      {/* The journal teaser: newest stories (up to three), just above the video reels. */}
+      {posts.length > 0 && (
+        <Reveal>
+          <BlogSection posts={posts} />
         </Reveal>
       )}
       <Reveal>
