@@ -91,12 +91,13 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
               visible ? "opacity-100" : "pointer-events-none opacity-0"
             }`}
           >
-            {/* Every slide's picture — banners included — sits in the same parallax + slow-zoom box. */}
+            {/* Every slide's picture sits in a parallax box. A banner is finished artwork with its own text, so its box
+                is exactly the hero (no oversize, no slow zoom): anything bigger would crop the words at the edges. */}
             <div
-              className="absolute inset-x-0 -top-[15%] h-[130%]"
-              style={{ transform: `translateY(${scrollY * PARALLAX_SPEED}px)` }}
+              className={banner ? "absolute inset-0" : "absolute inset-x-0 -top-[15%] h-[130%]"}
+              style={{ transform: `translateY(${Math.max(0, scrollY) * PARALLAX_SPEED}px)` }}
             >
-              <div className="hero-zoom relative h-full w-full">
+              <div className={banner ? "relative h-full w-full" : "hero-zoom relative h-full w-full"}>
                 {slide.image && (
                   <HeroPicture
                     src={slide.image}
