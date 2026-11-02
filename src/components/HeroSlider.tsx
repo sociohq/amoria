@@ -35,7 +35,7 @@ function HeroPicture({
   const mobileSet = mobileSrc ? getImageProps({ ...common, src: mobileSrc }).props.srcSet : undefined;
   return (
     <picture>
-      {mobileSet && <source media="(max-width: 767px)" srcSet={mobileSet} />}
+      {mobileSet && <source media="(max-width: 767px), (orientation: portrait)" srcSet={mobileSet} />}
       <source srcSet={srcSet} />
       {/* eslint-disable-next-line jsx-a11y/alt-text -- the alt is among the props from next/image's getImageProps */}
       <img {...img} className={className} />
