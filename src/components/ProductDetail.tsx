@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useFreeShippingThreshold } from "@/lib/useFreeShippingThreshold";
+import { useDeliverySettings } from "@/lib/useDeliverySettings";
 import { useRouter } from "next/navigation";
 import { Product } from "@/lib/types";
 import { compareFor, formatAed, percentOff } from "@/lib/money";
@@ -34,6 +35,8 @@ const SECTION_SUBTITLES: Record<string, string> = {
 export function ProductDetail({ product }: { product: Product }) {
   const router = useRouter();
   const freeFrom = useFreeShippingThreshold();
+  const delivery = useDeliverySettings();
+  const deliveryDates = deliveryEstimate(delivery ?? {});
   const { addItem } = useCart();
   const [variantId, setVariantId] = useState(product.variants[0]?.id);
   const [quantity, setQuantity] = useState(1);
@@ -248,7 +251,7 @@ export function ProductDetail({ product }: { product: Product }) {
             <p className="mt-3 flex items-start gap-2 text-sm text-ink">
               <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-gold" />
               <span>
-                Order today, you&apos;ll receive your package between <strong>{deliveryEstimate()}</strong>
+                Order today, you&apos;ll receive your package between <strong>{deliveryDates}</strong>
               </span>
             </p>
             <ul className="mt-5 space-y-4">
@@ -393,7 +396,7 @@ export function ProductDetail({ product }: { product: Product }) {
 
           <p className="mt-6 hidden items-center gap-2 text-sm text-royal lg:flex">
             <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="9" /></svg>
-            Order today, you&apos;ll receive your package between <strong>{deliveryEstimate()}</strong>
+            Order today, you&apos;ll receive your package between <strong>{deliveryDates}</strong>
           </p>
         </div>
       </div>

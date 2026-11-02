@@ -11,17 +11,41 @@ export function formatConcentration(type: ConcentrationType): string {
   return CONCENTRATION_LABELS[type];
 }
 
-// Lightweight stand-in for the reference design's live delivery countdown —
-// a real cutoff-time/lead-days config comes from /api/admin/settings; this
-// keeps the promise honest (a date range) without building a ticking clock
-// for what's a "nice to have" launch element.
-export function deliveryEstimate(minDays = 2, maxDays = 4): string {
-  const fmt = (d: Date) => d.toLocaleDateString("en-AE", { day: "2-digit", month: "2-digit", year: "numeric" });
-  const start = new Date();
-  start.setDate(start.getDate() + minDays);
-  const end = new Date();
-  end.setDate(end.getDate() + maxDays);
-  return `${fmt(start)} to ${fmt(end)}`;
+// The delivery window shown to customers ("between 05/11/2026 to 07/11/2026"). It follows how the shop
+// really ships, set in admin → Settings:
+//   • an order placed before the cut-off hour (Dubai time) on a weekday is handed to the courier that day;
+//     an order after the cut-off, or on a Saturday or Sunday, goes the next weekday;
+//   • the window is then the min and max lead days, counted in working days (Monday to Friday) from that
+//     dispatch day.
+export interface DeliverySettings {
+  orderCutoffHour: number; // 0-23, Dubai time
+  minLeadDays: number;
+  maxLeadDays: number;
+}
+const DEFAULT_DELIVERY: DeliverySettings = { orderCutoffHour: 14, minLeadDays: 2, maxLeadDays: 4 };
+
+export function deliveryEstimate(settings: Partial<DeliverySettings> = {}, now: Date = new Date()): string {
+  const s = { ...DEFAULT_DELIVERY, ...settings };
+  // Today's date and hour in Dubai, held as a UTC date so adding days is plain arithmetic.
+  const parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Dubai", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hourCycle: "h23" }).formatToParts(now);
+  const get = (t: string) => Number(parts.find((p) => p.type === t)?.value ?? 0);
+  const day = new Date(Date.UTC(get("year"), get("month") - 1, get("day")));
+  const isWeekend = (d: Date) => d.getUTCDay() === 0 || d.getUTCDay() === 6;
+  const nextWeekday = (d: Date) => {
+    do d.setUTCDate(d.getUTCDate() + 1);
+    while (isWeekend(d));
+  };
+  const addWorkingDays = (from: Date, n: number) => {
+    const d = new Date(from);
+    for (let i = 0; i < n; i++) nextWeekday(d);
+    return d;
+  };
+
+  const dispatch = new Date(day);
+  if (get("hour") >= s.orderCutoffHour || isWeekend(dispatch)) nextWeekday(dispatch);
+
+  const fmt = (d: Date) => d.toLocaleDateString("en-AE", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" });
+  return `${fmt(addWorkingDays(dispatch, s.minLeadDays))} to ${fmt(addWorkingDays(dispatch, s.maxLeadDays))}`;
 }
 
 // For blog cards — the long month name reads better against the site's
