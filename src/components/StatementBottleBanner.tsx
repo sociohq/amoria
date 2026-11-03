@@ -2,19 +2,27 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { getImageProps } from "next/image";
 import { useLenis } from "lenis/react";
+import { StatementBannerData } from "@/lib/statementBanner";
 
 // Homepage-only promo banner for the perfume oils — same
 // scroll-linked parallax drift as OurStores.tsx's background video
 // (useLenis rather than a raw scroll listener, so it stays in sync with
 // the site's own eased smooth-scroll), applied to a still photo instead.
-// "View Details" links to the Perfume Oils category via the normal shop
-// filter, so it's a real collection page rather than a bespoke one-off.
+// The picture, wording and button come from admin → Statement Banner; with no picture uploaded the one built
+// into the site is used.
 const PARALLAX_STRENGTH = 0.15;
 const IMAGE_SCALE = 1.15;
+const BUILT_IN_IMAGE = "/banners/1kg-bottle-banner.png";
 
-export function StatementBottleBanner() {
+export function StatementBottleBanner({ banner }: { banner: StatementBannerData }) {
+  const light = banner.textTone === "light";
+  const common = { alt: "", fill: true, sizes: "100vw" } as const;
+  const {
+    props: { srcSet, ...img },
+  } = getImageProps({ ...common, src: banner.image ?? BUILT_IN_IMAGE });
+  const mobileSet = banner.mobileImage ? getImageProps({ ...common, src: banner.mobileImage }).props.srcSet : undefined;
   const sectionRef = useRef<HTMLElement>(null);
   const [parallaxOffset, setParallaxOffset] = useState(0);
 
@@ -38,32 +46,37 @@ export function StatementBottleBanner() {
     <section ref={sectionRef} className="relative flex min-h-[520px] items-center overflow-hidden bg-cream-dark sm:min-h-[600px]">
       {/* Scaled up beyond the section's own bounds so the parallax
           translate never exposes an edge. */}
-      <Image
-        src="/banners/1kg-bottle-banner.png"
-        alt=""
-        fill
-        sizes="100vw"
-        className="pointer-events-none object-cover"
-        style={{ transform: `scale(${IMAGE_SCALE}) translateY(${parallaxOffset}px)` }}
-      />
+      <picture>
+        {mobileSet && <source media="(max-width: 767px), (orientation: portrait)" srcSet={mobileSet} />}
+        <source srcSet={srcSet} />
+        {/* eslint-disable-next-line jsx-a11y/alt-text -- the alt is among the props from next/image's getImageProps */}
+        <img
+          {...img}
+          className="pointer-events-none object-cover"
+          style={{ ...img.style, transform: `scale(${IMAGE_SCALE}) translateY(${parallaxOffset}px)` }}
+        />
+      </picture>
 
       {/* The photo is already bright and even-toned, so dark ink text
           sitting directly on it (no scrim) matches the source photo's
           own look rather than crushing it under a gradient. */}
       <div className="relative z-10 max-w-lg px-6 sm:px-12 md:px-16">
-        <h2 className="font-serif text-3xl leading-tight text-ink sm:text-4xl">
-          Discover Our Statement Perfume Oils.
+        <h2 className={`font-serif text-3xl leading-tight sm:text-4xl ${light ? "text-cream" : "text-ink"}`}>
+          {banner.heading}
         </h2>
-        <p className="mt-4 max-w-sm text-sm text-ink-soft sm:text-base">
-          More fragrance. More presence. Discover our perfume oils, crafted for those who want to make a
-          statement.
-        </p>
-        <Link
-          href="/shop?category=perfume-oils"
-          className="mt-7 inline-block bg-ink px-8 py-3 label-caps text-cream transition-opacity hover:opacity-90"
-        >
-          View Details
-        </Link>
+        {banner.text && (
+          <p className={`mt-4 max-w-sm text-sm sm:text-base ${light ? "text-cream/80" : "text-ink-soft"}`}>{banner.text}</p>
+        )}
+        {banner.ctaText && banner.ctaLink && (
+          <Link
+            href={banner.ctaLink}
+            className={`mt-7 inline-block px-8 py-3 label-caps transition-opacity hover:opacity-90 ${
+              light ? "bg-cream text-ink" : "bg-ink text-cream"
+            }`}
+          >
+            {banner.ctaText}
+          </Link>
+        )}
       </div>
     </section>
   );
