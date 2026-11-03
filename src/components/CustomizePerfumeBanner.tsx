@@ -2,14 +2,25 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { getImageProps } from "next/image";
+import { PromoBannerData } from "@/lib/promoBanner";
 
 // The image drifts upward slightly as the section scrolls past — bounded to
 // a fixed buffer below the visible frame (the wrapper is exactly that much
-// taller than the section) so it never runs out of image to reveal.
+// taller than the section) so it never runs out of image to reveal. The picture, wording and button come from admin →
+// Create Your Own Banner; with no picture uploaded the one built into the site is used.
 const PARALLAX_BUFFER = 0.12; // fraction of the section's own height
+const BUILT_IN_IMAGE = "/banners/customize-perfume.png";
+const BUILT_IN_ALT = "Empty Amoria bottles beside beakers of fragrance oils, being blended into a custom scent";
 
-export function CustomizePerfumeBanner() {
+export function CustomizePerfumeBanner({ banner }: { banner: PromoBannerData }) {
+  const light = banner.textTone === "light";
+  // A picture uploaded in the admin has no description of its own; the heading beside it already says what it is.
+  const common = { alt: banner.image ? "" : BUILT_IN_ALT, fill: true, sizes: "100vw" } as const;
+  const {
+    props: { srcSet, ...img },
+  } = getImageProps({ ...common, src: banner.image ?? BUILT_IN_IMAGE });
+  const mobileSet = banner.mobileImage ? getImageProps({ ...common, src: banner.mobileImage }).props.srcSet : undefined;
   const sectionRef = useRef<HTMLElement>(null);
   const [offset, setOffset] = useState(0);
   const rafRef = useRef<number | null>(null);
@@ -49,23 +60,25 @@ export function CustomizePerfumeBanner() {
           behind the text, with the extra 12% height below as the
           parallax's scroll buffer. */}
       <div className="absolute inset-x-0 top-0 h-[112%]" style={{ transform: `translateY(-${offset}px)` }}>
-        <Image
-          src="/banners/customize-perfume.png"
-          alt="Empty Amoria bottles beside beakers of fragrance oils, being blended into a custom scent"
-          fill
-          sizes="100vw"
-          className="object-cover object-top"
-        />
+        <picture>
+          {mobileSet && <source media="(max-width: 767px), (orientation: portrait)" srcSet={mobileSet} />}
+          <source srcSet={srcSet} />
+          {/* eslint-disable-next-line jsx-a11y/alt-text -- the alt is among the props from next/image's getImageProps */}
+          <img {...img} className="object-cover object-top" />
+        </picture>
       </div>
       <div className="absolute inset-0 flex items-start px-6 pt-10 sm:px-12 sm:pt-16">
         <div className="max-w-md">
-          <h2 className="font-serif text-3xl leading-tight text-ink sm:text-4xl">Create Your Own Perfume</h2>
-          <p className="mt-3 text-sm text-ink-soft">
-            Blend your own signature scent from our finest notes — crafted around you, bottled just for you.
-          </p>
-          <Link href="/custom-perfume" className="mt-6 inline-block bg-ink px-8 py-3 label-caps text-cream hover:opacity-90">
-            Customize Your Perfume
-          </Link>
+          <h2 className={`font-serif text-3xl leading-tight sm:text-4xl ${light ? "text-cream" : "text-ink"}`}>{banner.heading}</h2>
+          {banner.text && <p className={`mt-3 text-sm ${light ? "text-cream/80" : "text-ink-soft"}`}>{banner.text}</p>}
+          {banner.ctaText && banner.ctaLink && (
+            <Link
+              href={banner.ctaLink}
+              className={`mt-6 inline-block px-8 py-3 label-caps hover:opacity-90 ${light ? "bg-cream text-ink" : "bg-ink text-cream"}`}
+            >
+              {banner.ctaText}
+            </Link>
+          )}
         </div>
       </div>
     </section>

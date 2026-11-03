@@ -1,6 +1,6 @@
 import { listFeaturedMix, getHomeSections, listCategories, getShopTheLook, getFeaturedReviews, getGenderShowcase } from "@/lib/products";
 import { listHeroSlides } from "@/lib/heroSlides";
-import { getStatementBanner, DEFAULT_STATEMENT_BANNER } from "@/lib/statementBanner";
+import { getPromoBanner } from "@/lib/promoBanner";
 import { listPosts } from "@/lib/posts";
 import { BlogSection } from "@/components/BlogSection";
 import { HeroSlider } from "@/components/HeroSlider";
@@ -18,7 +18,7 @@ import { OurStores } from "@/components/OurStores";
 import { Reveal } from "@/components/Reveal";
 
 export default async function HomePage() {
-  const [homeSections, categories, shopTheLook, reviews, genderShowcase, heroSlides, posts, statementBanner] = await Promise.all([
+  const [homeSections, categories, shopTheLook, reviews, genderShowcase, heroSlides, posts, statementBanner, customizeBanner] = await Promise.all([
     // The rows are set up in the admin; if that can't be reached, fall back to the plain Featured mix.
     getHomeSections().catch(async () => {
       const products = await listFeaturedMix().catch(() => []);
@@ -31,7 +31,8 @@ export default async function HomePage() {
     listHeroSlides().catch(() => []),
     listPosts().catch(() => []),
     // null = switched off in the admin; if it can't be fetched the original banner is shown.
-    getStatementBanner().catch(() => DEFAULT_STATEMENT_BANNER),
+    getPromoBanner("statement"),
+    getPromoBanner("customize"),
   ]);
 
   return (
@@ -41,9 +42,11 @@ export default async function HomePage() {
       <Reveal>
         <FragranceFamilyScroller />
       </Reveal>
-      <Reveal>
-        <CustomizePerfumeBanner />
-      </Reveal>
+      {customizeBanner && (
+        <Reveal>
+          <CustomizePerfumeBanner banner={customizeBanner} />
+        </Reveal>
+      )}
       {genderShowcase && <GenderShowcase section={genderShowcase} />}
       {homeSections.map((section) => (
         <Reveal key={section.key}>

@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { getImageProps } from "next/image";
 import { useLenis } from "lenis/react";
-import { StatementBannerData } from "@/lib/statementBanner";
+import { PromoBannerData } from "@/lib/promoBanner";
 
 // Homepage-only promo banner for the perfume oils — same
 // scroll-linked parallax drift as OurStores.tsx's background video
@@ -16,7 +16,7 @@ const PARALLAX_STRENGTH = 0.15;
 const IMAGE_SCALE = 1.15;
 const BUILT_IN_IMAGE = "/banners/1kg-bottle-banner.png";
 
-export function StatementBottleBanner({ banner }: { banner: StatementBannerData }) {
+export function StatementBottleBanner({ banner }: { banner: PromoBannerData }) {
   const light = banner.textTone === "light";
   const common = { alt: "", fill: true, sizes: "100vw" } as const;
   const {
