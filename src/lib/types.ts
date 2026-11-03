@@ -43,6 +43,7 @@ export interface ProductVariant {
   sku: string;
   // true = this size shows only its own photos, never another size's (see galleryFor).
   ownPhotosOnly?: boolean;
+  quality?: string; // "Top Quality" / "Medium Quality" on a product sold in grades, "" otherwise
 }
 
 export interface InfoSection {
@@ -55,6 +56,7 @@ export interface Product {
   productType: ProductType;
   name: string;
   slug: string;
+  qualityOptions?: boolean; // sold in quality grades (Top / Medium Quality), each size priced on its own
   shortDescription: string;
   description: string;
   concentrationType: ConcentrationType | null;

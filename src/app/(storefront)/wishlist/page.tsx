@@ -9,6 +9,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useAuthDrawer } from "@/lib/auth-drawer-context";
 import { formatAed } from "@/lib/money";
 import { WishlistItem } from "@/lib/types";
+import { sellableVariants, variantLabel } from "@/lib/variants";
 
 export default function WishlistPage() {
   const { user, loading: authLoading } = useAuth();
@@ -19,7 +20,7 @@ export default function WishlistPage() {
 
   async function handleAddToCart(item: WishlistItem) {
     const { product } = item;
-    const variant = product.variants[0];
+    const variant = sellableVariants(product)[0];
     if (!variant) return;
     setAddingId(item.productId);
     try {
@@ -28,7 +29,7 @@ export default function WishlistPage() {
         productId: product.id,
         productName: product.name,
         productSlug: product.slug,
-        variantSize: variant.size,
+        variantSize: variantLabel(variant),
         price: variant.price,
         image: product.thumbnailImage ?? product.images[0]?.url ?? null,
       });

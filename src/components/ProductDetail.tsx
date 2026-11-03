@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useFreeShippingThreshold } from "@/lib/useFreeShippingThreshold";
 import { useDeliverySettings } from "@/lib/useDeliverySettings";
+import { isGraded, qualitiesOf, sellableVariants, variantLabel } from "@/lib/variants";
+import { QualityPicker } from "./QualityPicker";
 import { useRouter } from "next/navigation";
 import { Product } from "@/lib/types";
 import { compareFor, formatAed, percentOff } from "@/lib/money";
@@ -38,7 +40,8 @@ export function ProductDetail({ product }: { product: Product }) {
   const delivery = useDeliverySettings();
   const deliveryDates = deliveryEstimate(delivery ?? {});
   const { addItem } = useCart();
-  const [variantId, setVariantId] = useState(product.variants[0]?.id);
+  const variants = sellableVariants(product);
+  const [variantId, setVariantId] = useState(variants[0]?.id);
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
 
@@ -51,7 +54,17 @@ export function ProductDetail({ product }: { product: Product }) {
     };
   }, []);
 
-  const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
+  const variant = variants.find((v) => v.id === variantId) ?? variants[0];
+  // A product sold in quality grades: pick the grade first, then one of its sizes. Switching grade keeps the size
+  // when the new grade has it, otherwise lands on that grade's first size.
+  const graded = isGraded(product);
+  const qualities = qualitiesOf(variants);
+  const sizeVariants = graded && variant ? variants.filter((v) => v.quality === variant.quality) : variants;
+  function selectQuality(quality: string) {
+    const inQuality = variants.filter((v) => v.quality === quality);
+    const next = inQuality.find((v) => v.size === variant?.size) ?? inQuality[0];
+    if (next) setVariantId(next.id);
+  }
   const price = variant?.price ?? product.price;
   const compare = compareFor(product, variant);
   const off = percentOff(price, compare);
@@ -82,7 +95,7 @@ export function ProductDetail({ product }: { product: Product }) {
         productId: product.id,
         productName: product.name,
         productSlug: product.slug,
-        variantSize: variant.size,
+        variantSize: variantLabel(variant),
         price: variant.price,
         image: imageForSize(product, variant?.size),
         quantity,
@@ -184,10 +197,11 @@ export function ProductDetail({ product }: { product: Product }) {
             </div>
           )}
 
-          {/* Desktop: size buttons */}
-          {product.variants.length > 0 && (
+          {/* Desktop: quality (when the product has grades), then size buttons */}
+          {graded && <QualityPicker qualities={qualities} value={variant?.quality} onChange={selectQuality} className="mt-6 hidden lg:block" />}
+          {variants.length > 0 && (
             <div className="mt-6 hidden gap-3 lg:flex">
-              {product.variants.map((v) => (
+              {sizeVariants.map((v) => (
                 <button
                   key={v.id}
                   onClick={() => setVariantId(v.id)}
@@ -203,13 +217,14 @@ export function ProductDetail({ product }: { product: Product }) {
           )}
 
           {/* Phones: size tiles with each size's price, then quantity */}
-          {product.variants.length > 0 && (
+          {variants.length > 0 && (
             <div className="mt-6 border-t border-border pt-6 lg:hidden">
+              {graded && <QualityPicker qualities={qualities} value={variant?.quality} onChange={selectQuality} className="mb-5" />}
               <p className="font-serif text-xl tracking-normal! text-ink">
                 Size {variant && <span className="font-sans text-sm text-ink-soft">· {variant.size}</span>}
               </p>
               <div className="mt-3 flex flex-wrap gap-3">
-                {product.variants.map((v) => (
+                {sizeVariants.map((v) => (
                   <button
                     key={v.id}
                     type="button"

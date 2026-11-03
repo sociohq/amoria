@@ -9,6 +9,7 @@ import { listReels } from "@/lib/reels";
 import { useCart } from "@/lib/cart-context";
 import { getPublicSettings } from "@/lib/settings";
 import { InstagramIcon } from "./SocialIcons";
+import { sellableVariants, variantLabel } from "@/lib/variants";
 
 function ReelCard({ reel }: { reel: Reel }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -16,7 +17,7 @@ function ReelCard({ reel }: { reel: Reel }) {
   const [adding, setAdding] = useState(false);
   const { addItem } = useCart();
   const { product } = reel;
-  const variant = product.variants[0];
+  const variant = sellableVariants(product)[0];
   const imageUrl = product.thumbnailImage ?? product.images[0]?.url;
 
   function toggleMute() {
@@ -35,7 +36,7 @@ function ReelCard({ reel }: { reel: Reel }) {
         productId: product.id,
         productName: product.name,
         productSlug: product.slug,
-        variantSize: variant.size,
+        variantSize: variantLabel(variant),
         price: variant.price,
         image: imageUrl ?? null,
       });

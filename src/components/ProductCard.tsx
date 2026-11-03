@@ -6,6 +6,7 @@ import { Product } from "@/lib/types";
 import { compareFor, formatAed, percentOff } from "@/lib/money";
 import { cardDisplayName, cardLabel } from "@/lib/fragrance";
 import { imageForSize } from "@/lib/productImages";
+import { fromPrice, isGraded, variantLabel } from "@/lib/variants";
 import { useCart } from "@/lib/cart-context";
 import { WishlistButton } from "./WishlistButton";
 import { ProductCardImage } from "./ProductCardImage";
@@ -36,11 +37,14 @@ export function ProductCard({ product }: { product: Product }) {
 
   const variant =
     product.variants.find((v) => v.id === variantId) ?? product.variants[0];
+  // A product sold in quality grades (Top / Medium Quality) has too many choices for the card: it offers
+  // "Select options" to the product page instead of sizes and Add to cart, and shows its lowest price.
+  const graded = isGraded(product);
   // A single size has nothing to choose — the card then offers just Add to cart.
-  const hasSizes = product.variants.length > 1;
+  const hasSizes = !graded && product.variants.length > 1;
   // Smallest size first on the phone's size pills (the data order is whatever was entered).
   const sizesAscending = [...product.variants].sort((a, b) => (parseFloat(a.size) || 0) - (parseFloat(b.size) || 0));
-  const price = variant?.price ?? product.price;
+  const price = graded ? fromPrice(product) : (variant?.price ?? product.price);
   const compare = compareFor(product, variant);
   const off = percentOff(price, compare);
   const label = cardLabel(product);
@@ -61,7 +65,7 @@ export function ProductCard({ product }: { product: Product }) {
         productId: product.id,
         productName: product.name,
         productSlug: product.slug,
-        variantSize: variant.size,
+        variantSize: variantLabel(variant),
         price: variant.price,
         image: imageUrl,
         quantity,
@@ -112,17 +116,26 @@ export function ProductCard({ product }: { product: Product }) {
               productId={product.id}
               className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-white/90 text-[#111] transition-colors hover:text-crimson group-hover:bg-white @min-[260px]:h-[38px] @min-[260px]:w-[38px]"
             />
-            {product.variants.length > 0 && (
-              /* Touch devices (and anything narrower than a desktop): bag button → sheet. */
-              <button
-                type="button"
-                onClick={() => setSheetOpen(true)}
-                aria-label={`Add ${product.name} to cart`}
-                className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-white/90 text-[#111] transition-colors hover:bg-white lg:hidden [@media(hover:none)]:flex @min-[260px]:h-[38px] @min-[260px]:w-[38px]"
-              >
-                <BagIcon className="h-4 w-4" />
-              </button>
-            )}
+            {product.variants.length > 0 &&
+              (graded ? (
+                <Link
+                  href={href}
+                  aria-label={`Choose options for ${product.name}`}
+                  className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-white/90 text-[#111] transition-colors hover:bg-white lg:hidden [@media(hover:none)]:flex @min-[260px]:h-[38px] @min-[260px]:w-[38px]"
+                >
+                  <BagIcon className="h-4 w-4" />
+                </Link>
+              ) : (
+                /* Touch devices (and anything narrower than a desktop): bag button → sheet. */
+                <button
+                  type="button"
+                  onClick={() => setSheetOpen(true)}
+                  aria-label={`Add ${product.name} to cart`}
+                  className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-white/90 text-[#111] transition-colors hover:bg-white lg:hidden [@media(hover:none)]:flex @min-[260px]:h-[38px] @min-[260px]:w-[38px]"
+                >
+                  <BagIcon className="h-4 w-4" />
+                </button>
+              ))}
           </div>
 
           {product.variants.length > 0 && (
@@ -138,19 +151,28 @@ export function ProductCard({ product }: { product: Product }) {
                     onChange={setVariantId}
                   />
                 )}
-                <button
-                  type="button"
-                  onClick={() => add(1)}
-                  disabled={!variant || variant.stock === 0 || adding}
-                  className="flex w-full items-center justify-center gap-2.5 rounded bg-[#111] py-[13px] text-[12px] font-medium uppercase tracking-[3px] text-[#f4efe8] transition-opacity hover:opacity-90 disabled:opacity-50"
-                >
-                  <BagIcon className="h-4 w-4" />
-                  {variant?.stock === 0
-                    ? "Out of stock"
-                    : adding
-                      ? "Adding…"
-                      : "Add to cart"}
-                </button>
+                {graded ? (
+                  <Link
+                    href={href}
+                    className="flex w-full items-center justify-center gap-2.5 rounded bg-[#111] py-[13px] text-[12px] font-medium uppercase tracking-[3px] text-[#f4efe8] transition-opacity hover:opacity-90"
+                  >
+                    Select options
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => add(1)}
+                    disabled={!variant || variant.stock === 0 || adding}
+                    className="flex w-full items-center justify-center gap-2.5 rounded bg-[#111] py-[13px] text-[12px] font-medium uppercase tracking-[3px] text-[#f4efe8] transition-opacity hover:opacity-90 disabled:opacity-50"
+                  >
+                    <BagIcon className="h-4 w-4" />
+                    {variant?.stock === 0
+                      ? "Out of stock"
+                      : adding
+                        ? "Adding…"
+                        : "Add to cart"}
+                  </button>
+                )}
               </div>
             </>
           )}
@@ -202,6 +224,7 @@ export function ProductCard({ product }: { product: Product }) {
           )}
           <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 lg:gap-x-2.5">
             <span className="text-[15px] font-medium leading-normal text-[#111] @min-[200px]:text-base @min-[260px]:text-lg">
+              {graded && "From "}
               {formatAed(price)}
             </span>
             {compare && off && (
