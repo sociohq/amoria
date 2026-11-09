@@ -7,7 +7,7 @@ import { formatAed } from "@/lib/money";
 import { ShippingProgress } from "./ShippingProgress";
 
 export function CartDrawer() {
-  const { items, subtotal, itemCount, drawerOpen, closeDrawer, updateQuantity, removeItem } = useCart();
+  const { items, subtotal, offerDiscount, offerNudge, itemCount, drawerOpen, closeDrawer, updateQuantity, removeItem } = useCart();
 
   return (
     <>
@@ -39,7 +39,7 @@ export function CartDrawer() {
           </button>
         </div>
 
-        {items.length > 0 && <ShippingProgress subtotal={subtotal} />}
+        {items.length > 0 && <ShippingProgress subtotal={subtotal - offerDiscount} />}
 
         {items.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 px-8 text-center">
@@ -102,10 +102,27 @@ export function CartDrawer() {
             </div>
 
             <div className="border-t border-border px-8 py-7">
-              <div className="mb-4 flex justify-between text-ink">
+              {offerNudge && (
+                <p className="mb-3 rounded bg-cream-dark px-3 py-2 text-xs text-royal">
+                  Buy 1 Get 1 Free: add one more of these and the cheaper one is free.
+                </p>
+              )}
+              <div className={`flex justify-between text-ink ${offerDiscount > 0 ? "mb-1.5" : "mb-4"}`}>
                 <span>Subtotal</span>
                 <span>{formatAed(subtotal)}</span>
               </div>
+              {offerDiscount > 0 && (
+                <>
+                  <div className="mb-1.5 flex justify-between text-royal">
+                    <span>Buy 1 Get 1 Free</span>
+                    <span>−{formatAed(offerDiscount)}</span>
+                  </div>
+                  <div className="mb-4 flex justify-between font-medium text-ink">
+                    <span>To pay (before delivery)</span>
+                    <span>{formatAed(subtotal - offerDiscount)}</span>
+                  </div>
+                </>
+              )}
               <Link
                 href="/checkout"
                 onClick={closeDrawer}

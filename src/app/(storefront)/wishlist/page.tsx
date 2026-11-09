@@ -29,6 +29,7 @@ export default function WishlistPage() {
         productId: product.id,
         productName: product.name,
         productSlug: product.slug,
+        buyOneGetOne: product.buyOneGetOne,
         variantSize: variantLabel(variant),
         price: variant.price,
         image: product.thumbnailImage ?? product.images[0]?.url ?? null,

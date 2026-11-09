@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { apiFetch } from "./api";
 import { useAuth } from "./auth-context";
 import { Cart } from "./types";
+import { offerDiscount } from "./offers";
 
 const GUEST_CART_KEY = "amoria_guest_cart";
 
@@ -19,6 +20,8 @@ interface GuestItem {
   price: number;
   image: string | null;
   quantity: number;
+  // Part of a Buy 1 Get 1 Free offer when it was added (absent on carts saved before the offer existed).
+  buyOneGetOne?: boolean;
 }
 
 interface DisplayItem {
@@ -31,12 +34,17 @@ interface DisplayItem {
   quantity: number;
   image: string | null;
   lineTotal: number;
+  buyOneGetOne?: boolean;
 }
 
 interface CartContextValue {
   items: DisplayItem[];
   itemCount: number;
   subtotal: number;
+  // What Buy 1 Get 1 Free takes off the subtotal (AED, 0 when none).
+  offerDiscount: number;
+  // True when one more offer item would be free (an odd number of them in the cart).
+  offerNudge: boolean;
   loading: boolean;
   isGuest: boolean;
   addItem: (input: Omit<GuestItem, "quantity"> & { quantity?: number }) => Promise<void>;
@@ -183,6 +191,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         quantity: i.quantity,
         image: i.product.image,
         lineTotal: i.lineTotal,
+        buyOneGetOne: i.product.buyOneGetOne,
       }))
     : guestItems.map((i) => ({
         id: i.variantId,
@@ -194,10 +203,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
         quantity: i.quantity,
         image: i.image,
         lineTotal: i.price * i.quantity,
+        buyOneGetOne: i.buyOneGetOne,
       }));
 
   const subtotal = items.reduce((sum, i) => sum + i.lineTotal, 0);
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
+  const offerLines = items.map((i) => ({ price: i.price, quantity: i.quantity, buyOneGetOne: i.buyOneGetOne }));
+  const offer = user && serverCart?.offerDiscount != null ? serverCart.offerDiscount : offerDiscount(offerLines);
+  const offerNudge = offerLines.filter((l) => l.buyOneGetOne).reduce((n, l) => n + l.quantity, 0) % 2 === 1;
 
   return (
     <CartContext.Provider
@@ -205,6 +218,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         items,
         itemCount,
         subtotal,
+        offerDiscount: offer,
+        offerNudge,
         loading,
         isGuest: !user,
         addItem,

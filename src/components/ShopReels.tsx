@@ -36,6 +36,7 @@ function ReelCard({ reel }: { reel: Reel }) {
         productId: product.id,
         productName: product.name,
         productSlug: product.slug,
+        buyOneGetOne: product.buyOneGetOne,
         variantSize: variantLabel(variant),
         price: variant.price,
         image: imageUrl ?? null,

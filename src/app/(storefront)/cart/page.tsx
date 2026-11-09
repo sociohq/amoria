@@ -7,7 +7,7 @@ import { useCart } from "@/lib/cart-context";
 import { formatAed } from "@/lib/money";
 
 export default function CartPage() {
-  const { items, subtotal, loading, updateQuantity, removeItem } = useCart();
+  const { items, subtotal, offerDiscount, offerNudge, loading, updateQuantity, removeItem } = useCart();
   const [busyId, setBusyId] = useState<string | null>(null);
 
   async function withBusy(id: string, fn: () => Promise<void>) {
@@ -83,10 +83,27 @@ export default function CartPage() {
 
       <div className="mt-8 flex justify-end">
         <div className="w-full max-w-xs space-y-3">
+          {offerNudge && (
+            <p className="rounded bg-cream-dark px-3 py-2 text-xs text-royal">
+              Buy 1 Get 1 Free: add one more of these and the cheaper one is free.
+            </p>
+          )}
           <div className="flex justify-between text-ink">
             <span>Subtotal</span>
             <span>{formatAed(subtotal)}</span>
           </div>
+          {offerDiscount > 0 && (
+            <>
+              <div className="flex justify-between text-royal">
+                <span>Buy 1 Get 1 Free</span>
+                <span>−{formatAed(offerDiscount)}</span>
+              </div>
+              <div className="flex justify-between font-medium text-ink">
+                <span>To pay (before delivery)</span>
+                <span>{formatAed(subtotal - offerDiscount)}</span>
+              </div>
+            </>
+          )}
           {/* No login required to buy — checkout collects a guest email
               and verifies it via OTP after payment (see /checkout and
               guestAccount.service.ts on the backend), so this always

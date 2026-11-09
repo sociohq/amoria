@@ -53,7 +53,8 @@ export function ProductCard({ product }: { product: Product }) {
     product.thumbnailImage ??
     product.images[0]?.url ??
     null;
-  const badge = product.badge ? BADGE_LABELS[product.badge] : null;
+  // A Buy 1 Get 1 Free product says so on its card in place of the usual label.
+  const badge = product.buyOneGetOne ? "Buy 1 Get 1 Free" : product.badge ? BADGE_LABELS[product.badge] : null;
   const href = `/product/${product.slug}`;
 
   async function add(quantity: number) {
@@ -65,6 +66,7 @@ export function ProductCard({ product }: { product: Product }) {
         productId: product.id,
         productName: product.name,
         productSlug: product.slug,
+        buyOneGetOne: product.buyOneGetOne,
         variantSize: variantLabel(variant),
         price: variant.price,
         image: imageUrl,

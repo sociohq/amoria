@@ -95,6 +95,7 @@ export function ProductDetail({ product }: { product: Product }) {
         productId: product.id,
         productName: product.name,
         productSlug: product.slug,
+        buyOneGetOne: product.buyOneGetOne,
         variantSize: variantLabel(variant),
         price: variant.price,
         image: imageForSize(product, variant?.size),
@@ -183,6 +184,11 @@ export function ProductDetail({ product }: { product: Product }) {
             {compare && off && <span className="text-ink-soft line-through">{formatAed(compare)}</span>}
             {off && <span className="font-medium text-[#2f7d4f] lg:text-royal">{off}% Off</span>}
           </div>
+          {product.buyOneGetOne && (
+            <p className="mt-3 inline-block rounded bg-[#2f7d4f]/10 px-3 py-1.5 text-sm font-medium text-[#2f7d4f]">
+              Buy 1 Get 1 Free: add any two and the cheaper one is on us.
+            </p>
+          )}
           <p className="mt-2 text-xs text-ink-soft lg:mt-1">Tax included. Shipping calculated at checkout.</p>
           <NewCustomerOffer />
           <DescriptionLead text={product.description ?? ""} />

@@ -22,6 +22,7 @@ const STEPS = [
 // The server's breakdown of what this order costs (POST /api/checkout/quote).
 interface Quote {
   subtotal: number;
+  offerDiscount: number; // Buy 1 Get 1 Free
   discount: number;
   shippingFee: number;
   codFee: number;
@@ -528,6 +529,12 @@ export default function CheckoutPage() {
               <span>Subtotal</span>
               <span>{formatAed(quote ? quote.subtotal : subtotal)}</span>
             </div>
+            {quote && quote.offerDiscount > 0 && (
+              <div className="flex justify-between text-royal">
+                <span>Buy 1 Get 1 Free</span>
+                <span>-{formatAed(quote.offerDiscount)}</span>
+              </div>
+            )}
             {quote && quote.discount > 0 && (
               <div className="flex justify-between text-royal">
                 <span>Discount{quote.coupon ? ` (${quote.coupon.code})` : ""}</span>

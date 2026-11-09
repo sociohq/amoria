@@ -56,6 +56,7 @@ export interface Product {
   productType: ProductType;
   name: string;
   slug: string;
+  buyOneGetOne?: boolean; // part of a Buy 1 Get 1 Free offer (set per category in the admin)
   qualityOptions?: boolean; // sold in quality grades (Top / Medium Quality), each size priced on its own
   shortDescription: string;
   description: string;
@@ -202,7 +203,7 @@ export interface Post {
 export interface CartItem {
   id: string;
   quantity: number;
-  product: { id: string; name: string; slug: string; image: string | null };
+  product: { id: string; name: string; slug: string; image: string | null; buyOneGetOne?: boolean };
   variant: { id: string; size: string; price: number; stock: number };
   lineTotal: number;
 }
@@ -211,6 +212,7 @@ export interface Cart {
   id: string;
   items: CartItem[];
   subtotal: number;
+  offerDiscount?: number; // what Buy 1 Get 1 Free takes off (AED)
 }
 
 export interface User {
@@ -283,6 +285,7 @@ export interface Order {
   id: string;
   status: "PENDING" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED" | "REFUNDED";
   subtotal: number;
+  offerDiscount?: number; // Buy 1 Get 1 Free
   discount: number;
   shippingFee: number;
   // Cash on delivery: the extra fee (0 for card orders) and how the order is paid.
