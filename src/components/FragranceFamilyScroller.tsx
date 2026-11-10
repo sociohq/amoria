@@ -24,9 +24,10 @@ function ArrowButton({ direction, onClick }: { direction: "left" | "right"; onCl
   );
 }
 
-// A round-icon horizontal scroller for the full scent-family taxonomy —
-// distinct from CategoryShowcase's rectangular gender/collection cards.
-// Each circle links straight into the shop, pre-filtered to that family
+// A horizontal scroller of bottles for the full scent-family taxonomy — each
+// bottle is filled with that family's ingredients, and it is distinct from
+// CategoryShowcase's rectangular gender/collection cards.
+// Each bottle links straight into the shop, pre-filtered to that family
 // (see /shop's `family` query param and the fragranceFamily filter on
 // GET /api/products). All 37 families are in the DOM at once — the arrow
 // buttons (same pattern as ProductSection's carousel) are what make that
@@ -59,15 +60,17 @@ export function FragranceFamilyScroller() {
       >
         {FRAGRANCE_FAMILIES.map((family, i) => (
           <Reveal key={family.name} delayMs={(i % 8) * 60} className="shrink-0 snap-start">
-            <Link href={`/shop?family=${encodeURIComponent(family.name)}`} className="group flex w-24 flex-col items-center gap-2 sm:w-28">
-              <span className="relative h-24 w-24 overflow-hidden rounded-full border border-border bg-cream-dark transition-colors group-hover:border-royal sm:h-28 sm:w-28">
-                {/* padding on the outer circle would be ignored by the fill
-                    Image below (inset:0 sits on the padding edge, not the
-                    content edge) — this inner absolutely-positioned box is
-                    what actually creates the breathing room. */}
-                <span className="absolute inset-4 sm:inset-5">
-                  <Image src={family.image} alt="" fill sizes="112px" className="object-contain transition-transform duration-500 group-hover:scale-110" />
-                </span>
+            <Link href={`/shop?family=${encodeURIComponent(family.name)}`} className="group flex w-24 flex-col items-center gap-3 sm:w-28">
+              {/* A bottle filled with the family's ingredients, standing on its own (no circle). The pictures are tall
+                  (about 0.47 wide to 1 high), so the box keeps that shape and the bottle lifts a little on hover. */}
+              <span className="relative block h-[203px] w-24 sm:h-[236px] sm:w-28">
+                <Image
+                  src={family.bottle}
+                  alt=""
+                  fill
+                  sizes="112px"
+                  className="object-contain transition-transform duration-500 group-hover:-translate-y-1.5 group-hover:scale-105"
+                />
               </span>
               <span className="text-center text-xs text-ink-soft group-hover:text-royal">{family.name}</span>
             </Link>
