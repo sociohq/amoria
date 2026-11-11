@@ -5,6 +5,7 @@ import { listPosts } from "@/lib/posts";
 import { BlogSection } from "@/components/BlogSection";
 import { HeroSlider } from "@/components/HeroSlider";
 import { CategoryShowcase } from "@/components/CategoryShowcase";
+import { SaleSection } from "@/components/SaleSection";
 import { FragranceFamilyScroller } from "@/components/FragranceFamilyScroller";
 import { ProductSection } from "@/components/ProductSection";
 import { BrandLogoGrid } from "@/components/BrandLogoGrid";
@@ -38,6 +39,7 @@ export default async function HomePage() {
   return (
     <div>
       <HeroSlider slides={heroSlides} />
+      <SaleSection categories={categories} />
       <CategoryShowcase categories={categories} />
       <Reveal>
         <FragranceFamilyScroller />

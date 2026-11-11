@@ -22,6 +22,8 @@ export interface Category {
   menuGroup: string | null;
   position: number;
   featuredInMenu: boolean;
+  discountPercent?: number; // percent off every product in it (0 = no sale)
+  saleImage?: string | null; // the picture the homepage sale section shows for it
 }
 
 export interface ProductImage {
