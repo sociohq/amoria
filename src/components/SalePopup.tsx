@@ -79,7 +79,7 @@ export function SalePopup({ categories }: { categories: Category[] }) {
     }
   }, [ready, imageLoaded, waited, open, dismissed]);
 
-  function close() {
+  function close(toOffers = false) {
     setOpen(false);
     setDismissed(true);
     try {
@@ -88,7 +88,7 @@ export function SalePopup({ categories }: { categories: Category[] }) {
       // Nothing to do — it may show again on the next page load.
     }
     window.__amoriaSalePopupBusy = false;
-    window.dispatchEvent(new Event(SALE_POPUP_CLOSED_EVENT));
+    window.dispatchEvent(new CustomEvent(SALE_POPUP_CLOSED_EVENT, { detail: { toOffers } }));
   }
 
   useEffect(() => {
@@ -100,7 +100,7 @@ export function SalePopup({ categories }: { categories: Category[] }) {
   }, [open]);
 
   function checkOffers() {
-    close();
+    close(true);
     // Welcome popup (if it opens next) must not cover the sale, so the scroll waits for the close animation.
     if (pathname === "/") {
       const target = document.getElementById("sale");
@@ -122,7 +122,7 @@ export function SalePopup({ categories }: { categories: Category[] }) {
   return (
     <>
       <div
-        onClick={close}
+        onClick={() => close()}
         className={`fixed inset-0 z-50 bg-black/60 transition-opacity duration-300 ${
           open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
@@ -156,7 +156,7 @@ export function SalePopup({ categories }: { categories: Category[] }) {
             />
             <div className="relative">
               <button
-                onClick={close}
+                onClick={() => close()}
                 aria-label="Close"
                 className="absolute right-0 top-0 text-cream/70 transition-colors hover:text-cream"
               >

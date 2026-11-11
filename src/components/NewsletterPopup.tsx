@@ -48,8 +48,10 @@ export function NewsletterPopup() {
           if (window.__amoriaSalePopupBusy) {
             window.addEventListener(
               SALE_POPUP_CLOSED_EVENT,
-              () => {
-                if (!cancelled) timer = setTimeout(() => setOpen(true), 1200);
+              (e) => {
+                // Sent off to look at the offers: give them time with the bags before the welcome offer appears.
+                const toOffers = (e as CustomEvent<{ toOffers?: boolean }>).detail?.toOffers;
+                if (!cancelled) timer = setTimeout(() => setOpen(true), toOffers ? 30000 : 1200);
               },
               { once: true }
             );
