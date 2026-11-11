@@ -9,7 +9,7 @@ import { Category } from "@/lib/types";
 const DISMISSED_KEY = "amoria-sale-popup-dismissed";
 export const GOTO_SALE_KEY = "amoria-goto-sale";
 export const SALE_POPUP_CLOSED_EVENT = "amoria:sale-popup-closed";
-const SALE_IMAGE = "/offers/sale-1111.webp";
+const SALE_IMAGE = "/offers/sale-1111-b.webp";
 
 type LenisLike = { scrollTo: (target: HTMLElement, opts: { offset: number; duration: number }) => void } | null | undefined;
 
@@ -139,7 +139,7 @@ export function SalePopup({ categories }: { categories: Category[] }) {
           <div className="relative h-80 bg-[#ead9bf] sm:h-auto sm:min-h-[30rem]">
             <Image
               src={SALE_IMAGE}
-              alt="11/11 Offer: Amoria Oud & Roses and Amoria Velaris perfumes with a copper ribbon"
+              alt="11/11 Offer: Amoria Lamour, Velaris and Eau de Parfum with a copper ribbon"
               fill
               sizes="(min-width: 640px) 384px, 92vw"
               priority
