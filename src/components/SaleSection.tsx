@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Category } from "@/lib/types";
 import { Reveal } from "./Reveal";
+import { ScrollToSaleOnArrival } from "./ScrollToSaleOnArrival";
 
 // The homepage sale section ("11.11 Offer"): one big picture per category on sale, each linking to that category's
 // page, where every product already shows its sale price. Fully driven by the admin (Categories): a category appears
@@ -13,7 +14,8 @@ export function SaleSection({ categories }: { categories: Category[] }) {
   const top = Math.max(...onSale.map((c) => c.discountPercent ?? 0));
 
   return (
-    <section className="bg-cream-dark py-14 sm:py-16">
+    <section id="sale" className="bg-cream-dark py-14 sm:py-16">
+      <ScrollToSaleOnArrival />
       <div className="mb-8 px-6 text-center sm:mb-10">
         <p className="label-caps text-crimson">Limited-time sale</p>
         <h2 className="mt-1 font-serif text-3xl text-ink sm:text-4xl">11.11 Offer</h2>

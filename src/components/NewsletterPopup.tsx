@@ -6,6 +6,7 @@ import Image from "next/image";
 import { getPublicSettings, PublicSettings } from "@/lib/settings";
 import { claimWelcomeOffer, WelcomeOffer, WELCOME_CODE_KEY } from "@/lib/welcome";
 import { ApiError } from "@/lib/api";
+import { SALE_POPUP_CLOSED_EVENT } from "./SalePopup";
 
 const DISMISSED_KEY = "amoria-welcome-dismissed";
 
@@ -42,7 +43,20 @@ export function NewsletterPopup() {
       .then((s) => {
         if (cancelled || !s.newsletterPopupEnabled) return;
         setSettings(s);
-        timer = setTimeout(() => setOpen(true), s.newsletterPopupDelaySeconds * 1000);
+        timer = setTimeout(() => {
+          // While the sale popup is up (or about to be) the welcome offer waits, then follows it once it's closed.
+          if (window.__amoriaSalePopupBusy) {
+            window.addEventListener(
+              SALE_POPUP_CLOSED_EVENT,
+              () => {
+                if (!cancelled) timer = setTimeout(() => setOpen(true), 1200);
+              },
+              { once: true }
+            );
+          } else {
+            setOpen(true);
+          }
+        }, s.newsletterPopupDelaySeconds * 1000);
       })
       .catch(() => {
         // No settings, no popup — never block the page over this.

@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
 import { AuthDrawer } from "@/components/AuthDrawer";
 import { NewsletterPopup } from "@/components/NewsletterPopup";
+import { SalePopup } from "@/components/SalePopup";
 import { AuroraMark } from "@/components/AuroraMark";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { ScrollToTopButton } from "@/components/ScrollToTopButton";
@@ -37,6 +38,7 @@ export default async function StorefrontLayout({ children }: { children: React.R
             <Footer />
             <CartDrawer />
             <AuthDrawer />
+            <SalePopup categories={categories} />
             <NewsletterPopup />
             <AuroraMark />
             <WhatsAppButton />
