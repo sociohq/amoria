@@ -5,6 +5,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { ShopFilterDrawer } from "@/components/ShopFilterDrawer";
 import { Pagination } from "@/components/Pagination";
 import { ShopMobileBar } from "@/components/ShopMobileBar";
+import { TitleSync } from "@/components/TitleSync";
 
 interface ShopPageProps {
   searchParams: Promise<{
@@ -90,8 +91,11 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     return `/shop?${next.toString()}`;
   }
 
+  const tabTitle = `${search ? `Results for “${search}”` : categoryName && category ? categoryName : "Shop All Fragrances"} | Amoria Perfume`;
+
   return (
     <div className="px-4 pb-28 pt-8 sm:px-6 sm:py-12">
+      <TitleSync title={tabTitle} />
       <div className="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-serif text-3xl text-ink">{heading}</h1>
