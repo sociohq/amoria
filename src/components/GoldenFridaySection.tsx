@@ -4,12 +4,6 @@ import { GoldenFridayOffer, offerEnds } from "@/lib/goldenFriday";
 import { CopyCodeButton } from "./CopyCodeButton";
 import { Reveal } from "./Reveal";
 
-const SHOP_LINKS = [
-  { label: "Shop Inspired Perfumes", href: "/shop?category=inspired-fragrance" },
-  { label: "Shop Premium Fragrance", href: "/shop?category=premium-collection" },
-  { label: "Shop Gift Sets", href: "/shop?category=gift-sets" },
-];
-
 // The homepage Golden Friday section, shown while the GOLDEN25 coupon is live (see lib/goldenFriday.ts). The
 // amounts and the end date come from the coupon itself, so editing it in the admin updates this text.
 export function GoldenFridaySection({ offer }: { offer: GoldenFridayOffer | null }) {
@@ -60,16 +54,13 @@ export function GoldenFridaySection({ offer }: { offer: GoldenFridayOffer | null
             <CopyCodeButton code={offer.code} label="Copy code" />
           </div>
 
-          <div className="mt-7 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-            {SHOP_LINKS.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="border border-gold px-6 py-3 label-caps text-gold-light transition-colors hover:bg-gold hover:text-ink"
-              >
-                {l.label}
-              </Link>
-            ))}
+          <div className="mt-7">
+            <Link
+              href="/shop"
+              className="inline-block border border-gold px-10 py-3 label-caps text-gold-light transition-colors hover:bg-gold hover:text-ink"
+            >
+              Shop now
+            </Link>
           </div>
 
           <p className="mx-auto mt-7 max-w-md text-xs leading-relaxed text-cream/50">
