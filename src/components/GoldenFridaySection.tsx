@@ -20,7 +20,7 @@ export function GoldenFridaySection({ offer }: { offer: GoldenFridayOffer | null
 
   return (
     <section id="golden-friday" className="relative overflow-hidden bg-ink px-6 py-14 text-center text-cream sm:py-16">
-      {/* Two ribbons of gold, tilted, trailing in from the top-left and out to the bottom-right corner. Decorative only,
+      {/* Two ribbons of gold, tilted: one runs in from the left edge and leaves through the top, the other in from the right edge and out through the bottom, so each reaches the frame and carries on past it. Decorative only,
           sitting behind the text (the content below is lifted above them) and never in the way of clicks. */}
       <Image
         src="/offers/gold-ribbon.webp"
@@ -28,8 +28,8 @@ export function GoldenFridaySection({ offer }: { offer: GoldenFridayOffer | null
         aria-hidden
         width={1400}
         height={467}
-        sizes="(min-width: 640px) 544px, 288px"
-        className="pointer-events-none absolute -left-28 -top-10 w-[18rem] max-w-none rotate-[12deg] select-none opacity-90 sm:-left-44 sm:-top-14 sm:w-[34rem]"
+        sizes="(min-width: 1024px) 780px, (min-width: 640px) 544px, 288px"
+        className="pointer-events-none absolute -left-28 -top-10 w-[18rem] max-w-none rotate-[12deg] select-none opacity-90 sm:-left-44 sm:-top-14 sm:w-[34rem] lg:-left-[3vw] lg:-top-[1vw] lg:w-[36vw] lg:max-w-[780px] lg:-rotate-[8deg]"
       />
       <Image
         src="/offers/gold-ribbon.webp"
@@ -37,8 +37,8 @@ export function GoldenFridaySection({ offer }: { offer: GoldenFridayOffer | null
         aria-hidden
         width={1400}
         height={467}
-        sizes="(min-width: 640px) 544px, 288px"
-        className="pointer-events-none absolute -bottom-10 -right-28 w-[18rem] max-w-none rotate-[192deg] select-none opacity-90 sm:-bottom-14 sm:-right-44 sm:w-[34rem]"
+        sizes="(min-width: 1024px) 780px, (min-width: 640px) 544px, 288px"
+        className="pointer-events-none absolute -bottom-10 -right-28 w-[18rem] max-w-none rotate-[192deg] select-none opacity-90 sm:-bottom-14 sm:-right-44 sm:w-[34rem] lg:-bottom-[1vw] lg:-right-[3vw] lg:w-[36vw] lg:max-w-[780px] lg:rotate-[172deg]"
       />
       <Reveal>
         <div className="relative z-10 mx-auto max-w-2xl">
