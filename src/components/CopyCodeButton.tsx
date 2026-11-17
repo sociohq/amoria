@@ -19,7 +19,7 @@ export function CopyCodeButton({ code, label = "Copy" }: { code: string; label?:
   }
 
   return (
-    <div className="flex items-stretch border border-gold/60 text-cream">
+    <div className="gold-flash-bar flex items-stretch border border-gold/60 text-cream">
       <span
         id={`code-${code}`}
         className="min-w-0 flex-1 select-all px-4 py-3 text-center font-mono text-lg tracking-[0.25em]"

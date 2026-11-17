@@ -386,3 +386,47 @@ body {
     translate: 0 -5rem;
   }
 }
+
+/* Golden Friday code bar: a soft band of gold light that glides across the code and Copy button on a loop, so the
+   bar feels alive and premium. Drawn over the code and the button (screen blend, so the text stays readable) and ignores clicks. Switched off
+   for visitors who ask their device for reduced motion. */
+@keyframes gold-flash {
+  0% {
+    transform: translateX(-130%) skewX(-20deg);
+  }
+  55%,
+  100% {
+    transform: translateX(330%) skewX(-20deg);
+  }
+}
+.gold-flash-bar {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.gold-flash-bar::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 38%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(255, 233, 170, 0.0) 12%,
+    rgba(255, 233, 170, 0.55) 50%,
+    rgba(255, 233, 170, 0.0) 88%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 20;
+  mix-blend-mode: screen;
+  animation: gold-flash 3.2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gold-flash-bar::after {
+    animation: none;
+    display: none;
+  }
+}
