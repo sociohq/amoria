@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 // A code chip with a Copy button, used by the Golden Friday popup and homepage banner.
-export function CopyCodeButton({ code }: { code: string }) {
+export function CopyCodeButton({ code, label = "Copy" }: { code: string; label?: string }) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {
@@ -31,7 +31,7 @@ export function CopyCodeButton({ code }: { code: string }) {
         onClick={copy}
         className="shrink-0 bg-gold px-5 label-caps text-ink transition-opacity hover:opacity-90"
       >
-        {copied ? "Copied" : "Copy"}
+        {copied ? "Copied" : label}
       </button>
     </div>
   );

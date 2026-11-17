@@ -8,6 +8,7 @@ import { AuthDrawer } from "@/components/AuthDrawer";
 import { NewsletterPopup } from "@/components/NewsletterPopup";
 import { GoldenFridayPopup } from "@/components/GoldenFridayPopup";
 import { getGoldenFriday } from "@/lib/goldenFriday";
+import { GoldenFridayProvider } from "@/lib/golden-friday-context";
 import { AuroraMark } from "@/components/AuroraMark";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { ScrollToTopButton } from "@/components/ScrollToTopButton";
@@ -31,6 +32,7 @@ export default async function StorefrontLayout({ children }: { children: React.R
   return (
     <SmoothScroll>
       <PageLoader />
+      <GoldenFridayProvider offer={goldenFriday}>
       <AuthDrawerProvider>
         <CartProvider>
           <WishlistProvider>
@@ -47,6 +49,7 @@ export default async function StorefrontLayout({ children }: { children: React.R
           </WishlistProvider>
         </CartProvider>
       </AuthDrawerProvider>
+      </GoldenFridayProvider>
     </SmoothScroll>
   );
 }

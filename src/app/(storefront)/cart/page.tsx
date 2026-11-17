@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useCart } from "@/lib/cart-context";
 import { formatAed } from "@/lib/money";
+import { GoldenFridayProgress } from "@/components/GoldenFridayProgress";
 
 export default function CartPage() {
   const { items, subtotal, offerDiscount, offerNudge, loading, updateQuantity, removeItem } = useCart();
@@ -37,6 +38,7 @@ export default function CartPage() {
   return (
     <div className="max-w-4xl px-6 py-12">
       <h1 className="mb-8 font-serif text-3xl text-ink">Your Cart</h1>
+      <GoldenFridayProgress subtotal={subtotal - offerDiscount} className="mb-6 border !px-5" />
 
       <div className="divide-y divide-border border-y border-border">
         {items.map((item) => (

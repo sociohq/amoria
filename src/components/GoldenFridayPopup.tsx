@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { GoldenFridayOffer, offerCondition, offerHeadline } from "@/lib/goldenFriday";
+import { GoldenFridayOffer, offerCondition, offerEnds, offerHeadline } from "@/lib/goldenFriday";
 import { CopyCodeButton } from "./CopyCodeButton";
 
 const DISMISSED_KEY = "amoria-golden-friday-dismissed";
@@ -124,6 +124,7 @@ export function GoldenFridayPopup({ offer }: { offer: GoldenFridayOffer | null }
               >
                 Shop now
               </Link>
+              {offerEnds(offer) && <p className="mt-3 text-center text-xs text-cream/55">{offerEnds(offer)}</p>}
             </div>
           </div>
         </div>

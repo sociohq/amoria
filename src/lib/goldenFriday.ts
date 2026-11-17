@@ -10,6 +10,7 @@ export interface GoldenFridayOffer {
   type: "PERCENTAGE" | "FIXED";
   value: number;
   minOrderValue: number | null;
+  expiresAt: string | null;
 }
 
 export async function getGoldenFriday(): Promise<GoldenFridayOffer | null> {
@@ -24,6 +25,12 @@ export async function getGoldenFriday(): Promise<GoldenFridayOffer | null> {
 // "25% off" / "AED 30 off", and the condition: "on orders of AED 120 or more".
 export function offerHeadline(offer: GoldenFridayOffer): string {
   return offer.type === "PERCENTAGE" ? `${offer.value}% off` : `AED ${offer.value} off`;
+}
+// "Ends 23 November" (in Dubai time), or nothing when the coupon has no end date.
+export function offerEnds(offer: GoldenFridayOffer): string | null {
+  if (!offer.expiresAt) return null;
+  const day = new Date(offer.expiresAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", timeZone: "Asia/Dubai" });
+  return `Ends ${day}`;
 }
 export function offerCondition(offer: GoldenFridayOffer): string {
   return offer.minOrderValue ? `on orders of AED ${offer.minOrderValue} or more` : "on your order";

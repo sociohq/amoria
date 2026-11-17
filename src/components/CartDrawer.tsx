@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useCart } from "@/lib/cart-context";
 import { formatAed } from "@/lib/money";
 import { ShippingProgress } from "./ShippingProgress";
+import { GoldenFridayProgress } from "./GoldenFridayProgress";
 
 export function CartDrawer() {
   const { items, subtotal, offerDiscount, offerNudge, itemCount, drawerOpen, closeDrawer, updateQuantity, removeItem } = useCart();
@@ -40,6 +41,7 @@ export function CartDrawer() {
         </div>
 
         {items.length > 0 && <ShippingProgress subtotal={subtotal - offerDiscount} />}
+        {items.length > 0 && <GoldenFridayProgress subtotal={subtotal - offerDiscount} />}
 
         {items.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 px-8 text-center">
