@@ -2,9 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Category } from "@/lib/types";
 import { Reveal } from "./Reveal";
-import { ScrollToSaleOnArrival } from "./ScrollToSaleOnArrival";
 
-// The homepage sale section ("11.11 Offer"): one big picture per category on sale, each linking to that category's
+// The homepage sale section: one big picture per category on sale, each linking to that category's
 // page, where every product already shows its sale price. Fully driven by the admin (Categories): a category appears
 // here while it has a Sale picture and a Discount % above 0, so ending the sale (Discount % back to 0, or removing
 // the picture) takes it off the page; with none left the whole section disappears.
@@ -15,10 +14,9 @@ export function SaleSection({ categories }: { categories: Category[] }) {
 
   return (
     <section id="sale" className="bg-cream-dark py-14 sm:py-16">
-      <ScrollToSaleOnArrival />
       <div className="mb-8 px-6 text-center sm:mb-10">
         <p className="label-caps text-crimson">Limited-time sale</p>
-        <h2 className="mt-1 font-serif text-3xl text-ink sm:text-4xl">11.11 Offer</h2>
+        <h2 className="mt-1 font-serif text-3xl text-ink sm:text-4xl">On Sale Now</h2>
         <p className="mx-auto mt-3 max-w-md text-sm text-ink-soft">
           {onSale.length > 1 ? `Up to ${top}% off` : `${top}% off`} {onSale.map((c) => c.name).join(", ").replace(/, ([^,]*)$/, " and $1")}. Pick a
           bag and shop the sale.

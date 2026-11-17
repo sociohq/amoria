@@ -6,7 +6,7 @@ import Image from "next/image";
 import { getPublicSettings, PublicSettings } from "@/lib/settings";
 import { claimWelcomeOffer, WelcomeOffer, WELCOME_CODE_KEY } from "@/lib/welcome";
 import { ApiError } from "@/lib/api";
-import { SALE_POPUP_CLOSED_EVENT } from "./SalePopup";
+import { OFFER_POPUP_CLOSED_EVENT } from "./GoldenFridayPopup";
 
 const DISMISSED_KEY = "amoria-welcome-dismissed";
 
@@ -44,14 +44,12 @@ export function NewsletterPopup() {
         if (cancelled || !s.newsletterPopupEnabled) return;
         setSettings(s);
         timer = setTimeout(() => {
-          // While the sale popup is up (or about to be) the welcome offer waits, then follows it once it's closed.
-          if (window.__amoriaSalePopupBusy) {
+          // While the offer popup is up (or about to be) the welcome offer waits, then follows it once it's closed.
+          if (window.__amoriaOfferPopupBusy) {
             window.addEventListener(
-              SALE_POPUP_CLOSED_EVENT,
-              (e) => {
-                // Sent off to look at the offers: give them time with the bags before the welcome offer appears.
-                const toOffers = (e as CustomEvent<{ toOffers?: boolean }>).detail?.toOffers;
-                if (!cancelled) timer = setTimeout(() => setOpen(true), toOffers ? 30000 : 1200);
+              OFFER_POPUP_CLOSED_EVENT,
+              () => {
+                if (!cancelled) timer = setTimeout(() => setOpen(true), 1200);
               },
               { once: true }
             );

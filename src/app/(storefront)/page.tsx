@@ -6,6 +6,8 @@ import { BlogSection } from "@/components/BlogSection";
 import { HeroSlider } from "@/components/HeroSlider";
 import { CategoryShowcase } from "@/components/CategoryShowcase";
 import { SaleSection } from "@/components/SaleSection";
+import { GoldenFridaySection } from "@/components/GoldenFridaySection";
+import { getGoldenFriday } from "@/lib/goldenFriday";
 import { FragranceFamilyScroller } from "@/components/FragranceFamilyScroller";
 import { ProductSection } from "@/components/ProductSection";
 import { BrandLogoGrid } from "@/components/BrandLogoGrid";
@@ -19,7 +21,7 @@ import { OurStores } from "@/components/OurStores";
 import { Reveal } from "@/components/Reveal";
 
 export default async function HomePage() {
-  const [homeSections, categories, shopTheLook, reviews, genderShowcase, heroSlides, posts, statementBanner, customizeBanner] = await Promise.all([
+  const [homeSections, categories, shopTheLook, reviews, genderShowcase, heroSlides, posts, statementBanner, customizeBanner, goldenFriday] = await Promise.all([
     // The rows are set up in the admin; if that can't be reached, fall back to the plain Featured mix.
     getHomeSections().catch(async () => {
       const products = await listFeaturedMix().catch(() => []);
@@ -34,11 +36,14 @@ export default async function HomePage() {
     // null = switched off in the admin; if it can't be fetched the original banner is shown.
     getPromoBanner("statement"),
     getPromoBanner("customize"),
+    // null unless the GOLDEN25 coupon is live.
+    getGoldenFriday(),
   ]);
 
   return (
     <div>
       <HeroSlider slides={heroSlides} />
+      <GoldenFridaySection offer={goldenFriday} />
       <SaleSection categories={categories} />
       <CategoryShowcase categories={categories} />
       <Reveal>

@@ -6,7 +6,8 @@ import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
 import { AuthDrawer } from "@/components/AuthDrawer";
 import { NewsletterPopup } from "@/components/NewsletterPopup";
-import { SalePopup } from "@/components/SalePopup";
+import { GoldenFridayPopup } from "@/components/GoldenFridayPopup";
+import { getGoldenFriday } from "@/lib/goldenFriday";
 import { AuroraMark } from "@/components/AuroraMark";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { ScrollToTopButton } from "@/components/ScrollToTopButton";
@@ -25,7 +26,7 @@ import { listCategories } from "@/lib/products";
 export default async function StorefrontLayout({ children }: { children: React.ReactNode }) {
   // Resilient to the backend/DB being unavailable — the header should
   // never take the whole site down over a categories fetch.
-  const categories = await listCategories().catch(() => []);
+  const [categories, goldenFriday] = await Promise.all([listCategories().catch(() => []), getGoldenFriday()]);
 
   return (
     <SmoothScroll>
@@ -38,7 +39,7 @@ export default async function StorefrontLayout({ children }: { children: React.R
             <Footer />
             <CartDrawer />
             <AuthDrawer />
-            <SalePopup categories={categories} />
+            <GoldenFridayPopup offer={goldenFriday} />
             <NewsletterPopup />
             <AuroraMark />
             <WhatsAppButton />
