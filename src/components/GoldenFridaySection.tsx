@@ -28,8 +28,8 @@ export function GoldenFridaySection({ offer }: { offer: GoldenFridayOffer | null
         aria-hidden
         width={1400}
         height={467}
-        sizes="(min-width: 640px) 640px, 360px"
-        className="pointer-events-none absolute -left-24 -top-2 w-[22rem] max-w-none rotate-[14deg] select-none opacity-90 sm:-left-32 sm:top-0 sm:w-[40rem]"
+        sizes="(min-width: 640px) 544px, 288px"
+        className="pointer-events-none absolute -left-28 -top-10 w-[18rem] max-w-none rotate-[12deg] select-none opacity-90 sm:-left-44 sm:-top-14 sm:w-[34rem]"
       />
       <Image
         src="/offers/gold-ribbon.webp"
@@ -37,8 +37,8 @@ export function GoldenFridaySection({ offer }: { offer: GoldenFridayOffer | null
         aria-hidden
         width={1400}
         height={467}
-        sizes="(min-width: 640px) 640px, 360px"
-        className="pointer-events-none absolute -bottom-2 -right-24 w-[22rem] max-w-none rotate-[194deg] select-none opacity-90 sm:-right-32 sm:bottom-0 sm:w-[40rem]"
+        sizes="(min-width: 640px) 544px, 288px"
+        className="pointer-events-none absolute -bottom-10 -right-28 w-[18rem] max-w-none rotate-[192deg] select-none opacity-90 sm:-bottom-14 sm:-right-44 sm:w-[34rem]"
       />
       <Reveal>
         <div className="relative z-10 mx-auto max-w-2xl">
