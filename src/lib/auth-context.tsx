@@ -2,13 +2,14 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { apiFetch } from "./api";
+import { BotProtectionPayload } from "./botProtection";
 import { User } from "./types";
 
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, name: string) => Promise<void>;
+  register: (email: string, password: string, name: string, protection: BotProtectionPayload) => Promise<void>;
   logout: () => Promise<void>;
   // Re-checks the session — used after guest-checkout OTP verification
   // (and passwordless login-with-code) sets a session cookie outside of
@@ -46,10 +47,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(user);
   }
 
-  async function register(email: string, password: string, name: string) {
+  async function register(email: string, password: string, name: string, protection: BotProtectionPayload) {
     const { user } = await apiFetch<{ user: User }>("/api/auth/register", {
       method: "POST",
-      body: JSON.stringify({ email, password, name }),
+      body: JSON.stringify({ email, password, name, ...protection }),
     });
     setUser(user);
   }

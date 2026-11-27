@@ -1,13 +1,17 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 import { Order } from "@/lib/types";
 import { formatAed } from "@/lib/money";
+import { friendlySubmitError } from "@/lib/formError";
 import { useCart } from "@/lib/cart-context";
+import { HoneypotField } from "@/components/HoneypotField";
+import { Turnstile, type TurnstileHandle } from "@/components/Turnstile";
+import { useBotProtection } from "@/components/useBotProtection";
 
 // Shown on a guest order once payment clears: the order is already fully
 // placed at this point — this is only telling them about the account we
@@ -16,16 +20,25 @@ function GuestAccountNotice({ email }: { email: string }) {
   const [error, setError] = useState<string | null>(null);
   const [resent, setResent] = useState(false);
   const [resending, setResending] = useState(false);
+  const bot = useBotProtection();
+  const turnstileRef = useRef<TurnstileHandle>(null);
+  const honeypotRef = useRef<HTMLInputElement>(null);
 
   async function handleResend() {
+    if (resending || !bot.canSubmit) return;
     setResending(true);
     setError(null);
     try {
-      await apiFetch("/api/auth/resend-set-password-link", { method: "POST", body: JSON.stringify({ email }) });
+      await apiFetch("/api/auth/resend-set-password-link", {
+        method: "POST",
+        body: JSON.stringify({ email, ...bot.payload(honeypotRef.current?.value ?? "") }),
+      });
       setResent(true);
-    } catch {
-      setError("Could not resend the email. Please try again shortly.");
+    } catch (err) {
+      setError(friendlySubmitError(err));
     } finally {
+      bot.clearToken();
+      turnstileRef.current?.reset();
       setResending(false);
     }
   }
@@ -37,15 +50,24 @@ function GuestAccountNotice({ email }: { email: string }) {
         We&apos;ve created an Amoria account for <strong className="text-ink">{email}</strong> so you can track this
         order. Check your inbox for a link to set your password and sign in.
       </p>
-      {error && <p className="mt-3 text-sm text-crimson">{error}</p>}
-      <button
-        type="button"
-        onClick={handleResend}
-        disabled={resending}
-        className="mt-3 text-xs text-ink-soft underline underline-offset-2 hover:text-royal disabled:opacity-50"
+      <form
+        className="relative"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void handleResend();
+        }}
       >
-        {resent ? "Email resent. Check your inbox" : resending ? "Resending…" : "Didn't get it? Resend the email"}
-      </button>
+        <Turnstile ref={turnstileRef} onToken={bot.setToken} className="mt-3" />
+        {error && <p className="mt-3 text-sm text-crimson">{error}</p>}
+        <button
+          type="submit"
+          disabled={resending || !bot.canSubmit}
+          className="mt-3 text-xs text-ink-soft underline underline-offset-2 hover:text-royal disabled:opacity-50"
+        >
+          {resent ? "Email resent. Check your inbox" : resending ? "Resending…" : "Didn't get it? Resend the email"}
+        </button>
+        <HoneypotField ref={honeypotRef} />
+      </form>
     </div>
   );
 }

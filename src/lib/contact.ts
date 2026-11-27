@@ -1,6 +1,7 @@
 import { apiFetch } from "./api";
+import { BotProtectionPayload } from "./botProtection";
 
-export interface ContactFormInput {
+export interface ContactFormInput extends BotProtectionPayload {
   name: string;
   email: string;
   phone?: string;

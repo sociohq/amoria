@@ -3,7 +3,10 @@
 import { useRef, useState } from "react";
 import { useLenis } from "lenis/react";
 import { subscribeToNewsletter } from "@/lib/newsletter";
-import { ApiError } from "@/lib/api";
+import { friendlySubmitError } from "@/lib/formError";
+import { HoneypotField } from "./HoneypotField";
+import { Turnstile, type TurnstileHandle } from "./Turnstile";
+import { useBotProtection } from "./useBotProtection";
 
 const EMAIL = "info@amoriaperfume.ae";
 const PHONE_DISPLAY = "+971 50 755 0447";
@@ -25,6 +28,9 @@ export function OurStores() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const bot = useBotProtection();
+  const turnstileRef = useRef<TurnstileHandle>(null);
+  const honeypotRef = useRef<HTMLInputElement>(null);
 
   // Hooks into the site's existing Lenis smooth-scroll (see
   // SmoothScroll.tsx) rather than a raw window scroll listener, so the
@@ -46,14 +52,18 @@ export function OurStores() {
 
   async function handleSubscribe(e: React.FormEvent) {
     e.preventDefault();
+    if (status === "submitting" || !bot.canSubmit) return;
     setStatus("submitting");
     setError(null);
     try {
-      await subscribeToNewsletter(email);
+      await subscribeToNewsletter(email, bot.payload(honeypotRef.current?.value ?? ""));
       setStatus("done");
     } catch (err) {
       setStatus("error");
-      setError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
+      setError(friendlySubmitError(err));
+    } finally {
+      bot.clearToken();
+      turnstileRef.current?.reset();
     }
   }
 
@@ -82,25 +92,29 @@ export function OurStores() {
         {status === "done" ? (
           <p className="mt-5 text-sm text-royal">Thank you for signing up. Welcome to Amoria.</p>
         ) : (
-          <form onSubmit={handleSubscribe} className="mt-5 flex items-center border border-ink/30 px-4 py-3">
-            <input
-              type="email"
-              required
-              placeholder="E-mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-transparent text-sm text-ink outline-none placeholder:text-ink-soft"
-            />
-            <button
-              type="submit"
-              disabled={status === "submitting"}
-              aria-label="Subscribe"
-              className="text-ink disabled:opacity-50"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-                <path d="M4 12h16M13 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
+          <form onSubmit={handleSubscribe} className="relative mt-5">
+            <div className="flex items-center border border-ink/30 px-4 py-3">
+              <input
+                type="email"
+                required
+                placeholder="E-mail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-transparent text-sm text-ink outline-none placeholder:text-ink-soft"
+              />
+              <button
+                type="submit"
+                disabled={status === "submitting" || !bot.canSubmit}
+                aria-label="Subscribe"
+                className="text-ink disabled:opacity-50"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                  <path d="M4 12h16M13 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
+            <Turnstile ref={turnstileRef} onToken={bot.setToken} className="mt-3" />
+            <HoneypotField ref={honeypotRef} />
           </form>
         )}
         {error && <p className="mt-2 text-xs text-crimson">{error}</p>}

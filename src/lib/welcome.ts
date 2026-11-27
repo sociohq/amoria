@@ -1,4 +1,5 @@
 import { apiFetch } from "./api";
+import { BotProtectionPayload } from "./botProtection";
 
 export interface WelcomeOffer {
   code: string;
@@ -9,8 +10,11 @@ export interface WelcomeOffer {
   redeemed: boolean;
 }
 
-export const claimWelcomeOffer = (name: string, phone: string) =>
-  apiFetch<WelcomeOffer>("/api/welcome", { method: "POST", body: JSON.stringify({ name, phone }) });
+export const claimWelcomeOffer = (name: string, phone: string, protection: BotProtectionPayload) =>
+  apiFetch<WelcomeOffer>("/api/welcome", {
+    method: "POST",
+    body: JSON.stringify({ name, phone, ...protection }),
+  });
 
 // The code is remembered in this browser so checkout can pre-fill it.
 export const WELCOME_CODE_KEY = "amoria-welcome-code";
