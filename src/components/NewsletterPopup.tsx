@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { getPublicSettings, PublicSettings } from "@/lib/settings";
 import { claimWelcomeOffer, WelcomeOffer, WELCOME_CODE_KEY } from "@/lib/welcome";
-import { ApiError } from "@/lib/api";
+import { friendlySubmitError } from "@/lib/formError";
 import { OFFER_POPUP_CLOSED_EVENT } from "./GoldenFridayPopup";
+import { HoneypotField } from "./HoneypotField";
+import { Turnstile, type TurnstileHandle } from "./Turnstile";
+import { useBotProtection } from "./useBotProtection";
 
 const DISMISSED_KEY = "amoria-welcome-dismissed";
 
@@ -25,6 +28,9 @@ export function NewsletterPopup() {
   const [copied, setCopied] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const bot = useBotProtection();
+  const turnstileRef = useRef<TurnstileHandle>(null);
+  const honeypotRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let closedThisVisit = false;
@@ -79,10 +85,11 @@ export function NewsletterPopup() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (status === "submitting" || !bot.canSubmit) return;
     setStatus("submitting");
     setError(null);
     try {
-      const result = await claimWelcomeOffer(name, phone);
+      const result = await claimWelcomeOffer(name, phone, bot.payload(honeypotRef.current?.value ?? ""));
       setOffer(result);
       setStatus("done");
       try {
@@ -93,7 +100,10 @@ export function NewsletterPopup() {
       }
     } catch (err) {
       setStatus("error");
-      setError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
+      setError(friendlySubmitError(err));
+    } finally {
+      bot.clearToken();
+      turnstileRef.current?.reset();
     }
   }
 
@@ -200,7 +210,7 @@ export function NewsletterPopup() {
                   </Link>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="mt-6">
+                <form onSubmit={handleSubmit} className="relative mt-6">
                   <input
                     type="text"
                     required
@@ -224,14 +234,16 @@ export function NewsletterPopup() {
                     onChange={(e) => setPhone(e.target.value)}
                     className="mt-3 w-full border border-transparent bg-cream px-4 py-3 text-sm text-ink outline-none placeholder:text-ink-soft focus:border-gold"
                   />
+                  <Turnstile ref={turnstileRef} onToken={bot.setToken} className="mt-3" />
                   <button
                     type="submit"
-                    disabled={status === "submitting"}
+                    disabled={status === "submitting" || !bot.canSubmit}
                     className="mt-3 w-full bg-gold px-8 py-3 label-caps text-ink transition-opacity hover:opacity-90 disabled:opacity-50"
                   >
                     {status === "submitting" ? "Please wait…" : settings.newsletterPopupButtonText}
                   </button>
-                  {error && <p className="mt-2 text-xs text-crimson">{error}</p>}
+                  {error && <p className="mt-2 text-xs text-red-300">{error}</p>}
+                  <HoneypotField ref={honeypotRef} />
                   <p className="mt-4 text-xs leading-relaxed text-cream/55">
                     One welcome code per phone number. We&apos;ll only use your details for this offer and the
                     occasional update from Amoria. See our{" "}

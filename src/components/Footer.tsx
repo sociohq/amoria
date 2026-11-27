@@ -2,12 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { subscribeToNewsletter } from "@/lib/newsletter";
 import { getPublicSettings, PublicSettings } from "@/lib/settings";
+import { friendlySubmitError } from "@/lib/formError";
 import { SocialLinks } from "./SocialIcons";
 import { PaymentIcons } from "./PaymentIcons";
-import { ApiError } from "@/lib/api";
+import { HoneypotField } from "./HoneypotField";
+import { Turnstile, type TurnstileHandle } from "./Turnstile";
+import { useBotProtection } from "./useBotProtection";
 
 const SHOP_LINKS = [
   { label: "All Fragrances", href: "/shop" },
@@ -56,7 +59,12 @@ function FooterColumn({ title, links }: { title: string; links: { label: string;
 export function Footer() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [settings, setSettings] = useState<PublicSettings | null>(null);
+  const bot = useBotProtection();
+  const turnstileRef = useRef<TurnstileHandle>(null);
+  const honeypotRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     getPublicSettings()
@@ -68,14 +76,19 @@ export function Footer() {
 
   async function handleSubscribe(e: React.FormEvent) {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!email.trim() || submitting || !bot.canSubmit) return;
+    setSubmitting(true);
+    setError(null);
     try {
-      await subscribeToNewsletter(email);
+      await subscribeToNewsletter(email, bot.payload(honeypotRef.current?.value ?? ""));
       setSubscribed(true);
     } catch (err) {
-      // Rare (the endpoint only really rejects a malformed email) — the
-      // input just stays put so they can fix it and retry.
-      alert(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
+      // Keep the address in the field so they can fix it and try again.
+      setError(friendlySubmitError(err));
+    } finally {
+      bot.clearToken();
+      turnstileRef.current?.reset();
+      setSubmitting(false);
     }
   }
 
@@ -102,18 +115,28 @@ export function Footer() {
           {subscribed ? (
             <p className="text-sm text-gold-light">You&apos;re on the list. Thank you.</p>
           ) : (
-            <form onSubmit={handleSubscribe} className="flex items-center border-b border-cream/30 pb-2">
-              <input
-                type="email"
-                required
-                placeholder="Sign up for updates"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-transparent text-sm text-cream placeholder:text-cream/50 outline-none"
-              />
-              <button type="submit" aria-label="Subscribe" className="text-cream">
-                →
-              </button>
+            <form onSubmit={handleSubscribe} className="relative">
+              <div className="flex items-center border-b border-cream/30 pb-2">
+                <input
+                  type="email"
+                  required
+                  placeholder="Sign up for updates"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-transparent text-sm text-cream placeholder:text-cream/50 outline-none"
+                />
+                <button
+                  type="submit"
+                  aria-label="Subscribe"
+                  disabled={submitting || !bot.canSubmit}
+                  className="text-cream disabled:opacity-50"
+                >
+                  →
+                </button>
+              </div>
+              <Turnstile ref={turnstileRef} onToken={bot.setToken} className="mt-3" />
+              {error && <p className="mt-2 text-xs text-red-300">{error}</p>}
+              <HoneypotField ref={honeypotRef} />
             </form>
           )}
           <SocialLinks

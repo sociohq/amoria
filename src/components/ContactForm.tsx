@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { submitContactForm } from "@/lib/contact";
-import { ApiError } from "@/lib/api";
+import { friendlySubmitError } from "@/lib/formError";
+import { HoneypotField } from "./HoneypotField";
+import { Turnstile, type TurnstileHandle } from "./Turnstile";
+import { useBotProtection } from "./useBotProtection";
 
 const inputClass =
   "w-full border-b border-border bg-transparent py-2 text-sm text-ink outline-none transition-colors placeholder:text-ink-soft focus:border-royal";
@@ -15,9 +18,18 @@ export function ContactForm() {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const bot = useBotProtection();
+  const turnstileRef = useRef<TurnstileHandle>(null);
+  const honeypotRef = useRef<HTMLInputElement>(null);
+
+  function resetChallenge() {
+    bot.clearToken();
+    turnstileRef.current?.reset();
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (status === "submitting" || !bot.canSubmit) return;
     setStatus("submitting");
     setError(null);
     try {
@@ -27,11 +39,14 @@ export function ContactForm() {
         phone: phone || undefined,
         subject: subject || undefined,
         message,
+        ...bot.payload(honeypotRef.current?.value ?? ""),
       });
       setStatus("done");
     } catch (err) {
       setStatus("error");
-      setError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
+      setError(friendlySubmitError(err));
+    } finally {
+      resetChallenge();
     }
   }
 
@@ -44,7 +59,7 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5 text-left">
+    <form onSubmit={handleSubmit} className="relative space-y-5 text-left">
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label className="label-caps mb-1 block text-ink-soft">Name</label>
@@ -81,14 +96,16 @@ export function ContactForm() {
           className={inputClass}
         />
       </div>
+      <Turnstile ref={turnstileRef} onToken={bot.setToken} />
       {error && <p className="text-sm text-crimson">{error}</p>}
       <button
         type="submit"
-        disabled={status === "submitting"}
+        disabled={status === "submitting" || !bot.canSubmit}
         className="label-caps bg-ink px-8 py-3 text-cream transition-opacity hover:opacity-90 disabled:opacity-50"
       >
         {status === "submitting" ? "Sending…" : "Send Message"}
       </button>
+      <HoneypotField ref={honeypotRef} />
     </form>
   );
 }

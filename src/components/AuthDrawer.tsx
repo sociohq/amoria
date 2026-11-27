@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useAuthDrawer } from "@/lib/auth-drawer-context";
 import { ApiError } from "@/lib/api";
+import { friendlySubmitError } from "@/lib/formError";
+import { HoneypotField } from "./HoneypotField";
+import { Turnstile, type TurnstileHandle } from "./Turnstile";
+import { useBotProtection } from "./useBotProtection";
 
 // Sign in / create account, as a slide-out drawer from the right — same
 // visual language as CartDrawer — instead of a dedicated page. Opened from
@@ -18,6 +22,9 @@ export function AuthDrawer() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const bot = useBotProtection();
+  const turnstileRef = useRef<TurnstileHandle>(null);
+  const honeypotRef = useRef<HTMLInputElement>(null);
 
   function reset() {
     setName("");
@@ -34,21 +41,39 @@ export function AuthDrawer() {
   function switchMode(next: "login" | "register") {
     setMode(next);
     setError(null);
+    if (next === "login") {
+      bot.clearToken();
+      turnstileRef.current?.reset();
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (submitting) return;
+    if (mode === "register" && !bot.canSubmit) return;
     setError(null);
     setSubmitting(true);
     try {
       if (mode === "login") {
         await login(email, password);
       } else {
-        await register(email, password, name);
+        await register(email, password, name, bot.payload(honeypotRef.current?.value ?? ""));
+        bot.clearToken();
+        turnstileRef.current?.reset();
       }
       handleClose();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Something went wrong");
+      if (mode === "register") {
+        bot.clearToken();
+        turnstileRef.current?.reset();
+      }
+      setError(
+        mode === "register"
+          ? friendlySubmitError(err)
+          : err instanceof ApiError
+            ? err.message
+            : "Something went wrong"
+      );
     } finally {
       setSubmitting(false);
     }
@@ -84,7 +109,7 @@ export function AuthDrawer() {
         </div>
 
         <div className="flex-1 overflow-y-auto px-8 py-8">
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="relative space-y-4">
             {mode === "register" && (
               <input
                 required
@@ -111,10 +136,11 @@ export function AuthDrawer() {
               onChange={(e) => setPassword(e.target.value)}
               className={inputClass}
             />
+            {mode === "register" && <Turnstile ref={turnstileRef} onToken={bot.setToken} />}
             {error && <p className="text-sm text-crimson">{error}</p>}
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || (mode === "register" && !bot.canSubmit)}
               className="w-full bg-ink py-3 label-caps text-cream hover:opacity-90 disabled:opacity-50"
             >
               {submitting
@@ -125,6 +151,7 @@ export function AuthDrawer() {
                   ? "Sign In"
                   : "Create Account"}
             </button>
+            {mode === "register" && <HoneypotField ref={honeypotRef} />}
           </form>
 
           <p className="mt-6 text-center text-sm text-ink-soft">

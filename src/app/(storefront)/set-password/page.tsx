@@ -1,10 +1,14 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useRef, useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { apiFetch, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { friendlySubmitError } from "@/lib/formError";
+import { HoneypotField } from "@/components/HoneypotField";
+import { Turnstile, type TurnstileHandle } from "@/components/Turnstile";
+import { useBotProtection } from "@/components/useBotProtection";
 
 // Landed on from the "set your password" link emailed after a guest
 // checkout clears payment — email + code arrive as query params from that
@@ -23,6 +27,10 @@ function SetPasswordForm() {
   const [done, setDone] = useState(false);
   const [resent, setResent] = useState(false);
   const [resending, setResending] = useState(false);
+  const [resendError, setResendError] = useState<string | null>(null);
+  const bot = useBotProtection();
+  const turnstileRef = useRef<TurnstileHandle>(null);
+  const honeypotRef = useRef<HTMLInputElement>(null);
 
   if (!email || !code) {
     return (
@@ -55,14 +63,20 @@ function SetPasswordForm() {
   }
 
   async function handleResend() {
+    if (resending || !bot.canSubmit) return;
     setResending(true);
-    setError(null);
+    setResendError(null);
     try {
-      await apiFetch("/api/auth/resend-set-password-link", { method: "POST", body: JSON.stringify({ email }) });
+      await apiFetch("/api/auth/resend-set-password-link", {
+        method: "POST",
+        body: JSON.stringify({ email, ...bot.payload(honeypotRef.current?.value ?? "") }),
+      });
       setResent(true);
-    } catch {
-      setError("Could not resend the link. Please try again shortly.");
+    } catch (err) {
+      setResendError(friendlySubmitError(err));
     } finally {
+      bot.clearToken();
+      turnstileRef.current?.reset();
       setResending(false);
     }
   }
@@ -119,14 +133,24 @@ function SetPasswordForm() {
           {submitting ? "Setting Password…" : "Set Password & Sign In"}
         </button>
       </form>
-      <button
-        type="button"
-        onClick={handleResend}
-        disabled={resending}
-        className="mx-auto mt-3 block text-xs text-ink-soft underline underline-offset-2 hover:text-royal disabled:opacity-50"
+      <form
+        className="relative"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void handleResend();
+        }}
       >
-        {resent ? "Link resent. Check your inbox" : resending ? "Resending…" : "Link expired? Send a new one"}
-      </button>
+        <Turnstile ref={turnstileRef} onToken={bot.setToken} className="mx-auto mt-3" />
+        {resendError && <p className="mt-3 text-center text-sm text-crimson">{resendError}</p>}
+        <button
+          type="submit"
+          disabled={resending || !bot.canSubmit}
+          className="mx-auto mt-3 block text-xs text-ink-soft underline underline-offset-2 hover:text-royal disabled:opacity-50"
+        >
+          {resent ? "Link resent. Check your inbox" : resending ? "Resending…" : "Link expired? Send a new one"}
+        </button>
+        <HoneypotField ref={honeypotRef} />
+      </form>
     </div>
   );
 }
